@@ -1,0 +1,70 @@
+/* Читалка книг: общие стили для всех страниц книг */
+.about{display:grid;grid-template-columns:280px minmax(0,1fr);gap:36px;align-items:start}
+.about img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.5);background:var(--ink)}
+.about .info{display:flex;flex-direction:column;gap:14px;min-width:0}
+.about h1{font-size:clamp(30px,5.5vw,46px)}
+.author{color:var(--mist)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags span{font-size:12px;color:var(--mist);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.tags .age{color:var(--ember);border-color:rgba(224,137,106,.45)}
+.tags .free{color:#9be3b0;border-color:rgba(92,194,122,.45)}
+.ann{font-family:"PT Serif",Georgia,serif;font-size:17px;line-height:1.65;max-width:62ch;display:flex;flex-direction:column;gap:10px}
+.ann p{margin:0}
+.ann .tagline{font-style:italic;color:var(--glass)}
+.sequel{font-size:15px;color:var(--mist)}
+.sequel a{color:var(--glass)}
+@media (max-width:760px){.about{grid-template-columns:1fr}.about img{max-width:240px}}
+
+#read{scroll-margin-top:72px;padding-top:24px}
+.reader{--rbg:#ffffff;--rfg:#141414;--rmuted:#6b6b6b;--rline:rgba(0,0,0,.12);--rchip:#f1f1f1;--rfont:"PT Serif",Georgia,serif;--rsize:18px;
+  max-width:760px;margin:0 auto;background:var(--rbg);color:var(--rfg);border:1px solid var(--line);border-radius:22px;padding:0 0 26px;position:relative}
+.reader.dark{--rbg:#0a0a0a;--rfg:#f2f2f2;--rmuted:#9a9a9a;--rline:rgba(255,255,255,.14);--rchip:#1b1b1b}
+.r-tools{position:relative;z-index:3;display:flex;align-items:center;gap:8px;padding:12px clamp(14px,4vw,40px);background:var(--rbg);border-bottom:1px solid var(--rline);border-radius:22px 22px 0 0}
+.r-tools select{appearance:none;-webkit-appearance:none;flex:1;min-width:0;background:var(--rchip);color:var(--rfg);border:1px solid var(--rline);border-radius:999px;padding:9px 14px;font:500 14px var(--body);text-overflow:ellipsis;cursor:pointer}
+.r-btn{appearance:none;flex:none;height:38px;min-width:38px;padding:0 12px;border-radius:999px;border:1px solid var(--rline);background:var(--rchip);color:var(--rfg);font:600 14px var(--body);display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.r-btn svg{width:18px;height:18px}
+.r-btn[aria-expanded="true"]{border-color:var(--ember)}
+.r-panel{display:flex;flex-wrap:wrap;gap:10px 14px;padding:14px clamp(14px,4vw,40px);border-bottom:1px solid var(--rline);background:var(--rbg)}
+.r-panel[hidden]{display:none}
+.r-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.r-row .lbl{font-size:13px;color:var(--rmuted);min-width:56px}
+.seg{display:inline-flex;border:1px solid var(--rline);border-radius:999px;overflow:hidden}
+.seg button{appearance:none;border:0;background:transparent;color:var(--rmuted);font:500 14px var(--body);padding:8px 13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.seg button+button,.seg span+button{border-left:1px solid var(--rline)}
+.seg button[aria-pressed="true"]{background:var(--rchip);color:var(--rfg)}
+.seg .sw{width:14px;height:14px;border-radius:50%;border:1px solid var(--rmuted)}
+.size-val{min-width:40px;text-align:center;color:var(--rfg);font:600 14px var(--body);font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;justify-content:center;border-left:1px solid var(--rline)}
+.r-body{padding:clamp(20px,4vw,40px) clamp(18px,5vw,56px) 0}
+.run{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--rmuted);font-size:13px;margin-bottom:18px}
+.run .ch{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.run .ch span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.run .pg{font-variant-numeric:tabular-nums;white-space:nowrap}
+.chapter-head{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;margin:10px 0 26px}
+.chapter-head .num{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
+.chapter-head h2{font-size:clamp(24px,5vw,32px);color:var(--rfg)}
+.chapter-head .pov{font-family:var(--rfont);font-style:italic;color:var(--rmuted)}
+.mark{flex:none;display:block}
+.text{font-family:var(--rfont);font-size:var(--rsize);line-height:1.75;color:var(--rfg)}
+.text p{margin:0 0 .3em;text-indent:1.6em;overflow-wrap:break-word}
+.paged .text{min-height:46vh}
+.pager{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin:26px clamp(18px,5vw,56px) 0;padding-top:18px;border-top:1px solid var(--rline)}
+.pager button{appearance:none;min-width:38px;height:38px;padding:0 10px;border-radius:10px;border:1px solid var(--rline);background:transparent;color:var(--rfg);font:500 15px var(--body);font-variant-numeric:tabular-nums;cursor:pointer}
+.pager button[aria-current="true"]{background:var(--ember);border-color:var(--ember);color:#1a0f0a}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager .gap{color:var(--rmuted);padding:0 2px}
+.pager .wide{padding:0 16px}
+.pageinfo{text-align:center;color:var(--rmuted);font-size:13px;margin-top:10px;font-variant-numeric:tabular-nums}
+.endcard{margin:30px clamp(18px,5vw,56px) 0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;background:var(--rchip);border:1px solid rgba(224,137,106,.45);border-radius:18px;padding:24px}
+.endcard h3{font-size:24px;color:var(--rfg)}
+.endcard p{margin:0;color:var(--rmuted);max-width:46ch}
+.endcard .btns{justify-content:center}
+.endcard .btn-ghost{color:var(--rfg);border-color:var(--rline)}
+.tapzone{position:absolute;top:0;bottom:0;width:22%;z-index:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tapzone.l{left:0}.tapzone.r{right:0}
+.flowpane{position:relative}
+
+/* весь экран */
+.reader.fs{position:fixed;inset:0;z-index:100;max-width:none;margin:0;border:0;border-radius:0;overflow-y:auto;padding-bottom:calc(26px + env(safe-area-inset-bottom,0px))}
+.reader.fs .r-tools{position:sticky;top:0;border-radius:0;padding-top:calc(12px + env(safe-area-inset-top,0px))}
+.reader.fs .r-body,.reader.fs .pager,.reader.fs .endcard{max-width:760px;margin-left:auto;margin-right:auto}
+body.reading-fs{overflow:hidden}

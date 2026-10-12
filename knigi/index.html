@@ -5,23 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&family=PT+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&family=PT+Serif:ital@0;1&family=Lora:ital@0;1&family=PT+Sans&display=swap">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../assets/icon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../assets/icon-180.png">
 <title>Книги Екатерины Котляровой</title>
-<meta name="description" content="Книги Екатерины Котляровой: аннотации, первые главы прямо на сайте и продолжение на Литнет.">
+<meta name="description" content="Книги Екатерины Котляровой: читай бесплатно прямо на сайте — «Заучка для Бунтаря», «Зубрилка для Чёрного», «Забери мою душу» и другие.">
 <link rel="stylesheet" href="../assets/style.css">
 <style>
-.book{display:grid;grid-template-columns:200px minmax(0,1fr);gap:26px;align-items:start;background:var(--ink);border:1px solid var(--line);border-radius:22px;padding:22px}
-.book img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border-radius:10px;box-shadow:0 14px 30px rgba(0,0,0,.45)}
-.book .info{display:flex;flex-direction:column;gap:12px;min-width:0}
-.book h3{font-size:clamp(24px,4vw,32px)}
-.book .ann{margin:0;color:var(--frost);max-width:62ch}
+.shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,460px),1fr));gap:16px}
+.book{display:grid;grid-template-columns:150px minmax(0,1fr);gap:20px;align-items:start;background:var(--ink);border:1px solid var(--line);border-radius:20px;padding:18px}
+.book img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:cover;border-radius:8px;box-shadow:0 10px 24px rgba(0,0,0,.45);background:var(--ink2)}
+.book .info{display:flex;flex-direction:column;gap:10px;min-width:0}
+.book h3{font-size:clamp(21px,3.4vw,26px)}
+.book h3 a{text-decoration:none}
+.book .ann{margin:0;color:var(--mist);font-size:15px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.book .btns{margin-top:auto}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tags span{font-size:12px;color:var(--mist);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
 .tags .age{color:var(--ember);border-color:rgba(224,137,106,.45)}
-@media (max-width:640px){.book{grid-template-columns:1fr}.book img{max-width:220px}}
+.tags .free{color:#9be3b0;border-color:rgba(92,194,122,.45)}
+@media (max-width:480px){.book{grid-template-columns:110px minmax(0,1fr);gap:14px;padding:14px}}
 </style>
 </head>
 <body>
@@ -31,17 +35,63 @@
 </div></header>
 <main>
 <section><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">Читай первые главы прямо здесь</div><h2>Мои книги</h2></div>
+  <div class="sec-head"><div class="eyebrow">Читай бесплатно прямо на сайте</div><h2>Мои книги</h2></div>
+  <div class="shelf">
   <article class="book">
-    <a href="ostrye-lezviya-lyubvi/"><img src="ostrye-lezviya-lyubvi/cover.jpg" alt="Обложка книги «Острые лезвия любви»" width="600" height="900"></a>
+    <a href="ostrye-lezviya-lyubvi/"><img src="ostrye-lezviya-lyubvi/cover.jpg" alt="Обложка книги «Острые лезвия любви»" width="600" height="900" loading="lazy"></a>
     <div class="info">
-      <div class="tags"><span>Студенческий роман</span><span>Остросюжетный любовный роман</span><span>Слоубёрн</span><span class="age">18+</span></div>
-      <h3>Острые лезвия любви</h3>
-      <div class="eyebrow">Бесплатно: 20 глав</div>
+      <div class="tags"><span class="free">Бесплатно: 20 глав</span><span class="age">18+</span></div>
+      <h3><a href="ostrye-lezviya-lyubvi/">Острые лезвия любви</a></h3>
       <p class="ann">Максим Волин появился в моей жизни как смерч. Ворвался и перевернул привычный серый мир с ног наголову.</p>
-      <div class="btns"><a class="btn btn-main" href="ostrye-lezviya-lyubvi/#read">Читать бесплатно</a><a class="btn btn-ghost" href="ostrye-lezviya-lyubvi/">О книге</a></div>
+      <div class="btns"><a class="btn btn-main" href="ostrye-lezviya-lyubvi/#read">Читать бесплатно</a></div>
     </div>
   </article>
+  <article class="book">
+    <a href="zauchka-dlya-buntarya/"><img src="zauchka-dlya-buntarya/cover.jpg" alt="Обложка книги «Заучка для Бунтаря»" width="600" height="900" loading="lazy"></a>
+    <div class="info">
+      <div class="tags"><span class="free">Бесплатно целиком</span><span class="age">18+</span></div>
+      <h3><a href="zauchka-dlya-buntarya/">Заучка для Бунтаря</a></h3>
+      <p class="ann">— Прошу тебя, Артур, отпусти меня. Оставь меня в покое. Что за игру ты затеял?</p>
+      <div class="btns"><a class="btn btn-main" href="zauchka-dlya-buntarya/#read">Читать</a></div>
+    </div>
+  </article>
+  <article class="book">
+    <a href="zubrilka-dlya-chernogo/"><img src="zubrilka-dlya-chernogo/cover.jpg" alt="Обложка книги «Зубрилка для Чёрного»" width="600" height="900" loading="lazy"></a>
+    <div class="info">
+      <div class="tags"><span class="free">Бесплатно целиком</span><span class="age">16+</span></div>
+      <h3><a href="zubrilka-dlya-chernogo/">Зубрилка для Чёрного</a></h3>
+      <p class="ann">— Чернышев, пусти меня! Какая муха тебя укусила? Чего ты хочешь от меня, Игнат? К чему всё это? Зачем ты за мной пошёл? — дёргаюсь, пытаюсь вырваться из железной хватки.</p>
+      <div class="btns"><a class="btn btn-main" href="zubrilka-dlya-chernogo/#read">Читать</a></div>
+    </div>
+  </article>
+  <article class="book">
+    <a href="zaberi-moyu-dushu/"><img src="zaberi-moyu-dushu/cover.jpg" alt="Обложка книги «Забери мою душу»" width="600" height="900" loading="lazy"></a>
+    <div class="info">
+      <div class="tags"><span class="free">Бесплатно целиком</span><span class="age">18+</span></div>
+      <h3><a href="zaberi-moyu-dushu/">Забери мою душу</a></h3>
+      <p class="ann">— Смотрю, постоянство не про тебя, — насмешливый голос, раздавшийся из темноты, заставил подскочить и выронить ключи от квартиры на пол.</p>
+      <div class="btns"><a class="btn btn-main" href="zaberi-moyu-dushu/#read">Читать</a></div>
+    </div>
+  </article>
+  <article class="book">
+    <a href="pisatelnica-dlya-belova/"><img src="pisatelnica-dlya-belova/cover.jpg" alt="Обложка книги «Писательница для Белова»" width="600" height="900" loading="lazy"></a>
+    <div class="info">
+      <div class="tags"><span class="free">Бесплатно целиком</span><span class="age">18+</span></div>
+      <h3><a href="pisatelnica-dlya-belova/">Писательница для Белова</a></h3>
+      <p class="ann">— Ты будешь отрабатывать каждую написанную букву. Будешь вытворять всё то, что описывала в этой похабной книженции. На коленях. И начнёшь ты уже сегодня, мышь. А я всё запишу и так же выложу в интернет. На всеобщее обозрение.</p>
+      <div class="btns"><a class="btn btn-main" href="pisatelnica-dlya-belova/#read">Читать</a></div>
+    </div>
+  </article>
+  <article class="book">
+    <a href="ne-veryu-v-lyubov/"><img src="ne-veryu-v-lyubov/cover.jpg" alt="Обложка книги «(Не) верю. В любовь»" width="600" height="900" loading="lazy"></a>
+    <div class="info">
+      <div class="tags"><span class="free">Бесплатно целиком</span><span class="age">18+</span></div>
+      <h3><a href="ne-veryu-v-lyubov/">(Не) верю. В любовь</a></h3>
+      <p class="ann">— Чего я хочу? — в голосе парня слышу насмешку. — Я хочу растоптать твоего брата, девочка.</p>
+      <div class="btns"><a class="btn btn-main" href="ne-veryu-v-lyubov/#read">Читать</a></div>
+    </div>
+  </article>
+  </div>
 </div></section>
 </main>
 <footer><div class="wrap">© Екатерина Котлярова.</div></footer>
