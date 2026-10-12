@@ -36,7 +36,7 @@ create or replace function public.acc_ip() returns text language sql stable as $
 $$;
 
 create or replace function public.acc_new_session(p_user uuid) returns text
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 declare t text := encode(gen_random_bytes(32), 'hex');
 begin
   delete from acc_sessions where user_id = p_user and expires_at < now();
@@ -45,13 +45,13 @@ begin
 end $$;
 
 create or replace function public.acc_user(p_token text) returns uuid
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, extensions as $$
   select user_id from acc_sessions where token = p_token and expires_at > now()
 $$;
 
 -- неудачная попытка: после 10 подряд — блокировка на 15 минут
 create or replace function public.acc_fail(p_user uuid) returns void
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, extensions as $$
 begin
   update acc_users set
     locked_till = case when fails + 1 >= 10 then now() + interval '15 minutes' else locked_till end,
@@ -61,7 +61,7 @@ end $$;
 
 -- Регистрация: вернёт токен входа и код восстановления (показать один раз).
 create or replace function public.acc_register(p_login text, p_password text)
-returns json language plpgsql security definer set search_path = public as $$
+returns json language plpgsql security definer set search_path = public, extensions as $$
 declare v_disp text := btrim(p_login); v_login text := lower(btrim(p_login)); v_code text; v_id uuid;
 begin
   if v_login !~ '^[a-zа-яё0-9_.\-]{3,20}$' then return json_build_object('error', 'bad_login'); end if;
@@ -79,7 +79,7 @@ end $$;
 
 -- Вход. После 10 неудачных попыток имя блокируется на 15 минут.
 create or replace function public.acc_login(p_login text, p_password text)
-returns json language plpgsql security definer set search_path = public as $$
+returns json language plpgsql security definer set search_path = public, extensions as $$
 declare u acc_users;
 begin
   select * into u from acc_users where login = lower(btrim(p_login));
@@ -95,7 +95,7 @@ end $$;
 
 -- Новый пароль по коду восстановления. Выдаёт новый код.
 create or replace function public.acc_reset(p_login text, p_code text, p_password text)
-returns json language plpgsql security definer set search_path = public as $$
+returns json language plpgsql security definer set search_path = public, extensions as $$
 declare u acc_users; v_code text;
 begin
   if length(coalesce(p_password, '')) < 6 then return json_build_object('error', 'short_password'); end if;
@@ -114,7 +114,7 @@ end $$;
 
 -- Прогресс: забрать всё и сохранить изменения (по каждому ключу побеждает более новая запись).
 create or replace function public.acc_load(p_token text)
-returns json language plpgsql security definer set search_path = public as $$
+returns json language plpgsql security definer set search_path = public, extensions as $$
 declare uid uuid := acc_user(p_token);
 begin
   if uid is null then return json_build_object('error', 'auth'); end if;
@@ -122,7 +122,7 @@ begin
 end $$;
 
 create or replace function public.acc_save(p_token text, p_patch jsonb)
-returns json language plpgsql security definer set search_path = public as $$
+returns json language plpgsql security definer set search_path = public, extensions as $$
 declare uid uuid := acc_user(p_token); cur jsonb;
 begin
   if uid is null then return json_build_object('error', 'auth'); end if;
@@ -137,7 +137,7 @@ begin
 end $$;
 
 create or replace function public.acc_logout(p_token text) returns json
-language sql security definer set search_path = public as $$
+language sql security definer set search_path = public, extensions as $$
   delete from acc_sessions where token = p_token returning json_build_object('ok', true)
 $$;
 
