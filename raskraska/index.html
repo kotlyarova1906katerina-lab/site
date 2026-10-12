@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
+<title>Раскраска по номерам — «Осколки первой любви»</title>
+<meta name="description" content="Раскрась Аню, Артура, Антона и Лику из «Осколков первой любви» Екатерины Котляровой — раскраска по номерам прямо в браузере.">
+<meta property="og:title" content="Раскраска по номерам — «Осколки первой любви»">
+<meta property="og:description" content="Выбери кадр и раскрась героев прямо в телефоне.">
+<meta property="og:image" content="thumbs/oba.jpg">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* Раскраска: плёнка с кадрами + полноэкранная «мастерская» (бумага, палитра снизу). Бумага всегда светлая. */
+[hidden]{display:none!important}
+.intro{display:flex;flex-direction:column;gap:12px;max-width:62ch}
+.intro h1{font-size:clamp(34px,7vw,54px)}
+.intro h1 em{font-style:normal;color:var(--glass)}
+.reel{background:#06090d;border:1px solid var(--line);border-radius:14px;padding:18px 38px;position:relative;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+.reel::before,.reel::after{content:"";position:absolute;top:12px;bottom:12px;width:12px;border-radius:2px;
+  background:repeating-linear-gradient(to bottom,var(--ink2) 0 9px,transparent 9px 22px)}
+.reel::before{left:13px}.reel::after{right:13px}
+.frame{appearance:none;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:9px}
+.frame .pic{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:var(--ink)}
+.frame img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.frame:hover img{transform:scale(1.03)}
+.frame .pic.fresh img{filter:grayscale(1) brightness(1.05) contrast(.9);opacity:.6}
+.frame .bar{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(255,255,255,.18)}
+.frame .bar i{display:block;height:100%;background:var(--ember)}
+.frame .meta{display:flex;flex-direction:column;gap:2px}
+.frame .name{font-family:var(--display);font-size:19px;line-height:1.2}
+.frame .state{font-size:13px;color:var(--mist);font-variant-numeric:tabular-nums}
+.howto{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:20px}
+.howto div{border-left:2px solid var(--ember);padding-left:14px;color:var(--mist);font-size:15px}
+.howto b{display:block;color:var(--frost);font-weight:600;margin-bottom:2px}
+
+/* мастерская */
+#room{position:fixed;inset:0;z-index:20;background:var(--night);display:flex;flex-direction:column}
+#room[hidden]{display:none}
+.rtop{display:flex;align-items:center;gap:10px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top,0px));background:var(--ink);border-bottom:1px solid var(--line)}
+.ib{appearance:none;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--ink2);color:var(--frost);display:grid;place-items:center;cursor:pointer;flex:none;font:600 20px/1 var(--body)}
+.ib:hover{border-color:var(--glass)}
+.ib svg{width:20px;height:20px}
+.rttl{flex:1;min-width:0}
+.rttl b{display:block;font-family:var(--display);font-weight:400;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rttl span{font-size:12px;color:var(--mist);font-variant-numeric:tabular-nums}
+.stage{flex:1;min-height:0;position:relative;overflow:hidden;touch-action:none}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair}
+.zoom{position:absolute;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px}
+.toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:var(--frost);color:var(--night);padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:.94}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--mist)}
+.rail{background:var(--ink);border-top:1px solid var(--line);padding:10px 12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+.swatches{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:thin}
+.sw{appearance:none;flex:none;width:52px;height:52px;border-radius:50%;border:0;cursor:pointer;position:relative;display:grid;place-items:center;font:600 15px var(--body);font-variant-numeric:tabular-nums;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);transition:transform .15s}
+.sw.sel{transform:scale(1.08);box-shadow:0 0 0 3px var(--ink),0 0 0 5px var(--ember)}
+.sw.done{opacity:.3}
+.sw.done::after{content:"✓";position:absolute;font-size:18px}
+.sw.done span{visibility:hidden}
+.sw small{position:absolute;bottom:-3px;right:-3px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--night);color:var(--frost);font-size:11px;display:grid;place-items:center;border:1px solid var(--line)}
+
+/* готово */
+#finish{position:fixed;inset:0;z-index:30;background:rgba(6,9,13,.86);display:grid;place-items:center;padding:16px}
+#finish[hidden]{display:none}
+.fcard{background:var(--ink);border:1px solid var(--line);border-radius:18px;padding:18px;max-width:440px;width:100%;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px;text-align:center}
+.fcard h2{font-size:32px}
+.fcard img{width:100%;border-radius:8px;display:block}
+.fcard p{margin:0;color:var(--mist);font-size:14px}
+.fcard .btns{justify-content:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../">Екатерина Котлярова</a>
+  <nav class="nav"><a href="../">Главная</a><a href="../serial/">Сериал</a><a href="../music/">Песни</a><a href="../test/">Тест</a><a href="./" aria-current="page">Раскраска</a></nav>
+</div></header>
+
+<main>
+<section><div class="wrap">
+  <div class="intro">
+    <div class="eyebrow">Раскраска по номерам</div>
+    <h1>Раскрась героев <em>«Осколков»</em></h1>
+    <p class="muted">Выбери кадр, потом цвет внизу и нажимай на области с тем же номером. Новые кадры появляются вместе с новыми сериями.</p>
+  </div>
+  <div class="howto">
+    <div><b>Приближай пальцами</b>Мелкие номера видно при приближении. На компьютере — колёсико мыши.</div>
+    <div><b>Лупа покажет, где остались пустые места</b>Если не можешь найти область нужного цвета.</div>
+    <div><b>Прогресс сохраняется</b>Можно закрыть страницу и продолжить потом на этом же устройстве.</div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="reel" id="reel" aria-label="Кадры для раскрашивания"></div>
+</div></section>
+</main>
+
+<footer><div class="wrap">© Екатерина Котлярова. Иллюстрации созданы с помощью нейросетей по мотивам книги «Осколки первой любви».</div></footer>
+
+<div id="room" hidden>
+  <div class="rtop">
+    <button class="ib" id="back" aria-label="К кадрам"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="rttl"><b id="rname"></b><span id="rprog"></span></div>
+    <button class="ib" id="hint" aria-label="Подсказка: показать незакрашенную область"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button>
+  </div>
+  <div class="stage" id="stage">
+    <canvas id="cv"></canvas>
+    <div class="loading" id="loading">Загружаю кадр…</div>
+    <div class="toast" id="toast"></div>
+    <div class="zoom">
+      <button class="ib" id="zin" aria-label="Приблизить">+</button>
+      <button class="ib" id="zout" aria-label="Отдалить">−</button>
+      <button class="ib" id="zfit" aria-label="Показать целиком"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+  </div>
+  <div class="rail"><div class="swatches" id="sw" role="listbox" aria-label="Цвета"></div></div>
+</div>
+
+<div id="finish" hidden>
+  <div class="fcard">
+    <h2>Готово!</h2>
+    <img id="finImg" alt="Готовая раскраска">
+    <p>Сохрани картинку и выложи в сторис — отметь меня, мне будет очень приятно.</p>
+    <div class="btns">
+      <a class="btn btn-main" id="dl" href="#" download="oskolki.png">Скачать картинку</a>
+      <button class="btn btn-ghost" id="again">Раскрасить заново</button>
+      <button class="btn btn-ghost" id="toGallery">К кадрам</button>
+    </div>
+    <p>Если скачивание не началось, нажми на картинку и удерживай.</p>
+  </div>
+</div>
+
+<script>
+/* Кадры раскраски. Новый кадр: положить data/<id>.json и thumbs/<id>.jpg, добавить строку сюда. */
+const PICS = [
+  { id: "anya",   name: "Аня",                    colors: 20, areas: 212 },
+  { id: "oba",    name: "Аня и Артур",            colors: 22, areas: 346 },
+  { id: "artur",  name: "Артур",                  colors: 20, areas: 236 },
+  { id: "anya3",  name: "Аня перед школой",       colors: 22, areas: 202 },
+  { id: "artur3", name: "Артур ждёт у подъезда",  colors: 24, areas: 242 },
+  { id: "anya2",  name: "Аня в свитере",          colors: 20, areas: 234 },
+  { id: "artur2", name: "Артур в пальто",         colors: 20, areas: 235 },
+  { id: "anton",  name: "Антон",                  colors: 20, areas: 285 },
+  { id: "lika",   name: "Лика",                   colors: 20, areas: 236 }
+];
+
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+const key = id => "oskolki-paint-" + id;
+function loadFilled(id, n) {
+  const s = store.get(key(id)); const f = new Uint8Array(n);
+  if (s) s.split(",").forEach(i => { const k = +i; if (k >= 0 && k < n) f[k] = 1; });
+  return f;
+}
+function countFilled(id, n) { return loadFilled(id, n).reduce((a, b) => a + b, 0); }
+function saveFilled() { const a = []; filled.forEach((v, i) => v && a.push(i)); store.set(key(P.id), a.join(",")); }
+
+/* ---------- плёнка ---------- */
+const reel = document.getElementById("reel");
+function renderGallery() {
+  reel.innerHTML = "";
+  PICS.forEach(p => {
+    const done = countFilled(p.id, p.areas), pct = Math.round(100 * done / p.areas);
+    const b = document.createElement("button"); b.className = "frame";
+    b.innerHTML = `<div class="pic ${done ? "" : "fresh"}"><img alt="" loading="lazy" src="thumbs/${p.id}.jpg" width="360" height="360"><div class="bar"><i style="width:${pct}%"></i></div></div>
+      <div class="meta"><span class="name">${p.name}</span><span class="state">${pct === 100 ? "готово ✓" : done ? "раскрашено " + pct + "%" : p.colors + " цветов · " + p.areas + " областей"}</span></div>`;
+    b.onclick = () => openPic(p);
+    reel.appendChild(b);
+  });
+}
+
+/* ---------- мастерская ---------- */
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d"), stage = document.getElementById("stage");
+const room = document.getElementById("room"), toastEl = document.getElementById("toast"), loadingEl = document.getElementById("loading");
+let P, D, N, ids, starts, bbox, filled, sel = -1, remain, paintCv, paintCtx, paintImg, pal;
+let view = { s: 1, x: 0, y: 0 }, cw = 0, ch = 0, dpr = 1, pulse = null, ready = false;
+
+const hexRgb = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const lum = ([r, g, b]) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+function toast(t) { toastEl.textContent = t; toastEl.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => toastEl.classList.remove("on"), 1500); }
+
+async function openPic(p) {
+  P = p; ready = false; room.hidden = false; document.body.style.overflow = "hidden";
+  document.getElementById("rname").textContent = p.name; document.getElementById("rprog").textContent = "";
+  document.getElementById("sw").innerHTML = ""; loadingEl.hidden = false; loadingEl.textContent = "Загружаю кадр…";
+  resize(); ctx.clearRect(0, 0, cv.width, cv.height);
+  try {
+    const r = await fetch(`data/${p.id}.json`); if (!r.ok) throw 0; D = await r.json();
+  } catch (e) { loadingEl.textContent = "Не получилось загрузить кадр. Проверь интернет и открой его ещё раз."; return; }
+  N = D.size; pal = D.palette.map(hexRgb);
+  const im = new Image();
+  im.onload = () => {
+    const c = document.createElement("canvas"); c.width = c.height = N;
+    const cx = c.getContext("2d"); cx.drawImage(im, 0, 0);
+    const d = cx.getImageData(0, 0, N, N).data, R = D.regions.length;
+    ids = new Int32Array(N * N); const cnt = new Int32Array(R);
+    for (let i = 0, j = 0; i < ids.length; i++, j += 4) { const v = (d[j] << 8) | d[j + 1]; ids[i] = v < R ? v : 0; cnt[ids[i]]++; }
+    starts = new Int32Array(R + 1); for (let r = 0; r < R; r++) starts[r + 1] = starts[r] + cnt[r];
+    bbox = new Int32Array(R * 4);
+    for (let r = 0; r < R; r++) { bbox[r * 4] = N; bbox[r * 4 + 1] = N; bbox[r * 4 + 2] = -1; bbox[r * 4 + 3] = -1; }
+    for (let i = 0; i < ids.length; i++) {
+      const r = ids[i], x = i % N, y = (i / N) | 0, o = r * 4;
+      if (x < bbox[o]) bbox[o] = x; if (y < bbox[o + 1]) bbox[o + 1] = y; if (x > bbox[o + 2]) bbox[o + 2] = x; if (y > bbox[o + 3]) bbox[o + 3] = y;
+    }
+    filled = loadFilled(p.id, R);
+    remain = new Int32Array(pal.length); D.regions.forEach((g, r) => { if (!filled[r]) remain[g[0]]++; });
+    paintCv = document.createElement("canvas"); paintCv.width = paintCv.height = N; paintCtx = paintCv.getContext("2d");
+    paintImg = paintCtx.createImageData(N, N);
+    loadingEl.hidden = true; ready = true; sel = -1; nextColor(); buildSwatches(); resize(); fit(); repaint(); updateProg();
+  };
+  im.src = "data:image/png;base64," + D.labels;
+}
+
+function repaint() {
+  const d = paintImg.data, paper = [251, 251, 250], hl = [214, 222, 233], ln = [150, 160, 172], reg = D.regions;
+  for (let i = 0, j = 0; i < ids.length; i++, j += 4) {
+    const r = ids[i], c = filled[r] ? pal[reg[r][0]] : (reg[r][0] === sel ? hl : paper);
+    d[j] = c[0]; d[j + 1] = c[1]; d[j + 2] = c[2]; d[j + 3] = 255;
+  }
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const i = y * N + x, r = ids[i], rr = x < N - 1 ? ids[i + 1] : r, rd = y < N - 1 ? ids[i + N] : r;
+    if ((rr !== r && (!filled[r] || !filled[rr])) || (rd !== r && (!filled[r] || !filled[rd]))) { const j = i * 4; d[j] = ln[0]; d[j + 1] = ln[1]; d[j + 2] = ln[2]; }
+  }
+  paintCtx.putImageData(paintImg, 0, 0); draw();
+}
+
+function draw() {
+  if (!ready) return;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
+  ctx.setTransform(dpr * view.s, 0, 0, dpr * view.s, dpr * view.x, dpr * view.y);
+  ctx.imageSmoothingEnabled = view.s < 1.6;
+  ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 18 / view.s; ctx.fillStyle = "#fbfbfa"; ctx.fillRect(0, 0, N, N); ctx.shadowBlur = 0;
+  ctx.drawImage(paintCv, 0, 0);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  const reg = D.regions;
+  for (let r = 0; r < reg.length; r++) {
+    if (filled[r]) continue;
+    const g = reg[r], fs = Math.min(g[3] * 1.15 * view.s, 17); if (fs < 6.5) continue;
+    const sx = g[1] * view.s + view.x, sy = g[2] * view.s + view.y;
+    if (sx < -20 || sy < -20 || sx > cw + 20 || sy > ch + 20) continue;
+    ctx.font = `${g[0] === sel ? 600 : 500} ${fs.toFixed(1)}px "Golos Text", system-ui, sans-serif`;
+    ctx.fillStyle = g[0] === sel ? "#3b4553" : "#8a94a2"; ctx.fillText(g[0] + 1, sx, sy + 0.5);
+  }
+  if (pulse) {
+    const o = pulse.r * 4, pad = 6, x = bbox[o] * view.s + view.x - pad, y = bbox[o + 1] * view.s + view.y - pad;
+    const w = (bbox[o + 2] - bbox[o] + 1) * view.s + pad * 2, h = (bbox[o + 3] - bbox[o + 1] + 1) * view.s + pad * 2;
+    ctx.strokeStyle = "#e0896a"; ctx.lineWidth = 3; ctx.globalAlpha = pulse.a; ctx.beginPath();
+    ctx.ellipse(x + w / 2, y + h / 2, w / 2 + 4, h / 2 + 4, 0, 0, Math.PI * 2); ctx.stroke(); ctx.globalAlpha = 1;
+  }
+}
+
+function resize() { const r = stage.getBoundingClientRect(); cw = r.width; ch = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2.5); cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); }
+function fit() { const s = Math.min(cw, ch) * 0.94 / N; view = { s, x: (cw - N * s) / 2, y: (ch - N * s) / 2 }; }
+function clampView() { const m = 60, w = N * view.s; view.x = Math.min(cw - m, Math.max(m - w, view.x)); view.y = Math.min(ch - m, Math.max(m - w, view.y)); }
+function zoomAt(f, cx, cy) {
+  if (!ready) return; const min = Math.min(cw, ch) * 0.5 / N, ns = Math.min(14, Math.max(min, view.s * f)), k = ns / view.s;
+  view.x = cx - (cx - view.x) * k; view.y = cy - (cy - view.y) * k; view.s = ns; clampView(); draw();
+}
+
+function buildSwatches() {
+  const box = document.getElementById("sw"); box.innerHTML = "";
+  pal.forEach((c, i) => {
+    const b = document.createElement("button"); b.className = "sw"; b.setAttribute("role", "option"); b.setAttribute("aria-label", `Цвет ${i + 1}`);
+    b.style.background = D.palette[i]; b.style.color = lum(c) > 150 ? "#151d27" : "#ffffff";
+    b.innerHTML = `<span>${i + 1}</span><small></small>`;
+    b.onclick = () => { sel = i; refreshSwatches(); repaint(); };
+    box.appendChild(b);
+  });
+  refreshSwatches();
+}
+function refreshSwatches() {
+  const kids = [...document.getElementById("sw").children];
+  kids.forEach((b, i) => {
+    b.classList.toggle("sel", i === sel); b.classList.toggle("done", remain[i] === 0); b.setAttribute("aria-selected", i === sel);
+    const s = b.querySelector("small"); s.textContent = remain[i]; s.hidden = remain[i] === 0;
+  });
+  if (kids[sel]) kids[sel].scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+}
+function nextColor() { for (let k = 0; k < pal.length; k++) { const i = (Math.max(sel, 0) + k) % pal.length; if (remain[i] > 0) { sel = i; return; } } sel = -1; }
+function updateProg() {
+  const done = filled.reduce((a, b) => a + b, 0), tot = D.regions.length;
+  document.getElementById("rprog").textContent = `${Math.round(100 * done / tot)}% · осталось ${tot - done}`;
+  return done === tot;
+}
+
+function tapAt(sx, sy) {
+  if (!ready) return;
+  const lx = Math.floor((sx - view.x) / view.s), ly = Math.floor((sy - view.y) / view.s);
+  if (lx < 0 || ly < 0 || lx >= N || ly >= N) return;
+  const r = ids[ly * N + lx]; if (filled[r]) return;
+  const c = D.regions[r][0];
+  if (sel < 0) { toast(`Выбери цвет ${c + 1}`); return; }
+  if (c !== sel) { toast(`Здесь цвет ${c + 1}`); return; }
+  filled[r] = 1; remain[c]--; saveFilled(); pulse = null;
+  if (remain[c] === 0) { nextColor(); toast(sel >= 0 ? `Цвет ${c + 1} готов! Дальше — ${sel + 1}` : "Последний мазок!"); }
+  refreshSwatches(); repaint();
+  if (updateProg()) setTimeout(showFinish, 450);
+}
+
+function hint() {
+  if (!ready) return; if (sel < 0) nextColor(); if (sel < 0) return;
+  let best = -1, bestA = -1;
+  D.regions.forEach((g, r) => { if (!filled[r] && g[0] === sel) { const a = starts[r + 1] - starts[r]; if (a > bestA) { bestA = a; best = r; } } });
+  if (best < 0) return;
+  const o = best * 4, bw = bbox[o + 2] - bbox[o] + 1, bh = bbox[o + 3] - bbox[o + 1] + 1;
+  const s = Math.min(8, Math.max(view.s, Math.min(cw, ch) * 0.28 / Math.max(bw, bh)));
+  view.s = s; view.x = cw / 2 - (bbox[o] + bw / 2) * s; view.y = ch / 2 - (bbox[o + 1] + bh / 2) * s; clampView();
+  refreshSwatches(); repaint();
+  let t = 0; pulse = { r: best, a: 1 };
+  const step = () => { if (!pulse || pulse.r !== best) return; t++; pulse.a = 0.5 + 0.5 * Math.cos(t / 6); draw(); if (t < 90) requestAnimationFrame(step); else { pulse = null; draw(); } };
+  requestAnimationFrame(step);
+}
+
+function showFinish() {
+  const W = 1080, pad = 54, band = 150, c = document.createElement("canvas"); c.width = W; c.height = W + band;
+  const x = c.getContext("2d"); x.fillStyle = "#0d1219"; x.fillRect(0, 0, W, W + band);
+  x.imageSmoothingEnabled = true; x.drawImage(paintCv, pad, pad, W - pad * 2, W - pad * 2);
+  x.textAlign = "center"; x.fillStyle = "#e8eef4"; x.font = "52px Prata, Georgia, serif"; x.fillText("Осколки первой любви", W / 2, W + 38);
+  x.fillStyle = "#93a3b4"; x.font = "500 24px 'Golos Text', system-ui, sans-serif"; x.fillText("ЕКАТЕРИНА КОТЛЯРОВА", W / 2, W + 86);
+  const url = c.toDataURL("image/png");
+  document.getElementById("finImg").src = url;
+  const dl = document.getElementById("dl"); dl.href = url; dl.download = `oskolki-${P.id}.png`;
+  document.getElementById("finish").hidden = false;
+}
+
+/* жесты */
+const ptrs = new Map(); let start = null, moved = false, pinch0 = null;
+cv.addEventListener("pointerdown", e => {
+  cv.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
+  if (ptrs.size === 1) { start = { x: e.offsetX, y: e.offsetY, vx: view.x, vy: view.y }; moved = false; }
+  if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = { d: Math.hypot(a.x - b.x, a.y - b.y), s: view.s, cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2, vx: view.x, vy: view.y }; moved = true; }
+});
+cv.addEventListener("pointermove", e => {
+  if (!ptrs.has(e.pointerId) || !ready) return; ptrs.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
+  if (ptrs.size === 2 && pinch0) {
+    const [a, b] = [...ptrs.values()], d = Math.hypot(a.x - b.x, a.y - b.y), cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2;
+    const min = Math.min(cw, ch) * 0.5 / N, ns = Math.min(14, Math.max(min, pinch0.s * d / pinch0.d)), k = ns / pinch0.s;
+    view.s = ns; view.x = cx - (pinch0.cx - pinch0.vx) * k; view.y = cy - (pinch0.cy - pinch0.vy) * k; clampView(); draw();
+  } else if (ptrs.size === 1 && start) {
+    const dx = e.offsetX - start.x, dy = e.offsetY - start.y;
+    if (!moved && Math.hypot(dx, dy) > 7) moved = true;
+    if (moved) { view.x = start.vx + dx; view.y = start.vy + dy; clampView(); draw(); }
+  }
+});
+function up(e) {
+  if (!ptrs.has(e.pointerId)) return; ptrs.delete(e.pointerId);
+  if (ptrs.size === 0) { if (!moved && start) tapAt(e.offsetX, e.offsetY); start = null; pinch0 = null; }
+  else if (ptrs.size === 1) { const [a] = [...ptrs.values()]; start = { x: a.x, y: a.y, vx: view.x, vy: view.y }; pinch0 = null; }
+}
+cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+cv.addEventListener("wheel", e => { e.preventDefault(); zoomAt(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.offsetX, e.offsetY); }, { passive: false });
+document.getElementById("zin").onclick = () => zoomAt(1.4, cw / 2, ch / 2);
+document.getElementById("zout").onclick = () => zoomAt(1 / 1.4, cw / 2, ch / 2);
+document.getElementById("zfit").onclick = () => { if (ready) { fit(); draw(); } };
+document.getElementById("hint").onclick = hint;
+function toGallery() { document.getElementById("finish").hidden = true; room.hidden = true; document.body.style.overflow = ""; ready = false; renderGallery(); }
+document.getElementById("back").onclick = toGallery;
+document.getElementById("toGallery").onclick = toGallery;
+document.getElementById("again").onclick = () => { store.del(key(P.id)); document.getElementById("finish").hidden = true; openPic(P); };
+window.addEventListener("resize", () => { if (!room.hidden && ready) { resize(); fit(); draw(); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !room.hidden) toGallery(); });
+
+renderGallery();
+</script>
+</body>
+</html>
