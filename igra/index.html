@@ -405,16 +405,18 @@ function refreshSprites() {
 function fresh(ch) {
   const c = G.chapters.find(c => c.n === ch);
   // отношения переносятся из прошлых глав; при перепрохождении берём то, что было в начале главы
-  let base = { artur: 0, lika: 0, courage: 0, f: {} };
+  let base = { artur: 0, lika: 0, anton: 0, courage: 0, f: {} };
   if (S && S.ch === ch && S.snap) base = S.snap;
-  else if (S && S.finished) base = { artur: S.artur, lika: S.lika, courage: S.courage, f: S.f };
+  else if (S && S.finished) base = { artur: S.artur, lika: S.lika, anton: S.anton || 0, courage: S.courage, f: S.f };
   base = JSON.parse(JSON.stringify(base));
-  return { ch, node: c.start, i: 0, artur: base.artur, lika: base.lika, courage: base.courage, f: { ...base.f },
-           snap: base, bg: null, shown: [], done: S && S.done ? S.done.slice() : [], ending: null, finished: false };
+  return { ch, node: c.start, i: 0, artur: base.artur, lika: base.lika, anton: base.anton || 0, courage: base.courage, f: { ...base.f },
+           snap: base, names: S && S.names ? { ...S.names } : {}, bg: null, shown: [], done: S && S.done ? S.done.slice() : [], ending: null, finished: false };
 }
 const save = () => store.set(KEY, S);
 const opensAt = c => c.opens ? new Date(c.opens).getTime() : 0;
-const isOpen = c => !!c.start && Date.now() >= opensAt(c);
+// ?preview=oskolki — автор видит закрытые главы до даты выхода
+const PREVIEW = new URLSearchParams(location.search).get('preview') === 'oskolki';
+const isOpen = c => !!c.start && (PREVIEW || Date.now() >= opensAt(c));
 function countdown(ms) {
   if (ms <= 0) return 'скоро';
   const d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60, s = Math.floor(ms / 1e3) % 60;
@@ -516,7 +518,7 @@ function say(kind, text, speaker) {
   else if (kind === 't') { box.classList.add('think'); who.hidden = false; who.className = 'who w-think'; who.textContent = G.people[playerId].name + ' · мысли'; layout('think'); }
   else {
     const p = G.people[speaker] || { name: speaker };
-    who.hidden = false; who.className = 'who w-' + speaker; who.textContent = p.name; layout(speaker);
+    who.hidden = false; who.className = 'who w-' + speaker; who.textContent = (S.names && S.names[speaker]) || p.name; layout(speaker);
   }
   full = text; txt.textContent = ''; let k = 0;
   clearInterval(typing);
@@ -556,6 +558,7 @@ function step() {
     if (st.show) { if (!S.shown.includes(st.show)) S.shown.push(st.show); setFace(st.show, null); layout(null); S.i++; continue; }
     if (st.hide) { S.shown = S.shown.filter(x => x !== st.hide); layout(null); S.i++; continue; }
     if (st.mark) { S.ending = st.mark; S.i++; continue; }
+    if (st.name) { S.names = Object.assign({}, S.names, st.name); S.i++; continue; }
     if (st.if) { if (st.if(S)) goto(st.go); else S.i++; continue; }
     if (st.end) { save(); return endChapter(); }
     if (st.choice) { save(); return showChoice(st); }
@@ -610,6 +613,7 @@ function pick(o) {
     S[k] = (S[k] || 0) + v;
     if (k === 'artur' && v > 0) notes.push('Артур это запомнит');
     if (k === 'lika' && v > 0) notes.push('Лика это запомнит');
+    if (k === 'anton' && v > 0) notes.push('Антон это запомнит');
     if (k === 'courage' && v > 0) notes.push('Смелость +' + v);
   });
   if (o.flag) S.f[o.flag] = true;
@@ -653,9 +657,10 @@ function endChapter() {
   const c = G.chapters.find(c => c.n === S.ch), nxt = G.chapters.find(x => x.n === S.ch + 1);
   const got = endings[S.ch] || [], total = (c.endings || []).length;
   const m = (label, val, max, note, color) => `<div class="meter"><div class="row"><span>${label}</span><b>${note}</b></div><div class="track"><i style="width:0;background:${color}" data-w="${Math.min(100, Math.round(val / max * 100))}"></i></div></div>`;
-  const ar = S.artur >= 4 ? 'Он заинтересован' : S.artur >= 2 ? 'Он присматривается' : 'Ему всё равно… пока';
-  const li = S.lika >= 3 ? 'Война объявлена' : S.lika >= 1 ? 'Она насторожилась' : 'Ты для неё пустое место';
+  const ar = S.artur >= 9 ? 'Не может отвести глаз' : S.artur >= 4 ? 'Он заинтересован' : S.artur >= 2 ? 'Он присматривается' : 'Ему всё равно… пока';
+  const li = S.lika >= 7 ? 'Ненавидит тебя' : S.lika >= 3 ? 'Война объявлена' : S.lika >= 1 ? 'Она насторожилась' : 'Ты для неё пустое место';
   const co = S.courage >= 3 ? 'Дерзкая' : S.courage >= 1 ? 'Не даёт себя в обиду' : 'Тихая';
+  const an = (S.anton || 0) >= 3 ? 'Доверяет тебе' : (S.anton || 0) >= 1 ? 'Тепло к тебе относится' : '';
   const nxtOpen = nxt && isOpen(nxt);
   let nextHtml = '';
   if (nxt && nxtOpen) nextHtml = `<div class="next-ch"><div class="eyebrow">Уже доступна</div><div class="ending">Глава ${nxt.n}. ${nxt.title}</div><button class="btn btn-gold" id="goNext">Играть дальше</button></div>`;
@@ -663,7 +668,7 @@ function endChapter() {
   const e = $('endscr');
   e.innerHTML = `<div class="eyebrow">Конец главы ${S.ch}</div><h2>${c.title}</h2>
     ${S.ending ? `<div><div class="muted" style="font-size:14px">Твоя концовка</div><div class="ending">«${S.ending}»</div><div class="muted" style="font-size:14px">Открыто концовок: ${got.length} из ${total}</div></div>` : ''}
-    <div class="meters">${m('Артур', S.artur, 7, ar, 'linear-gradient(90deg,#9fb6cc,#e8eef4)')}${m('Лика', S.lika, 6, li, 'linear-gradient(90deg,#d0603f,#f08a5a)')}${m('Смелость', S.courage, 4, co, 'linear-gradient(90deg,#d9a54c,#f7e2ad)')}</div>
+    <div class="meters">${m('Артур', S.artur, Math.max(7, S.ch * 7), ar, 'linear-gradient(90deg,#9fb6cc,#e8eef4)')}${m('Лика', S.lika, Math.max(6, S.ch * 5), li, 'linear-gradient(90deg,#d0603f,#f08a5a)')}${an ? m('Антон', S.anton, 4, an, 'linear-gradient(90deg,#c48a3c,#f3c98a)') : ''}${m('Смелость', S.courage, 6, co, 'linear-gradient(90deg,#d9a54c,#f7e2ad)')}</div>
     ${nextHtml}
     <div class="btns"><button class="btn btn-ghost" id="again">Пройти главу по-другому</button><button class="btn btn-ghost" id="toMenu">В меню</button></div>`;
   e.hidden = false;
