@@ -5,6 +5,7 @@
   const SB_KEY = "sb_publishable_q7KJgapG_K-yLw3EBZS4mg_QG_D59a-";
   const SYNC = /^(oskolki-|pos-|reader-settings$)/;              // что сохраняем в аккаунт
   const TKEY = "acct-token", NKEY = "acct-name", TSKEY = "acct-ts";
+  const ROOT = ((document.currentScript && document.currentScript.src) || "").replace(/assets\/account\.js.*$/, "");
 
   let ls; try { ls = window.localStorage; ls.setItem("acct-probe", "1"); ls.removeItem("acct-probe"); } catch (e) { return; }
   const rawSet = Storage.prototype.setItem, rawDel = Storage.prototype.removeItem;
@@ -108,6 +109,9 @@
   .acct-ghost{appearance:none;border:1px solid rgba(185,211,230,.16);border-radius:14px;padding:12px;font:600 15px var(--body,system-ui,sans-serif);cursor:pointer;background:transparent;color:#e8eef4}
   .acct-link{appearance:none;border:0;background:none;color:#93a3b4;font:14px var(--body,system-ui,sans-serif);text-decoration:underline;cursor:pointer;padding:2px;align-self:center}
   .acct-err{color:#f08a7a;font-size:14px;min-height:1.2em}
+  .acct-sheet label.acct-ok{flex-direction:row;align-items:flex-start;gap:10px;font-size:13px;line-height:1.45;cursor:pointer}
+  .acct-sheet label.acct-ok input{width:20px;height:20px;flex:none;margin:1px 0 0;accent-color:#5cc27a}
+  .acct-sheet label.acct-ok a{color:#b9d3e6}
   .acct-code{font:600 26px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.12em;text-align:center;color:#f7e2ad;background:#0d1219;border:1px dashed rgba(233,194,122,.5);border-radius:14px;padding:14px}
   .acct-x{position:absolute;top:10px;right:12px;appearance:none;border:0;background:none;color:#93a3b4;font-size:22px;cursor:pointer;line-height:1}
   .acct-toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:210;background:rgba(10,14,20,.92);border:1px solid rgba(92,194,122,.5);color:#9be3b0;padding:10px 16px;border-radius:999px;font:600 14px var(--body,system-ui,sans-serif);opacity:0;transition:opacity .3s;pointer-events:none}
@@ -141,7 +145,8 @@
       <div class="acct-tabs"><button data-t="login" aria-pressed="${!reg}">Вход</button><button data-t="reg" aria-pressed="${reg}">Регистрация</button></div>
       <label>Имя<input id="aLogin" autocomplete="username" maxlength="20" autocapitalize="off" spellcheck="false"></label>
       <label>Пароль<input id="aPass" type="password" autocomplete="${reg ? "new-password" : "current-password"}"></label>
-      ${reg ? `<label>Пароль ещё раз<input id="aPass2" type="password" autocomplete="new-password"></label><p>Почта не нужна. После регистрации дам код восстановления — сохрани его, без него забытый пароль не вернуть.</p>` : ""}
+      ${reg ? `<label>Пароль ещё раз<input id="aPass2" type="password" autocomplete="new-password"></label><p>Почта не нужна. После регистрации дам код восстановления — сохрани его, без него забытый пароль не вернуть.</p>
+      <label class="acct-ok"><input type="checkbox" id="aAgree"><span>Я принимаю <a href="${ROOT}privacy/" target="_blank" rel="noopener">политику конфиденциальности</a> и согласна на хранение данных аккаунта</span></label>` : ""}
       <div class="acct-err" id="aErr"></div>
       <button class="acct-go" id="aGo">${reg ? "Зарегистрироваться" : "Войти"}</button>
       ${reg ? "" : `<button class="acct-link" id="aForgot">Забыла пароль</button>`}`;
@@ -152,6 +157,7 @@
     const submit = async () => {
       const L = sheet.querySelector("#aLogin").value.trim(), P = sheet.querySelector("#aPass").value;
       if (reg && P !== sheet.querySelector("#aPass2").value) { err.textContent = "Пароли не совпадают"; return; }
+      if (reg && !sheet.querySelector("#aAgree").checked) { err.textContent = "Отметь согласие с политикой конфиденциальности"; return; }
       go.disabled = true; err.textContent = "";
       try {
         const r = await rpc(reg ? "acc_register" : "acc_login", { p_login: L, p_password: P });

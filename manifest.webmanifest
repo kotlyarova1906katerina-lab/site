@@ -1,0 +1,16 @@
+{
+  "name": "Сайт автора Екатерины Котляровой",
+  "short_name": "Котлярова",
+  "description": "Сериал «Осколки первой любви», бесплатные книги, игра, тест, раскраска и песни героев",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d1219",
+  "theme_color": "#0d1219",
+  "icons": [
+    { "src": "assets/icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
