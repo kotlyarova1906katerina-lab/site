@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Кто ты из «Осколков»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+/* Layout: one narrow column, phone-first; a cracked-glass canvas sits behind every screen. Single deliberate dark look — night courtyard from the series cover. */
+:root{
+  color-scheme: dark;
+  --night:#0d1219;      /* page ground */
+  --ink:#151d27;        /* raised surface */
+  --frost:#e8eef4;      /* main text */
+  --mist:#93a3b4;       /* secondary text */
+  --glass:#b9d3e6;      /* cold accent: glass edges, focus */
+  --ember:#e0896a;      /* warm accent: lamp light, CTA */
+  --line:rgba(185,211,230,.16);
+  --display:"Prata","Georgia","Times New Roman",serif;
+  --body:"Golos Text","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--night);color:var(--frost);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+#glass{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding-inline:16px;padding-block:28px 40px;min-height:100%;display:flex;flex-direction:column}
+.screen{display:flex;flex-direction:column;gap:20px;flex:1}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,8.4vw,42px);line-height:1.12}
+h1 em{font-style:normal;color:var(--glass)}
+.lead{color:var(--mist);margin:0;max-width:40ch}
+.btn{appearance:none;border:0;cursor:pointer;font:600 16px/1.2 var(--body);border-radius:14px;padding:16px 20px;text-align:center;text-decoration:none;display:block;width:100%;transition:transform .15s ease,background .15s ease}
+.btn:active{transform:scale(.98)}
+.btn:focus-visible,.opt:focus-visible{outline:2px solid var(--glass);outline-offset:3px}
+.btn-main{background:var(--ember);color:#1a0f0a}
+.btn-main:hover{background:#eb9a7d}
+.btn-ghost{background:transparent;color:var(--frost);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--glass)}
+.meta{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:13px;color:var(--mist);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+
+/* intro */
+.cast{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cast figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cast img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:50% 30%;clip-path:polygon(8% 0,100% 6%,92% 100%,0 94%);background:var(--ink)}
+.cast figcaption{font-size:13px;color:var(--mist);text-align:center}
+.intro-foot{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+.small{font-size:13px;color:var(--mist);margin:0}
+
+/* question */
+.progress{display:flex;gap:5px}
+.progress i{flex:1;height:4px;background:var(--line);clip-path:polygon(0 0,100% 0,94% 100%,4% 100%)}
+.progress i.on{background:var(--glass)}
+.qnum{font-size:13px;color:var(--mist);font-variant-numeric:tabular-nums}
+h2{font-size:clamp(23px,6.2vw,30px);line-height:1.2}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{appearance:none;cursor:pointer;text-align:left;font:400 16px/1.4 var(--body);color:var(--frost);background:var(--ink);border:1px solid var(--line);border-radius:14px;padding:16px 18px;transition:border-color .15s,background .15s,transform .15s}
+.opt:hover{border-color:var(--glass)}
+.opt.picked{border-color:var(--ember);background:#24201f}
+.back{appearance:none;background:none;border:0;color:var(--mist);font:500 14px var(--body);cursor:pointer;padding:6px 0;align-self:flex-start}
+.back:hover{color:var(--frost)}
+
+/* result */
+.res-top{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:end}
+.shard{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:50% 28%;clip-path:polygon(10% 0,100% 7%,90% 100%,0 92%);background:var(--ink)}
+.res-name{font-size:clamp(28px,7.5vw,38px);line-height:1.1}
+.role{color:var(--mist);font-size:14px;margin-top:6px}
+.tagline{font-family:var(--display);font-size:20px;color:var(--glass);margin:0}
+.res-text{margin:0}
+blockquote{margin:0;padding:16px 18px;border-left:2px solid var(--ember);background:var(--ink);border-radius:0 14px 14px 0;font-family:var(--display);font-size:18px;line-height:1.45}
+blockquote cite{display:block;margin-top:8px;font:400 13px var(--body);color:var(--mist);font-style:normal}
+.also{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-size:14px}
+.bar b{font-weight:500}
+.bar span{color:var(--mist);font-variant-numeric:tabular-nums}
+.bar div{grid-column:1/-1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar div i{display:block;height:100%;background:var(--glass)}
+.cta{border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px;background:rgba(21,29,39,.85)}
+.cta h3{font-size:22px}
+.cta p{margin:0;color:var(--mist)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{min-height:20px;font-size:13px;color:var(--glass);margin:0;text-align:center}
+.sharebox{width:100%;font:14px/1.4 var(--body);color:var(--frost);background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px;resize:none}
+@media (max-width:360px){.row2{grid-template-columns:1fr}.res-top{grid-template-columns:120px 1fr}}
+@media (prefers-reduced-motion:no-preference){.screen{animation:rise .35s ease both}@keyframes rise{from{transform:translateY(8px);opacity:.4}to{transform:none;opacity:1}}}
+</style>
+
+</head>
+<body>
+<canvas id="glass" aria-hidden="true"></canvas>
+<main class="wrap" id="app"></main>
+
+<script>
+/* ---------- настройки ---------- */
+const LINKS = {
+  vk:  "https://vk.ru/im/channels/-236449170",
+  max: "https://web.max.ru/-76877916155998"
+};
+const SHARE_URL = location.origin + location.pathname;
+
+const HEROES = {
+  anya:  {name:"Аня Теплова", role:"главная героиня", img:"img/anya.jpg",
+    tagline:"Тихая снаружи, несгибаемая внутри",
+    text:"Ты не любишь лишнего внимания и умеешь держать удар молча. Люди думают, что ты слабая, пока не увидят, как ты поднимаешься после падения. Ты привыкла защищать себя сама, поэтому довериться кому-то для тебя самый большой риск.",
+    quote:"Уроки прошлого научили меня не спорить и не лезть на рожон. Молчание — лучшая броня."},
+  artur: {name:"Артур Холодов", role:"главный герой", img:"img/artur.jpg",
+    tagline:"Лёд снаружи, огонь внутри",
+    text:"Тебя считают холодным и резким человеком, но близкие знают правду: ты заботишься поступками, а не словами. Можешь отдать свою шапку на ледяном ветру и сделать вид, что тебе всё равно. Ты сам решаешь, кого впустить в свою жизнь, и если уж впустил, то навсегда.",
+    quote:"Ты. Будешь. Играть. Роль. Моей. Девушки."},
+  anton: {name:"Антон Холодов", role:"брат-близнец Артура", img:"img/anton.jpg",
+    tagline:"Солнце любой компании",
+    text:"С тобой легко: ты шутишь, разряжаешь обстановку и умеешь сказать нужные слова в нужный момент. Тебя любят с первой встречи. Но за открытой улыбкой есть то, что ты не показываешь никому.",
+    quote:"Иногда двух недель достаточно, чтобы полюбить. Даже нескольких минут."},
+  lika:  {name:"Лика Лебедева", role:"королева класса", img:"img/lika.jpg",
+    tagline:"Знает себе цену",
+    text:"Ты не боишься занимать место и быть в центре внимания. Яркая, смелая, с безупречным маникюром и острым языком. Своё ты без боя не отдаёшь, и с тобой опасно соперничать.",
+    quote:"Тем хуже для тебя. Я редко кого угощаю."}
+};
+
+/* Каждый ответ даёт своему герою 2 балла и «родственному» герою 1 балл (для разбивки ничьих) */
+const KIN = {anya:"artur", artur:"anya", anton:"lika", lika:"anton"};
+
+const QUESTIONS = [
+  {q:"Первый день в новом классе. Куда ты сядешь?", a:[
+    ["На свободное место у окна, лишь бы не привлекать внимания","anya"],
+    ["Куда захочу. Место освободят","artur"],
+    ["К тому, кто сидит один, и сразу знакомлюсь","anton"],
+    ["Ближе к центру, где меня все видят","lika"]]},
+  {q:"Кто-то при всех говорит о тебе гадость. Что ты делаешь?", a:[
+    ["Молчу. Молчание — лучшая броня","anya"],
+    ["Смотрю так, что человек сам замолкает","artur"],
+    ["Перевожу всё в шутку","anton"],
+    ["Отвечаю так, что весь класс запомнит","lika"]]},
+  {q:"Близкий человек заболел. Как ты поможешь?", a:[
+    ["Чай с мёдом и лимоном. Сижу рядом, пока не уснёт","anya"],
+    ["Молча делаю всё, что нужно, и делаю вид, что мне всё равно","artur"],
+    ["Весь день шлю смешные сообщения, чтобы поднять настроение","anton"],
+    ["Заказываю доставку из лучшего кафе. Забота должна быть красивой","lika"]]},
+  {q:"Твой идеальный вечер?", a:[
+    ["Книга и плед","anya"],
+    ["Тренировка до темноты","artur"],
+    ["Шумная компания друзей","anton"],
+    ["Кафе с подругами и фото для сторис","lika"]]},
+  {q:"Чего ты боишься больше всего?", a:[
+    ["Что прошлое догонит меня в новом городе","anya"],
+    ["Всегда быть для близких на втором месте","artur"],
+    ["Разочаровать тех, кто меня любит","anton"],
+    ["Что меня променяют на другую","lika"]]},
+  {q:"Что о тебе говорят друзья?", a:[
+    ["«Тихая, но сильнее, чем кажется»","anya"],
+    ["«Сложный характер, но за своих горой»","artur"],
+    ["«С тобой легко и весело»","anton"],
+    ["«С тобой не соскучишься, но лучше не злить»","lika"]]},
+  {q:"Какой у тебя стиль?", a:[
+    ["Тёмный свитер и белый воротничок","anya"],
+    ["Чёрная кожанка и худи","artur"],
+    ["Светлый свитер и очки","anton"],
+    ["Брендовая сумка, лаковые туфли, идеальный маникюр","lika"]]},
+  {q:"Когда тебе больно, ты…", a:[
+    ["Ухожу и справляюсь сама","anya"],
+    ["Злюсь и никого не подпускаю","artur"],
+    ["Улыбаюсь и делаю вид, что всё отлично","anton"],
+    ["Плачу на плече подруги, а потом возвращаюсь с гордо поднятой головой","lika"]]}
+];
+
+/* порядок ответов перемешивается при каждом прохождении */
+let ORDER = [];
+function shuffleOrder(){ ORDER = QUESTIONS.map(Q => { const o = Q.a.map((_, j) => j); for (let i = o.length - 1; i > 0; i--){ const r = Math.floor(Math.random() * (i + 1)); [o[i], o[r]] = [o[r], o[i]]; } return o; }); }
+
+/* ---------- логика ---------- */
+const app = document.getElementById("app");
+let answers = [];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function score(){
+  const s = {}; Object.keys(HEROES).forEach(k => s[k] = 0);
+  const order = Object.keys(HEROES);
+  answers.forEach((ai, qi) => { const p = QUESTIONS[qi].a[ai][1]; s[p] += 2; s[KIN[p]] += 1; });
+  return order.map(k => ({k, v:s[k]})).sort((a,b) => b.v - a.v || order.indexOf(a.k) - order.indexOf(b.k));
+}
+
+function portrait(k, cls){
+  const h = HEROES[k];
+  return `<img class="${cls}" src="${h.img}" alt="${esc(h.name)}" width="720" height="720">`;
+}
+
+function intro(){
+  answers = [];
+  shuffleOrder();
+  app.innerHTML = `
+  <section class="screen">
+    <div class="eyebrow">Тест по книге Екатерины Котляровой</div>
+    <h1>Кто ты из <em>«Осколков первой любви»</em>?</h1>
+    <p class="lead">Тихая Аня, ледяной Артур, солнечный Антон или королева класса Лика? Ответь на восемь вопросов и узнай, чья история похожа на твою.</p>
+    <div class="cast">${Object.keys(HEROES).map(k => `<figure>${portrait(k, "")}<figcaption>${esc(HEROES[k].name.split(" ")[0])}</figcaption></figure>`).join("")}</div>
+    <div class="meta"><span class="chip">8 вопросов</span><span class="chip">1 минута</span><span class="chip">без спойлеров</span></div>
+    <div class="intro-foot">
+      <button class="btn btn-main" id="start">Начать тест</button>
+      <p class="small">По мотивам мини-сериала «Осколки первой любви».</p>
+    </div>
+  </section>`;
+  document.getElementById("start").onclick = () => ask(0);
+  crack(0.3);
+}
+
+function ask(i){
+  const Q = QUESTIONS[i];
+  app.innerHTML = `
+  <section class="screen">
+    <div class="progress" aria-hidden="true">${QUESTIONS.map((_, j) => `<i class="${j <= i ? "on" : ""}"></i>`).join("")}</div>
+    <div class="qnum">Вопрос ${i + 1} из ${QUESTIONS.length}</div>
+    <h2>${esc(Q.q)}</h2>
+    <div class="opts">${ORDER[i].map(j => `<button class="opt${answers[i] === j ? " picked" : ""}" id="o${i}_${j}" data-j="${j}">${esc(Q.a[j][0])}</button>`).join("")}</div>
+    ${i > 0 ? `<button class="back" id="back">← Назад</button>` : ``}
+  </section>`;
+  app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    b.classList.add("picked");
+    answers[i] = +b.dataset.j;
+    answers.length = i + 1;
+    setTimeout(() => i + 1 < QUESTIONS.length ? ask(i + 1) : result(), 180);
+  });
+  const back = document.getElementById("back");
+  if (back) back.onclick = () => ask(i - 1);
+  crack(0.3 + i * 0.08);
+  window.scrollTo(0, 0);
+}
+
+function result(){
+  const ranked = score();
+  const total = ranked.reduce((t, r) => t + r.v, 0) || 1;
+  const top = ranked[0].k, h = HEROES[top];
+  const pct = v => Math.round(v / total * 100);
+  const shareText = `Мой результат в тесте «Кто ты из „Осколков первой любви“»: ${h.name}. ${h.tagline}. А ты кто?` + (SHARE_URL ? ` ${SHARE_URL}` : "");
+  app.innerHTML = `
+  <section class="screen">
+    <div class="eyebrow">Твой результат: ${pct(ranked[0].v)}% совпадения</div>
+    <div class="res-top">
+      ${portrait(top, "shard")}
+      <div><h1 class="res-name">${esc(h.name)}</h1><div class="role">${esc(h.role)}</div></div>
+    </div>
+    <p class="tagline">${esc(h.tagline)}</p>
+    <p class="res-text">${esc(h.text)}</p>
+    <blockquote>${esc(h.quote)}<cite>«Осколки первой любви»</cite></blockquote>
+    <div class="also">
+      <div class="eyebrow">Ещё в тебе есть от</div>
+      ${ranked.slice(1).map(r => `<div class="bar"><b>${esc(HEROES[r.k].name)}</b><span>${pct(r.v)}%</span><div><i style="width:${pct(r.v)}%"></i></div></div>`).join("")}
+    </div>
+    <div class="cta">
+      <h3>Что будет дальше с Аней и Артуром?</h3>
+      <p>Мини-сериал выходит по понедельникам и четвергам. Скоро откроется предзаказ печатной книги, и первыми о нём узнают подписчики канала.</p>
+      <a class="btn btn-main" href="${LINKS.vk}" target="_blank" rel="noopener">Подписаться на канал ВКонтакте</a>
+      <a class="btn btn-ghost" href="${LINKS.max}" target="_blank" rel="noopener">Канал в MAX</a>
+    </div>
+    <div class="row2">
+      <button class="btn btn-ghost" id="share">Скопировать результат</button>
+      <button class="btn btn-ghost" id="again">Пройти ещё раз</button>
+    </div>
+    <p class="toast" id="toast" aria-live="polite"></p>
+  </section>`;
+  document.getElementById("again").onclick = intro;
+  document.getElementById("share").onclick = () => {
+    const t = document.getElementById("toast");
+    const fallback = () => {
+      t.innerHTML = `<textarea class="sharebox" id="sharebox" rows="3" readonly>${esc(shareText)}</textarea>`;
+      const ta = document.getElementById("sharebox"); ta.focus(); ta.select();
+    };
+    try {
+      navigator.clipboard.writeText(shareText)
+        .then(() => { t.textContent = "Скопировано. Вставь в сторис или в комментарии под серией."; })
+        .catch(fallback);
+    } catch(e){ fallback(); }
+  };
+  crack(1);
+  window.scrollTo(0, 0);
+}
+
+/* ---------- трещины на стекле ---------- */
+const cv = document.getElementById("glass"), cx = cv.getContext("2d");
+let crackLevel = 0;
+function rand(seed){ return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+function crack(level){
+  crackLevel = level;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = cv.clientWidth, H = cv.clientHeight;
+  cv.width = W * dpr; cv.height = H * dpr;
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  cx.clearRect(0, 0, W, H);
+  const g = cx.createRadialGradient(W * .8, H * .1, 0, W * .8, H * .1, Math.max(W, H));
+  g.addColorStop(0, "rgba(224,137,106,.10)"); g.addColorStop(.5, "rgba(13,18,25,0)");
+  cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+  const r = rand(20261012);
+  const ox = W * .82, oy = H * .16;
+  const rays = Math.round(7 + level * 9);
+  cx.lineCap = "round";
+  for (let i = 0; i < rays; i++){
+    let a = (i / rays) * Math.PI * 2 + r() * .4;
+    let x = ox, y = oy;
+    const len = (0.35 + r() * 0.7) * Math.max(W, H) * (0.4 + level * 0.6);
+    cx.beginPath(); cx.moveTo(x, y);
+    let walked = 0;
+    while (walked < len){
+      const step = 18 + r() * 40;
+      a += (r() - .5) * .35;
+      x += Math.cos(a) * step; y += Math.sin(a) * step; walked += step;
+      cx.lineTo(x, y);
+      if (r() < .18){ // ответвление
+        const ba = a + (r() < .5 ? -1 : 1) * (.5 + r() * .6), bl = 20 + r() * 70;
+        cx.moveTo(x, y); cx.lineTo(x + Math.cos(ba) * bl, y + Math.sin(ba) * bl); cx.moveTo(x, y);
+      }
+    }
+    cx.strokeStyle = `rgba(185,211,230,${0.10 + r() * 0.14})`;
+    cx.lineWidth = .6 + r() * .8;
+    cx.stroke();
+  }
+  for (let ring = 1; ring <= 3; ring++){ // кольцевые трещины вокруг удара
+    const rr = ring * (26 + level * 22);
+    cx.beginPath();
+    for (let t = 0; t <= 12; t++){
+      const ang = t / 12 * Math.PI * 2, jitter = rr * (0.85 + r() * 0.3);
+      const px = ox + Math.cos(ang) * jitter, py = oy + Math.sin(ang) * jitter;
+      t ? cx.lineTo(px, py) : cx.moveTo(px, py);
+    }
+    cx.strokeStyle = "rgba(185,211,230,.10)"; cx.lineWidth = .7; cx.stroke();
+  }
+}
+window.addEventListener("resize", () => crack(crackLevel));
+intro();
+</script>
+
+</body>
+</html>
