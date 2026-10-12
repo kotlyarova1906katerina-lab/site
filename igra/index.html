@@ -362,7 +362,8 @@ const saveD = () => store.set(DKEY, D);
 const wearOf = id => D.wear[id] || 'base';
 function sprSrc(id, emo) {
   const p = G.people[id]; if (!p || !p.img) return '';
-  const o = wearOf(id), e = emo && (p.emotions || []).includes(emo) ? '-' + emo : '';
+  const o = wearOf(id), of = (p.outfits || []).find(x => x.id === o);
+  const e = emo && !(of && of.emo === false) && (p.emotions || []).includes(emo) ? '-' + emo : '';
   return `img/${p.img}${o === 'base' ? '' : '_' + o}${e}.webp`;
 }
 const wardHeroes = Object.keys(G.people).filter(id => (G.people[id].outfits || []).length > 1 && G.people[id].img);

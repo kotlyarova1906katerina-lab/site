@@ -44,33 +44,44 @@ window.GAME = {
   /* Герои.
      img — базовое имя картинки в img/ (img/artur.webp). Эмоция: img/artur-smile.webp, наряд: img/artur_black.webp,
      наряд + эмоция: img/artur_black-smile.webp. В emotions перечислены только те эмоции, картинки которых уже есть.
+     emo: false у наряда — для него эмоций нет, герой в нём всегда с обычным лицом.
      pos — где стоит на сцене: w — ширина от экрана, lift — на сколько пикселей поднят над низом. */
   people: {
-    anya:    { name: "Аня", img: "anya", player: true, pos: { w: 80, lift: 96 }, emotions: [],
+    anya:    { name: "Аня", img: "anya", player: true, pos: { w: 80, lift: 96 }, emotions: ["smile", "shy", "sad", "surprised", "angry"],
                outfits: [
                  { id: "base",     name: "Голубой свитер",    price: 0 },
                  { id: "cream",    name: "Молочный свитер",   price: 15 },
                  { id: "pink",     name: "Розовый свитер",    price: 20 },
                  { id: "lavender", name: "Лавандовый свитер", price: 25 },
-                 { id: "mint",     name: "Мятный свитер",     price: 25 }
+                 { id: "mint",     name: "Мятный свитер",     price: 25 },
+                 { id: "blouse",   name: "Блузка и жилет",    price: 30, emo: false },
+                 { id: "black",    name: "Чёрное платье",     price: 35, emo: false }
                ] },
-    artur:   { name: "Артур", img: "artur", pos: { w: 100, lift: 150 }, emotions: [],
+    artur:   { name: "Артур", img: "artur", pos: { w: 100, lift: 150 }, emotions: ["smirk", "angry", "surprised", "smile"],
                outfits: [
                  { id: "base",  name: "Бордовое худи", price: 0 },
                  { id: "black", name: "Чёрное худи",   price: 15 },
                  { id: "grey",  name: "Серое худи",    price: 20 },
                  { id: "navy",  name: "Синее худи",    price: 25 },
-                 { id: "green", name: "Изумрудное худи", price: 25 }
+                 { id: "green", name: "Изумрудное худи", price: 25 },
+                 { id: "tee",   name: "Белая футболка и кожанка", price: 30, emo: false },
+                 { id: "shirt", name: "Рубашка и галстук", price: 35, emo: false }
                ] },
-    lika:    { name: "Лика",        img: "lika",  pos: { w: 82, lift: 104 }, emotions: [] },
-    anton:   { name: "Незнакомец",  img: "anton", pos: { w: 98, lift: 146 }, emotions: [] },
-    teacher: { name: "Учительница", img: "",      pos: { w: 86, lift: 110 }, emotions: [] },
-    sveta:   { name: "Света",       img: "",      pos: { w: 84, lift: 104 }, emotions: [] }
+    lika:    { name: "Лика",        img: "lika",  pos: { w: 82, lift: 104 }, emotions: ["smirk", "angry", "surprised"] },
+    anton:   { name: "Незнакомец",  img: "anton", pos: { w: 98, lift: 146 }, emotions: ["smile", "surprised"] },
+    teacher: { name: "Учительница", img: "teacher", pos: { w: 72, lift: 92 }, emotions: [] },
+    sveta:   { name: "Света",       img: "sveta",   pos: { w: 72, lift: 92 }, emotions: [] },
+    podruga1:     { name: "Подруга Лики", img: "podruga1",     pos: { w: 72, lift: 92 }, emotions: [] },   // брюнетка с каре
+    podruga2:     { name: "Подруга Лики", img: "podruga2",     pos: { w: 72, lift: 92 }, emotions: [] },   // блондинка с хвостом
+    odnoklassnik: { name: "Одноклассник", img: "odnoklassnik", pos: { w: 72, lift: 92 }, emotions: [] }    // весельчак в сером худи
   },
 
   backgrounds: {
     class: "img/bg_class.webp",
-    corridor: "img/bg_corridor.webp"
+    corridor: "img/bg_corridor.webp",
+    yard: "img/bg_yard.webp",        // школьный двор осенью
+    alley: "img/bg_alley.webp",      // тёмный переулок
+    room: "img/bg_room.webp"         // комната Ани
   },
 
   scenes: {
@@ -78,6 +89,7 @@ window.GAME = {
     c1_start: [
       { bg: "class" },
       { n: "Мел с жутким противным скрипом выводит на доске моё имя." },
+      { show: "teacher" },
       { s: "teacher", x: "Анна Теплова. По семейным обстоятельствам сменила город. С нами будет доучиваться последнюю четверть. Надеюсь, вы поможете девочке освоиться." },
       { n: "Я вцепляюсь в лямки рюкзака, как в спасательный круг. Шестнадцать пар глаз. Острых. Изучающих." },
       { t: "Только бы не сбежать из одного ада прямиком в другой.", e: "sad" },
@@ -100,6 +112,7 @@ window.GAME = {
 
     c1_seat: [
       { s: "teacher", x: "Садись рядом со Светой, она поделится с тобой учебниками." },
+      { hide: "teacher" },
       { n: "Я иду к свободной парте, стараясь ни на кого не смотреть. И спотыкаюсь на ровном месте." },
       { t: "Это он. Мой вчерашний спаситель.", e: "surprised" },
       { show: "artur" },
