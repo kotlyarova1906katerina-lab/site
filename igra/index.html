@@ -62,12 +62,10 @@
 .spr{position:absolute;bottom:var(--lift,118px);left:50%;height:auto;transform:translateX(-50%) translateY(0);opacity:0;transition:opacity .35s ease,transform .45s cubic-bezier(.2,.8,.2,1),filter .3s;pointer-events:none;will-change:transform,opacity;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent 99%);mask-image:linear-gradient(180deg,#000 80%,transparent 99%)}
 .spr.on{opacity:1}
 .spr.dim{filter:brightness(.55) saturate(.8)}
-.spr.p-anya{width:80%;--lift:96px;left:0;transform:translateX(-110%)}
-.spr.p-anya.on{transform:translateX(-12%)}
-.spr.p-artur{width:100%;--lift:150px;left:56%;transform:translate(-50%,8%)}
-.spr.p-anton{width:98%;--lift:146px;left:56%;transform:translate(-50%,8%)}
-.spr.p-lika{width:82%;--lift:104px;left:56%;transform:translate(-50%,8%)}
-.spr.p-artur.on,.spr.p-anton.on,.spr.p-lika.on{transform:translate(-50%,0)}
+.spr.left{left:0;transform:translateX(-110%)}
+.spr.left.on{transform:translateX(-12%)}
+.spr.right{left:56%;transform:translate(-50%,8%)}
+.spr.right.on{transform:translate(-50%,0)}
 .spr.side.on{transform:translate(-20%,0)}
 .spr.speaking{animation:breathe 3.6s ease-in-out infinite}
 @keyframes breathe{0%,100%{scale:1}50%{scale:1.008}}
@@ -105,6 +103,7 @@
 .toast{position:absolute;left:50%;top:calc(64px + env(safe-area-inset-top,0px));z-index:9;transform:translate(-50%,-8px);opacity:0;transition:opacity .3s,transform .3s;
   background:rgba(10,14,20,.82);border:1px solid rgba(233,194,122,.5);color:var(--gold2);padding:9px 16px;border-radius:18px;font-size:14px;font-weight:600;line-height:1.5;text-align:center;max-width:calc(100% - 32px);width:max-content;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.page{position:fixed;top:auto;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:60}
 
 .modal{position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:16px;background:rgba(5,8,12,.72);backdrop-filter:blur(4px)}
 .sheet{width:100%;max-width:400px;background:#141b25;border:1px solid rgba(233,194,122,.4);border-radius:22px;padding:24px 20px;display:flex;flex-direction:column;gap:12px;color:var(--frost)}
@@ -131,6 +130,52 @@
 .next-ch .cd{font:400 26px var(--display);color:var(--gold2);font-variant-numeric:tabular-nums}
 .endscr .btns .btn{flex:1 1 100%}
 
+
+/* ---------- кристаллы ---------- */
+.gem-chip{display:inline-flex;align-items:center;gap:6px;font:600 15px var(--body);font-variant-numeric:tabular-nums;color:var(--gold2);background:rgba(10,14,20,.6);border:1px solid rgba(233,194,122,.45);border-radius:999px;padding:7px 13px;backdrop-filter:blur(6px);cursor:pointer;appearance:none}
+.g-hero .gem-chip{position:absolute;top:14px;right:14px}
+.hud .gem-chip{pointer-events:auto;margin-left:auto}
+.gem-chip.bump{animation:bump .5s}
+@keyframes bump{40%{transform:scale(1.18)}}
+.gems-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.gcard{background:var(--ink);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.gcard h3{font-size:21px}
+.gcard p{margin:0;color:var(--mist);font-size:15px}
+.gcard.hot{border-color:rgba(233,194,122,.45);background:linear-gradient(160deg,#20283a,#151d27)}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.day{border-radius:10px;background:var(--ink2);text-align:center;padding:8px 2px;font-size:12px;color:var(--mist);line-height:1.3}
+.day b{display:block;font-size:14px;color:var(--frost)}
+.day.got{background:rgba(92,194,122,.16);color:#9be3b0}
+.day.got b{color:#9be3b0}
+.day.now{box-shadow:inset 0 0 0 1.5px var(--gold);color:var(--gold2)}
+.day.now b{color:var(--gold2)}
+.row2{display:flex;gap:8px;flex-wrap:wrap}
+.row2 input{flex:1 1 160px;min-width:0;font:600 16px var(--body);letter-spacing:.06em;text-transform:uppercase;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--night);color:var(--frost)}
+.row2 input:focus{outline:2px solid var(--gold);outline-offset:1px}
+.link-box{font-size:14px;word-break:break-all;background:var(--night);border:1px solid var(--line);border-radius:12px;padding:11px 12px;color:var(--glass)}
+.note{font-size:14px;min-height:1.2em;color:var(--mist)}
+.note.ok{color:#9be3b0}.note.bad{color:#f08a7a}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* ---------- гардероб ---------- */
+.ward{display:grid;grid-template-columns:minmax(0,320px) 1fr;gap:20px;align-items:start}
+.ward-stage{position:relative;aspect-ratio:3/4;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:url(img/bg_class.webp) center/cover}
+.ward-stage img{position:absolute;bottom:0;left:50%;width:92%;transform:translateX(-50%)}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tab{appearance:none;border:1px solid var(--line);background:transparent;color:var(--mist);font:600 14px var(--body);border-radius:999px;padding:8px 14px;cursor:pointer}
+.tab[aria-selected="true"]{color:#9be3b0;background:rgba(92,194,122,.16);border-color:rgba(92,194,122,.35)}
+.outfits{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.of{appearance:none;cursor:pointer;text-align:left;color:var(--frost);font:inherit;background:var(--ink);border:1px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.of .th{aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--ink2)}
+.of .th img{width:100%;height:100%;object-fit:cover;object-position:50% 72%}
+.of .nm{font-size:14px;line-height:1.25}
+.of .pr{font-size:13px;color:var(--gold2);font-weight:600}
+.of .pr.own{color:var(--mist);font-weight:500}
+.of[aria-pressed="true"]{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+.of[aria-pressed="true"] .pr{color:#9be3b0}
+.ward-act{margin-top:14px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+@media (max-width:760px){.ward{grid-template-columns:1fr}.ward-stage{max-width:320px;width:100%;margin-inline:auto}}
+
 @media (prefers-reduced-motion:reduce){.spr,.opt,.box,.bg{transition:none;animation:none}}
 </style>
 </head>
@@ -144,7 +189,8 @@
 <section><div class="wrap">
   <div class="g-hero">
     <div class="bgimg"></div>
-    <div class="duo"><img class="a" src="img/anya.webp" alt=""><img class="b" src="img/artur.webp" alt=""></div>
+    <div class="duo"><img class="a" id="duoA" src="img/anya.webp" alt=""><img class="b" id="duoB" src="img/artur.webp" alt=""></div>
+    <button class="gem-chip" data-gems-go aria-label="Кристаллы">💎 <span data-gems>0</span></button>
     <div class="txt">
       <div class="eyebrow">Игра с выборами</div>
       <h1>Осколки первой любви</h1>
@@ -160,20 +206,57 @@
   <div class="chapters" id="chapters"></div>
 </div></section>
 
-<section><div class="wrap">
-  <div class="perks">
-    <div class="perk"><b>Свои концовки</b>У каждой главы несколько финалов. Пройди ещё раз и выбери по-другому.</div>
-    <div class="perk"><b>Отношения</b>Артур, Лика и твоя смелость запоминают каждое решение и влияют на следующие главы.</div>
-    <div class="perk"><b>💎 Особые выборы</b>Самые дерзкие варианты открываются кодом для подписчиков канала.</div>
+<section id="gems"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">💎 Кристаллы</div><h2>Собирай кристаллы</h2>
+    <p class="muted" style="margin:0">Кристаллы открывают особые выборы в главах и новые наряды в гардеробе.</p></div>
+  <div class="gems-grid">
+    <div class="gcard hot">
+      <h3>Каждый день</h3>
+      <p>Заходи каждый день подряд — награда растёт. На седьмой день самый большой подарок.</p>
+      <div class="days" id="days"></div>
+      <button class="btn btn-gold" id="dailyBtn">Забрать</button>
+      <div class="note" id="dailyNote"></div>
+    </div>
+    <div class="gcard">
+      <h3>Пригласи подругу</h3>
+      <p id="invText">Отправь свою ссылку. За каждого нового игрока — <b id="invR">20</b> 💎 тебе и подарок ему.</p>
+      <div class="link-box" id="invLink">Ссылка готовится…</div>
+      <div class="btns"><button class="btn btn-ghost" id="invShare" disabled>Поделиться</button><button class="btn btn-ghost" id="invCheck" disabled>Проверить</button></div>
+      <div class="note" id="invNote"></div>
+    </div>
+    <div class="gcard">
+      <h3>Кодовое слово</h3>
+      <p>В новых сериях и постах спрятано кодовое слово. Напиши его в комментариях под серией и введи здесь.</p>
+      <div class="row2"><input id="wordIn" placeholder="Кодовое слово" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn btn-main" id="wordBtn">Ввести</button></div>
+      <div class="note" id="wordNote"></div>
+      <div class="btns"><a class="btn btn-ghost" href="../serial/">Смотреть серии</a></div>
+    </div>
+    <div class="gcard">
+      <h3>Подарок из Telegram</h3>
+      <p>В Telegram-канале лежит код на 30 💎. Там же первой приходит новость о новой главе.</p>
+      <div class="btns"><a class="btn btn-ghost" id="tgBtn" target="_blank" rel="noopener">Открыть канал</a></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="wardrobe"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Гардероб</div><h2>Переодень героев</h2>
+    <p class="muted" style="margin:0">Выбранный наряд герой носит во всех главах.</p></div>
+  <div class="tabs" id="wTabs" role="tablist"></div>
+  <div class="ward">
+    <div class="ward-stage"><img id="wImg" alt=""></div>
+    <div>
+      <div class="outfits" id="wList"></div>
+      <div class="ward-act"><button class="btn btn-gold" id="wBtn">Надеть</button><div class="note" id="wNote"></div></div>
+    </div>
   </div>
 </div></section>
 
 <section><div class="wrap">
-  <div class="tg-card">
-    <div class="eyebrow">Для подписчиков</div>
-    <h3>Код для особых выборов</h3>
-    <p id="tgText">Подпишись на Telegram-канал: там лежит код, который открывает все 💎-выборы, и первой приходит новость о новой главе.</p>
-    <div class="btns"><a class="btn btn-gold" id="tgBtn" target="_blank" rel="noopener">Подписаться в Telegram</a><button class="btn btn-ghost" id="codeBtn">У меня есть код</button></div>
+  <div class="perks">
+    <div class="perk"><b>Свои концовки</b>У каждой главы несколько финалов. Пройди ещё раз и выбери по-другому.</div>
+    <div class="perk"><b>Отношения</b>Артур, Лика и твоя смелость запоминают каждое решение и влияют на следующие главы.</div>
+    <div class="perk"><b>💎 Особые выборы</b>Самые дерзкие варианты. Купленный выбор остаётся твоим и при перепрохождении.</div>
   </div>
 </div></section>
 </main>
@@ -186,22 +269,12 @@
   <div class="stage" id="stage">
     <div class="bg" id="bg1"></div><div class="bg b2" id="bg2"></div>
     <div class="sprites" id="sprites"></div>
-    <div class="hud"><button class="x" id="exitBtn" aria-label="В меню">✕</button><div class="ttl" id="hudTitle"></div></div>
+    <div class="hud"><button class="x" id="exitBtn" aria-label="В меню">✕</button><div class="ttl" id="hudTitle"></div><button class="gem-chip" id="hudGems" aria-label="Кристаллы">💎 <span data-gems>0</span></button></div>
     <div class="toast" id="toast"></div>
     <div class="box gone" id="box" role="button" tabindex="0" aria-live="polite"><div class="who" id="who" hidden></div><div class="txt" id="txt"></div><div class="more">▼</div></div>
     <div class="choices" id="choices" hidden></div>
     <div class="endscr" id="endscr" hidden></div>
-    <div class="modal" id="codeModal" hidden>
-      <div class="sheet">
-        <h3>💎 Особый выбор</h3>
-        <p>Этот вариант открывается кодом из Telegram-канала Екатерины Котляровой. Один раз ввела — и все особые выборы открыты навсегда.</p>
-        <a class="btn btn-gold" id="tgBtn2" target="_blank" rel="noopener">Взять код в Telegram</a>
-        <input id="codeIn" placeholder="Введи код" autocomplete="off" autocapitalize="characters" spellcheck="false">
-        <div class="err" id="codeErr"></div>
-        <button class="btn btn-main" id="codeOk">Открыть</button>
-        <button class="btn btn-ghost" id="codeNo">Выбрать другой вариант</button>
-      </div>
-    </div>
+    <div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
   </div>
 </div>
 
@@ -209,10 +282,10 @@
 <script src="story.js"></script>
 <script>
 (() => {
-const G = window.GAME, $ = id => document.getElementById(id);
-const KEY = 'oskolki-game', PKEY = 'oskolki-premium', EKEY = 'oskolki-endings';
+const G = window.GAME, E = G.economy, $ = id => document.getElementById(id);
+const KEY = 'oskolki-game', EKEY = 'oskolki-endings', WKEY = 'oskolki-wallet', DKEY = 'oskolki-wardrobe';
 const tg = (window.SITE && SITE.telegram) || '#';
-$('tgBtn').href = tg; $('tgBtn2').href = tg;
+$('tgBtn').href = tg;
 
 /* ---------- хранилище (в приватном режиме может не работать) ---------- */
 const store = {
@@ -220,10 +293,162 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
   del(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
-let premium = store.get(PKEY, false);
 let endings = store.get(EKEY, {});          // {1: ["Он смотрит", ...]}
 let S = store.get(KEY, null);               // текущее прохождение
 
+/* ---------- кошелёк ---------- */
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); }));
+let W = store.get(WKEY, null) || { id: uid(), gems: 0, streak: 0, last: '', codes: [], bought: {}, invited: 0, ref: null, regd: false, myCode: '' };
+if (store.get('oskolki-premium', false) && !W.migrated) {   // кто вводил код раньше — получает кристаллы
+  W.gems += 30; W.codes.push(G.codes[0] && G.codes[0].h); W.migrated = true; store.del('oskolki-premium');
+}
+const saveW = () => store.set(WKEY, W);
+saveW();
+function showGems(bump) {
+  document.querySelectorAll('[data-gems]').forEach(e => e.textContent = W.gems);
+  if (bump) document.querySelectorAll('.gem-chip').forEach(c => { c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); });
+}
+function addGems(n, why) { W.gems += n; saveW(); showGems(true); if (why) toast(`+${n} 💎 · ${why}`); }
+document.querySelectorAll('[data-gems-go]').forEach(b => b.onclick = () => $('gems').scrollIntoView({ behavior: 'smooth' }));
+
+/* ---------- ежедневная награда (сутки по Москве) ---------- */
+const mskDay = (t = Date.now()) => new Date(t + 3 * 36e5).toISOString().slice(0, 10);
+const dayBefore = d => mskDay(Date.parse(d + 'T00:00:00Z') - 3 * 36e5 - 1);
+function dailyState() {
+  const today = mskDay(), took = W.last === today;
+  const cont = W.last === dayBefore(today);                       // вчера забирала — серия продолжается
+  let next = took ? W.streak : cont ? W.streak % 7 + 1 : 1;       // номер дня 1…7
+  return { took, next };
+}
+function renderDaily() {
+  const { took, next } = dailyState();
+  $('days').innerHTML = E.daily.map((g, i) => {
+    const d = i + 1, cls = took ? (d <= next ? 'got' : '') : (d < next ? 'got' : d === next ? 'now' : '');
+    return `<div class="day ${cls}">Д${d}<b>${g}</b></div>`;
+  }).join('');
+  const b = $('dailyBtn');
+  if (took) {
+    const msLeft = Date.parse(mskDay() + 'T00:00:00Z') - 3 * 36e5 + 864e5 - Date.now();
+    b.disabled = true; b.textContent = `Следующая через ${countdown(msLeft)}`;
+    $('dailyNote').textContent = `Завтра: +${E.daily[next % 7]} 💎. Не пропускай день — иначе серия начнётся заново.`;
+  } else {
+    b.disabled = false; b.textContent = `Забрать +${E.daily[next - 1]} 💎`;
+    $('dailyNote').textContent = next > 1 ? `Ты заходишь ${next}-й день подряд.` : '';
+  }
+}
+$('dailyBtn').onclick = () => {
+  const { took, next } = dailyState(); if (took) return;
+  W.streak = next; W.last = mskDay(); addGems(E.daily[next - 1]);
+  $('dailyNote').className = 'note ok'; renderDaily();
+};
+
+/* ---------- кодовые слова ---------- */
+async function sha(s) {
+  const norm = s.trim().toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я0-9]/g, '');
+  if (!norm || !(window.crypto && crypto.subtle)) return '';
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(norm));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+async function tryWord() {
+  const note = $('wordNote'), h = await sha($('wordIn').value);
+  const c = G.codes.find(c => c.h === h);
+  if (!c) { note.className = 'note bad'; note.textContent = 'Такого слова нет. Проверь, как оно написано в серии.'; return; }
+  if (W.codes.includes(h)) { note.className = 'note'; note.textContent = 'Это слово ты уже вводила.'; return; }
+  W.codes.push(h); addGems(c.gems, c.label);
+  note.className = 'note ok'; note.textContent = `+${c.gems} 💎 — ${c.label}!`; $('wordIn').value = '';
+}
+$('wordBtn').onclick = tryWord;
+$('wordIn').addEventListener('keydown', e => { if (e.key === 'Enter') tryWord(); });
+
+/* ---------- приглашения (Supabase) ---------- */
+const SB = G.supabase || {};
+const sbOn = !!(SB.url && SB.key);
+async function rpc(fn, body) {
+  const h = { apikey: SB.key, 'Content-Type': 'application/json' };
+  if (!SB.key.startsWith('sb_')) h.Authorization = 'Bearer ' + SB.key;
+  const r = await fetch(SB.url.replace(/\/$/, '') + '/rest/v1/rpc/' + fn, { method: 'POST', headers: h, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+const refIn = new URLSearchParams(location.search).get('ref');
+if (refIn && !W.regd && !W.ref) { W.ref = refIn.slice(0, 16); saveW(); }
+if (refIn) history.replaceState(null, '', location.pathname + location.hash);
+async function inviteInit() {
+  $('invR').textContent = E.inviteReward;
+  if (!sbOn) { $('invLink').textContent = 'Приглашения заработают совсем скоро.'; $('invShare').hidden = $('invCheck').hidden = true; return; }
+  try {
+    if (!W.regd) {
+      const r = await rpc('game_register', { p_id: W.id, p_ref: W.ref });
+      W.regd = true; W.myCode = r.code; saveW();
+      if (r.invited) addGems(E.inviteWelcome, 'подарок за приглашение');
+    }
+    const link = location.origin + location.pathname + '?ref=' + W.myCode;
+    $('invLink').textContent = link;
+    $('invShare').disabled = false; $('invCheck').disabled = false;
+    $('invShare').onclick = async () => {
+      const text = 'Сыграй за Аню из «Осколков первой любви» — каждый выбор меняет историю:';
+      if (navigator.share) { try { await navigator.share({ title: 'Осколки первой любви — игра', text, url: link }); } catch (e) {} }
+      else { try { await navigator.clipboard.writeText(link); $('invNote').className = 'note ok'; $('invNote').textContent = 'Ссылка скопирована.'; } catch (e) { $('invNote').textContent = 'Скопируй ссылку вручную.'; } }
+    };
+    $('invCheck').onclick = claimInvites;
+    claimInvites(true);
+  } catch (e) { $('invLink').textContent = 'Не получилось связаться с сервером. Попробуй позже.'; }
+}
+async function claimInvites(quiet) {
+  try {
+    const n = await rpc('game_claim', { p_id: W.id });
+    if (n > 0) { W.invited += n; addGems(n * E.inviteReward, n === 1 ? 'новый игрок по твоей ссылке' : `${n} новых игрока по твоей ссылке`); }
+    const note = $('invNote');
+    note.className = n > 0 ? 'note ok' : 'note';
+    if (n > 0 || !quiet) note.textContent = W.invited ? `По твоей ссылке пришли: ${W.invited}.` + (n ? '' : ' Новых пока нет.') : 'Пока никто не пришёл. Отправь ссылку подругам.';
+    else if (W.invited) note.textContent = `По твоей ссылке пришли: ${W.invited}.`;
+  } catch (e) { if (!quiet) $('invNote').textContent = 'Сервер не ответил. Попробуй позже.'; }
+}
+
+/* ---------- гардероб и картинки героев ---------- */
+let D = store.get(DKEY, null) || { owned: {}, wear: {} };
+const saveD = () => store.set(DKEY, D);
+const wearOf = id => D.wear[id] || 'base';
+function sprSrc(id, emo) {
+  const p = G.people[id]; if (!p || !p.img) return '';
+  const o = wearOf(id), e = emo && (p.emotions || []).includes(emo) ? '-' + emo : '';
+  return `img/${p.img}${o === 'base' ? '' : '_' + o}${e}.webp`;
+}
+const wardHeroes = Object.keys(G.people).filter(id => (G.people[id].outfits || []).length > 1 && G.people[id].img);
+let wHero = wardHeroes[0], wSel = null;
+function renderWardrobe() {
+  $('wTabs').innerHTML = wardHeroes.map(id => `<button class="tab" role="tab" data-h="${id}" aria-selected="${id === wHero}">${G.people[id].name}</button>`).join('');
+  $('wTabs').querySelectorAll('.tab').forEach(t => t.onclick = () => { wHero = t.dataset.h; wSel = null; renderWardrobe(); });
+  const p = G.people[wHero], own = D.owned[wHero] || ['base'];
+  if (!wSel) wSel = wearOf(wHero);
+  const src = o => `img/${p.img}${o === 'base' ? '' : '_' + o}.webp`;
+  $('wList').innerHTML = p.outfits.map(o => {
+    const has = own.includes(o.id) || !o.price, on = wearOf(wHero) === o.id;
+    return `<button class="of" data-o="${o.id}" aria-pressed="${o.id === wSel}"><span class="th"><img src="${src(o.id)}" alt="" loading="lazy"></span><span class="nm">${o.name}</span><span class="pr ${has ? 'own' : ''}">${on ? '✓ надето' : has ? 'есть' : o.price + ' 💎'}</span></button>`;
+  }).join('');
+  $('wList').querySelectorAll('.of').forEach(b => b.onclick = () => { wSel = b.dataset.o; renderWardrobe(); });
+  $('wImg').src = src(wSel);
+  const o = p.outfits.find(o => o.id === wSel), has = own.includes(o.id) || !o.price, on = wearOf(wHero) === o.id;
+  const btn = $('wBtn');
+  btn.disabled = on;
+  btn.textContent = on ? 'Уже надето' : has ? 'Надеть' : `Купить за ${o.price} 💎`;
+  btn.onclick = () => {
+    if (!has) {
+      if (W.gems < o.price) { $('wNote').className = 'note bad'; $('wNote').textContent = `Не хватает ${o.price - W.gems} 💎. Забери ежедневную награду или введи кодовое слово.`; return; }
+      W.gems -= o.price; saveW(); showGems(true);
+      D.owned[wHero] = [...new Set([...own, o.id])];
+    }
+    D.wear[wHero] = o.id; saveD();
+    $('wNote').className = 'note ok'; $('wNote').textContent = `${p.name}: ${o.name.toLowerCase()} — теперь во всех главах.`;
+    renderWardrobe(); refreshSprites();
+  };
+}
+function refreshSprites() {
+  $('duoA').src = sprSrc('anya'); $('duoB').src = sprSrc('artur');
+  Object.entries(sprites).forEach(([id, el]) => { const s = sprSrc(id, faces[id]); if (s && !el.src.endsWith(s)) el.src = s; });
+}
+
+/* ---------- главы и обратный отсчёт ---------- */
 function fresh(ch) {
   const c = G.chapters.find(c => c.n === ch);
   // отношения переносятся из прошлых глав; при перепрохождении берём то, что было в начале главы
@@ -235,8 +460,6 @@ function fresh(ch) {
            snap: base, bg: null, shown: [], done: S && S.done ? S.done.slice() : [], ending: null, finished: false };
 }
 const save = () => store.set(KEY, S);
-
-/* ---------- главы и обратный отсчёт ---------- */
 const opensAt = c => c.opens ? new Date(c.opens).getTime() : 0;
 const isOpen = c => !!c.start && Date.now() >= opensAt(c);
 function countdown(ms) {
@@ -248,7 +471,6 @@ function countdown(ms) {
 function dateRu(c) {
   return new Date(c.opens).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' }) + ' МСК';
 }
-function nextLocked() { return G.chapters.find(c => !isOpen(c)); }
 
 function renderMenu() {
   const box = $('chapters'); box.innerHTML = '';
@@ -275,28 +497,39 @@ function renderMenu() {
   $('playBtn').textContent = cur ? `Продолжить главу ${cur}` : firstNew ? `Начать главу ${firstNew.n}` : 'Пройти главу заново';
   $('playBtn').onclick = () => cur ? startChapter(cur, false) : startChapter(firstNew ? firstNew.n : 1, true);
   $('resetBtn').hidden = !S;
-  if (premium) { $('tgText').innerHTML = '<span class="unlocked-note">✓ Особые выборы открыты.</span> Новые главы и коды первыми появляются в Telegram-канале.'; $('codeBtn').hidden = true; }
+  showGems(); renderDaily();
 }
-setInterval(() => document.querySelectorAll('[data-cd]').forEach(e => {
-  const left = +e.dataset.cd - Date.now();
-  if (left <= 0) { renderMenu(); return; }
-  e.textContent = countdown(left);
-}), 1000);
+setInterval(() => {
+  document.querySelectorAll('[data-cd]').forEach(e => {
+    const left = +e.dataset.cd - Date.now();
+    if (left <= 0) { renderMenu(); return; }
+    e.textContent = countdown(left);
+  });
+  if (play.hidden) renderDaily();
+}, 1000);
 
 $('resetBtn').onclick = () => {
-  if (!confirm('Стереть прохождение и начать с первой главы? Открытые концовки и код останутся.')) return;
+  if (!confirm('Стереть прохождение и начать с первой главы? Концовки, кристаллы и наряды останутся.')) return;
   S = null; store.del(KEY); renderMenu();
 };
 
 /* ---------- сцена ---------- */
 const play = $('play'), box = $('box'), txt = $('txt'), who = $('who'), choices = $('choices');
-const sprites = {};
+const sprites = {}, faces = {};
 Object.entries(G.people).forEach(([id, p]) => {
   if (!p.img) return;
-  const im = new Image(); im.src = p.img; im.alt = p.name; im.className = 'spr p-' + id; im.draggable = false;
+  const im = new Image(); im.src = sprSrc(id); im.alt = p.name; im.draggable = false;
+  im.className = 'spr ' + (p.player ? 'left' : 'right');
+  const pos = p.pos || {}; im.style.width = (pos.w || 90) + '%'; im.style.setProperty('--lift', (pos.lift || 120) + 'px');
   $('sprites').appendChild(im); sprites[id] = im;
+  (p.emotions || []).forEach(e => { const i = new Image(); i.src = sprSrc(id, e); });
 });
 Object.values(G.backgrounds).forEach(src => { const i = new Image(); i.src = src; });
+function setFace(id, emo) {
+  faces[id] = emo || null;
+  const el = sprites[id]; if (!el) return;
+  const s = sprSrc(id, emo); if (s && !el.src.endsWith(s)) el.src = s;
+}
 
 let bgFlip = false;
 function setBg(name, instant) {
@@ -309,15 +542,16 @@ function setBg(name, instant) {
   bgFlip = !bgFlip;
   $('blurbg').style.backgroundImage = `url(${src})`;
 }
+const playerId = Object.keys(G.people).find(id => G.people[id].player) || 'anya';
 function layout(speaker) {
   // Аня выходит слева только на свои реплики и мысли; остальные стоят справа
-  const anyaOn = speaker === 'anya' || speaker === 'think';
+  const meOn = speaker === playerId || speaker === 'think';
   Object.entries(sprites).forEach(([id, el]) => {
-    if (id === 'anya') { el.classList.toggle('on', anyaOn); el.classList.remove('dim'); el.classList.toggle('speaking', anyaOn); return; }
+    if (id === playerId) { el.classList.toggle('on', meOn); el.classList.remove('dim'); el.classList.toggle('speaking', meOn); return; }
     const on = S.shown.includes(id);
     el.classList.toggle('on', on);
     el.classList.toggle('dim', on && speaker && speaker !== id && speaker !== 'narr');
-    el.classList.toggle('side', on && anyaOn);
+    el.classList.toggle('side', on && meOn);
     el.classList.toggle('speaking', on && speaker === id);
   });
 }
@@ -326,7 +560,7 @@ let typing = null, full = '', waiting = false;
 function say(kind, text, speaker) {
   box.classList.remove('gone', 'ready', 'narr', 'think');
   if (kind === 'n') { box.classList.add('narr'); who.hidden = true; layout('narr'); }
-  else if (kind === 't') { box.classList.add('think'); who.hidden = false; who.className = 'who w-think'; who.textContent = 'Аня · мысли'; layout('think'); }
+  else if (kind === 't') { box.classList.add('think'); who.hidden = false; who.className = 'who w-think'; who.textContent = G.people[playerId].name + ' · мысли'; layout('think'); }
   else {
     const p = G.people[speaker] || { name: speaker };
     who.hidden = false; who.className = 'who w-' + speaker; who.textContent = p.name; layout(speaker);
@@ -349,7 +583,7 @@ function tap() {
 box.addEventListener('click', tap);
 $('stage').addEventListener('click', e => { if (e.target.closest('.box,.choices,.hud,.modal,.endscr')) return; tap(); });
 document.addEventListener('keydown', e => {
-  if (play.hidden || !$('codeModal').hidden) return;
+  if (play.hidden || !$('modal').hidden) return;
   if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); tap(); }
   if (e.key === 'Escape') exitGame();
 });
@@ -363,35 +597,58 @@ function step() {
     const st = list[S.i];
     if (!st) { console.warn('Сцена кончилась без перехода', S.node); return endChapter(); }
     if (st.when && !st.when(S)) { S.i++; continue; }
+    if (st.face) Object.entries(st.face).forEach(([id, e]) => setFace(id, e));
     if (st.bg) { S.bg = st.bg; setBg(st.bg); S.i++; continue; }
-    if (st.show) { if (!S.shown.includes(st.show)) S.shown.push(st.show); layout(null); S.i++; continue; }
+    if (st.show) { if (!S.shown.includes(st.show)) S.shown.push(st.show); setFace(st.show, null); layout(null); S.i++; continue; }
     if (st.hide) { S.shown = S.shown.filter(x => x !== st.hide); layout(null); S.i++; continue; }
     if (st.mark) { S.ending = st.mark; S.i++; continue; }
     if (st.if) { if (st.if(S)) goto(st.go); else S.i++; continue; }
     if (st.end) { save(); return endChapter(); }
     if (st.choice) { save(); return showChoice(st); }
     if (st.n) { save(); return say('n', st.n); }
-    if (st.t) { save(); return say('t', st.t); }
-    if (st.s) { save(); return say('s', st.x, st.s); }
+    if (st.t) { save(); setFace(playerId, st.e); return say('t', st.t); }
+    if (st.s) { save(); setFace(st.s, st.e); return say('s', st.x, st.s); }
     if (st.go) { goto(st.go); continue; }
+    if (st.face) { S.i++; continue; }
     S.i++;
   }
 }
 
 /* ---------- выборы ---------- */
-let pendingOpt = null;
 function showChoice(st) {
   box.classList.add('gone'); waiting = false; layout('narr');
   choices.innerHTML = `<div class="q">${st.choice}</div>`;
-  st.options.forEach(o => {
+  st.options.forEach((o, idx) => {
+    const key = S.node + '#' + idx, cost = o.cost || E.premiumCost, owned = !!W.bought[key];
     const b = document.createElement('button');
     b.className = 'opt' + (o.premium ? ' prem' : '');
-    b.innerHTML = (o.premium ? '<span class="gem">💎</span>' : '') + `<span>${o.x}</span>` + (o.premium && !premium ? '<span class="lock">по коду</span>' : '');
-    b.onclick = () => o.premium && !premium ? askCode(o) : pick(o);
+    b.innerHTML = (o.premium ? '<span class="gem">💎</span>' : '') + `<span>${o.x}</span>` + (o.premium ? `<span class="lock">${owned ? '✓ твой' : cost + ' 💎'}</span>` : '');
+    b.onclick = () => o.premium && !owned ? buyChoice(o, key, cost) : pick(o);
     choices.appendChild(b);
   });
   choices.hidden = false;
 }
+function sheet(html) { $('sheet').innerHTML = html; $('modal').hidden = false; }
+const closeSheet = () => { $('modal').hidden = true; };
+function buyChoice(o, key, cost) {
+  if (W.gems >= cost) {
+    sheet(`<h3>💎 Особый выбор</h3><p style="color:var(--frost)">${o.x}</p><p>Стоит ${cost} 💎. У тебя ${W.gems} 💎. Купленный выбор остаётся твоим и при перепрохождении главы.</p>
+      <button class="btn btn-gold" id="mYes">Выбрать за ${cost} 💎</button><button class="btn btn-ghost" id="mNo">Выбрать другой вариант</button>`);
+    $('mYes').onclick = () => { W.gems -= cost; W.bought[key] = true; saveW(); showGems(true); closeSheet(); pick(o); };
+  } else {
+    sheet(`<h3>Не хватает кристаллов</h3><p>Этот выбор стоит ${cost} 💎, а у тебя ${W.gems} 💎.</p>
+      <p>Забери ежедневную награду, введи кодовое слово из серии или пригласи подругу.</p>
+      <button class="btn btn-gold" id="mYes">Где взять кристаллы</button><button class="btn btn-ghost" id="mNo">Выбрать другой вариант</button>`);
+    $('mYes').onclick = () => { closeSheet(); exitGame(); setTimeout(() => $('gems').scrollIntoView({ behavior: 'smooth' }), 50); };
+  }
+  $('mNo').onclick = closeSheet;
+}
+$('hudGems').onclick = () => {
+  sheet(`<h3>💎 ${W.gems}</h3><p>Кристаллы открывают особые выборы и наряды. Собирай их каждый день, за кодовые слова и приглашения.</p>
+    <button class="btn btn-gold" id="mYes">Получить кристаллы</button><button class="btn btn-ghost" id="mNo">Продолжить игру</button>`);
+  $('mYes').onclick = () => { closeSheet(); exitGame(); setTimeout(() => $('gems').scrollIntoView({ behavior: 'smooth' }), 50); };
+  $('mNo').onclick = closeSheet;
+};
 function pick(o) {
   choices.hidden = true;
   const notes = [];
@@ -406,44 +663,11 @@ function pick(o) {
   goto(o.go); save(); step();
 }
 let toastT;
-function toast(t) { const el = $('toast'); el.innerHTML = t; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2200); }
-
-/* ---------- код для особых выборов ---------- */
-async function sha(s) {
-  const norm = s.trim().toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, '');
-  if (!crypto.subtle) return '';
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(norm));
-  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+function toast(t) {
+  const el = $('toast'); el.innerHTML = t;
+  if (play.hidden) { el.classList.add('page'); document.body.appendChild(el); } else if (el.parentNode !== $('stage')) { el.classList.remove('page'); $('stage').appendChild(el); }
+  el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2200);
 }
-function askCode(opt) {
-  pendingOpt = opt;
-  const m = $('codeModal');
-  // из меню модалка открывается поверх пустой сцены — показываем её без истории
-  $('codeNo').textContent = opt ? 'Выбрать другой вариант' : 'Закрыть';
-  $('codeErr').textContent = ''; $('codeIn').value = '';
-  m.hidden = false; setTimeout(() => $('codeIn').focus(), 50);
-}
-async function tryCode() {
-  const h = await sha($('codeIn').value);
-  if (h && h === G.premiumHash) {
-    premium = true; store.set(PKEY, true);
-    $('codeModal').hidden = true; toast('💎 Особые выборы открыты');
-    if (pendingOpt) pick(pendingOpt); else { play.hidden = true; document.body.style.overflow = ''; renderMenu(); }
-  } else $('codeErr').textContent = 'Код не подошёл. Проверь его в последнем посте канала.';
-}
-$('codeOk').onclick = tryCode;
-$('codeIn').addEventListener('keydown', e => { if (e.key === 'Enter') tryCode(); });
-$('codeNo').onclick = () => {
-  $('codeModal').hidden = true;
-  if (!pendingOpt) { play.hidden = true; document.body.style.overflow = ''; }
-};
-$('codeBtn').onclick = () => {
-  play.hidden = false; document.body.style.overflow = 'hidden';
-  choices.hidden = true; box.classList.add('gone'); $('endscr').hidden = true;
-  Object.values(sprites).forEach(s => s.classList.remove('on'));
-  setBg('class', true); $('hudTitle').innerHTML = '';
-  askCode(null);
-};
 
 /* ---------- начало и конец главы ---------- */
 function startChapter(n, restart) {
@@ -451,14 +675,15 @@ function startChapter(n, restart) {
   const c = G.chapters.find(c => c.n === n);
   $('hudTitle').innerHTML = `Глава ${n}<b>${c.title}</b>`;
   play.hidden = false; document.body.style.overflow = 'hidden';
-  $('endscr').hidden = true; choices.hidden = true; $('codeModal').hidden = true; box.classList.add('gone');
+  $('endscr').hidden = true; choices.hidden = true; closeSheet(); box.classList.add('gone');
   if (S.bg) setBg(S.bg, true); else { const first = (G.scenes[S.node] || []).find(x => x.bg); if (first) setBg(first.bg, true); }
-  layout(null);
+  Object.keys(sprites).forEach(id => setFace(id, null));
+  showGems(); layout(null);
   setTimeout(step, 350);
 }
 function exitGame() {
   play.hidden = true; document.body.style.overflow = '';
-  clearInterval(typing); typing = null; waiting = false;
+  clearInterval(typing); typing = null; waiting = false; closeSheet();
   renderMenu();
 }
 $('exitBtn').onclick = exitGame;
@@ -480,7 +705,7 @@ function endChapter() {
   const nxtOpen = nxt && isOpen(nxt);
   let nextHtml = '';
   if (nxt && nxtOpen) nextHtml = `<div class="next-ch"><div class="eyebrow">Уже доступна</div><div class="ending">Глава ${nxt.n}. ${nxt.title}</div><button class="btn btn-gold" id="goNext">Играть дальше</button></div>`;
-  else if (nxt) nextHtml = `<div class="next-ch"><div class="eyebrow">Глава ${nxt.n}. ${nxt.title}</div>${nxt.opens ? `<div class="cd" data-cd="${opensAt(nxt)}">${countdown(opensAt(nxt) - Date.now())}</div><div class="muted" style="font-size:14px">Откроется ${dateRu(nxt)}. Твои выборы сохранятся и повлияют на неё.</div>` : '<div class="muted">Скоро</div>'}<a class="btn btn-gold" href="${tg}" target="_blank" rel="noopener">Узнать первой в Telegram</a></div>`;
+  else if (nxt) nextHtml = `<div class="next-ch"><div class="eyebrow">Глава ${nxt.n}. ${nxt.title}</div>${nxt.opens ? `<div class="cd" data-cd="${opensAt(nxt)}">${countdown(opensAt(nxt) - Date.now())}</div><div class="muted" style="font-size:14px">Откроется ${dateRu(nxt)}. Твои выборы сохранятся и повлияют на неё. А пока — собирай кристаллы каждый день.</div>` : '<div class="muted">Скоро</div>'}<a class="btn btn-gold" href="${tg}" target="_blank" rel="noopener">Узнать первой в Telegram</a></div>`;
   const e = $('endscr');
   e.innerHTML = `<div class="eyebrow">Конец главы ${S.ch}</div><h2>${c.title}</h2>
     ${S.ending ? `<div><div class="muted" style="font-size:14px">Твоя концовка</div><div class="ending">«${S.ending}»</div><div class="muted" style="font-size:14px">Открыто концовок: ${got.length} из ${total}</div></div>` : ''}
@@ -489,15 +714,12 @@ function endChapter() {
     <div class="btns"><button class="btn btn-ghost" id="again">Пройти главу по-другому</button><button class="btn btn-ghost" id="toMenu">В меню</button></div>`;
   e.hidden = false;
   requestAnimationFrame(() => requestAnimationFrame(() => e.querySelectorAll('[data-w]').forEach(i => i.style.width = i.dataset.w + '%')));
-  $('again').onclick = () => {
-    // перепроходим главу с отношениями, какими они были до неё
-    startChapter(S.ch, true);
-  };
+  $('again').onclick = () => startChapter(S.ch, true);   // с отношениями, какими они были в начале главы
   $('toMenu').onclick = exitGame;
   if ($('goNext')) $('goNext').onclick = () => startChapter(nxt.n, true);
 }
 
-renderMenu();
+renderWardrobe(); refreshSprites(); renderMenu(); inviteInit();
 if (location.hash === '#play') $('playBtn').click();
 })();
 </script>
