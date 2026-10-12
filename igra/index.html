@@ -367,7 +367,7 @@ async function rpc(fn, body) {
   const h = { apikey: SB.key, 'Content-Type': 'application/json' };
   if (!SB.key.startsWith('sb_')) h.Authorization = 'Bearer ' + SB.key;
   const r = await fetch(SB.url.replace(/\/$/, '') + '/rest/v1/rpc/' + fn, { method: 'POST', headers: h, body: JSON.stringify(body) });
-  if (!r.ok) throw new Error(r.status);
+  if (!r.ok) { let t = ''; try { const j = await r.json(); t = j.message || j.msg || j.error || JSON.stringify(j); } catch (e) {} throw new Error(r.status + (t ? ': ' + t : '')); }
   return r.json();
 }
 const refIn = new URLSearchParams(location.search).get('ref');
@@ -392,7 +392,7 @@ async function inviteInit() {
     };
     $('invCheck').onclick = claimInvites;
     claimInvites(true);
-  } catch (e) { $('invLink').textContent = 'Не получилось связаться с сервером. Попробуй позже.'; }
+  } catch (e) { $('invLink').textContent = 'Не получилось связаться с сервером. Попробуй позже.'; $('invNote').className = 'note'; $('invNote').style.fontSize = '12px'; $('invNote').textContent = 'Код ошибки: ' + (e && e.message || e); }
 }
 async function claimInvites(quiet) {
   try {
