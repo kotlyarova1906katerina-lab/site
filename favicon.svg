@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0d1219"/>
+  <path d="M32 30 L19 58 M32 30 L45 58" stroke="#8a99aa" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M14 58 H50" stroke="#8a99aa" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="32" cy="29" r="20" fill="none" stroke="#e0896a" stroke-width="3.4"/>
+  <g stroke="#b9d3e6" stroke-width="1.6">
+    <line x1="32" y1="29" x2="32" y2="9"/><line x1="32" y1="29" x2="49.3" y2="19"/><line x1="32" y1="29" x2="49.3" y2="39"/>
+    <line x1="32" y1="29" x2="32" y2="49"/><line x1="32" y1="29" x2="14.7" y2="39"/><line x1="32" y1="29" x2="14.7" y2="19"/>
+  </g>
+  <g fill="#e0896a">
+    <rect x="28.5" y="6" width="7" height="6" rx="2"/><rect x="45.8" y="16" width="7" height="6" rx="2"/><rect x="45.8" y="36" width="7" height="6" rx="2"/>
+    <rect x="28.5" y="46" width="7" height="6" rx="2"/><rect x="11.2" y="36" width="7" height="6" rx="2"/><rect x="11.2" y="16" width="7" height="6" rx="2"/>
+  </g>
+  <circle cx="32" cy="29" r="4" fill="#e8eef4"/>
+</svg>

@@ -6,6 +6,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
 <title>Екатерина Котлярова — «Осколки первой любви»</title>
 <meta name="description" content="Мини-сериал по книге «Осколки первой любви», тест «Кто ты из героев» и предзаказ печатной книги Екатерины Котляровой.">
 <meta property="og:title" content="«Осколки первой любви» — Екатерина Котлярова">
@@ -123,7 +126,7 @@ if (SITE.preorder){ pb.href = SITE.preorder; pb.textContent = "Оформить 
 else pb.href = SITE.vkChannel;
 const last = EPISODES[EPISODES.length - 1];
 document.getElementById("latest-title").textContent = "Серия " + last.n;
-document.getElementById("latest-player").innerHTML = `<iframe src="${vkEmbed(last.clip)}" title="Серия ${last.n}" loading="lazy" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock" allowfullscreen></iframe>`;
+renderEpisode(document.getElementById("latest-player"), last, "");
 document.getElementById("latest-vk").href = vkLink(last.clip);
 </script>
 </body>

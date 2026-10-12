@@ -13,3 +13,15 @@ window.vkEmbed = clip => {
   return `https://vk.com/video_ext.php?oid=${m[1]}&id=${m[2]}&hd=2`;
 };
 window.vkLink = clip => `https://vk.ru/${clip}`;
+
+/* Плеер серии: если у серии есть обложка (covers/N.jpg), сначала показываем её целиком,
+   по нажатию запускаем видео ВК. Без обложки сразу встраиваем плеер ВК. */
+window.renderEpisode = (box, e, base = "") => {
+  const frame = auto => `<iframe src="${vkEmbed(e.clip)}${auto ? "&autoplay=1" : ""}" title="Серия ${e.n}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock" allowfullscreen></iframe>`;
+  if (!e.cover){ box.innerHTML = frame(false); return; }
+  box.innerHTML = `<button class="poster" aria-label="Смотреть серию ${e.n}">
+      <img src="${base}${e.cover}" alt="Обложка серии ${e.n}" loading="lazy">
+      <span class="poster-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+    </button>`;
+  box.querySelector(".poster").onclick = () => { box.innerHTML = frame(true); };
+};
