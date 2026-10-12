@@ -34,7 +34,7 @@
   async function rpc(fn, body, keepalive) {
     const r = await fetch(SB_URL + "/rest/v1/rpc/" + fn, { method: "POST", keepalive: !!keepalive,
       headers: { apikey: SB_KEY, "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    if (!r.ok) throw new Error("Сервер ответил " + r.status);
+    if (!r.ok) { let t = ""; try { const j = await r.json(); t = j.message || j.msg || j.hint || j.code || ""; } catch (e) {} throw new Error(r.status + (t ? ": " + t : "")); }
     return r.json();
   }
   function patchOf(keys) {
@@ -157,7 +157,7 @@
         const r = await rpc(reg ? "acc_register" : "acc_login", { p_login: L, p_password: P });
         if (r.error) { err.textContent = ERR[r.error] || "Не получилось, попробуй ещё раз"; go.disabled = false; return; }
         if (reg) viewCode(r, true); else { close(); signedIn(r); }
-      } catch (e) { err.textContent = "Нет связи с сервером. Попробуй позже."; go.disabled = false; }
+      } catch (e) { err.textContent = "Нет связи с сервером. Попробуй позже." + (e && e.message ? " (" + e.message + ")" : ""); go.disabled = false; }
     };
     go.onclick = submit;
     sheet.querySelectorAll("input").forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter") submit(); }));
@@ -190,7 +190,7 @@
         const r = await rpc("acc_reset", { p_login: sheet.querySelector("#rLogin").value.trim(), p_code: sheet.querySelector("#rCode").value.trim(), p_password: sheet.querySelector("#rPass").value });
         if (r.error) { err.textContent = ERR[r.error] || "Не получилось"; go.disabled = false; return; }
         viewCode(r, false);
-      } catch (e) { err.textContent = "Нет связи с сервером. Попробуй позже."; go.disabled = false; }
+      } catch (e) { err.textContent = "Нет связи с сервером. Попробуй позже." + (e && e.message ? " (" + e.message + ")" : ""); go.disabled = false; }
     };
   }
   function viewMe() {
