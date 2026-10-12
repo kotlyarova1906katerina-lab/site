@@ -122,3 +122,12 @@ footer{border-top:1px solid var(--line);padding-block:28px;color:var(--mist);fon
 .poster-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:rgba(224,137,106,.92);color:#1a0f0a;display:grid;place-items:center;box-shadow:0 0 0 8px rgba(224,137,106,.2);transition:transform .15s}
 .poster-play svg{width:30px;height:30px;margin-left:4px}
 .poster:hover .poster-play{transform:translate(-50%,-50%) scale(1.06)}
+
+/* значки в меню */
+.nav a{display:inline-flex;align-items:center;gap:6px}
+.nav .ni{width:17px;height:17px;flex:none;opacity:.85}
+.nav a[aria-current="page"] .ni,.nav a:hover .ni{opacity:1}
+@media (max-width:760px){
+  .nav a:first-child{display:inline-flex}
+  .nav a:first-child .lbl{display:none}
+}
