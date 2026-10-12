@@ -195,3 +195,15 @@ footer{border-top:1px solid var(--line);padding-block:28px;color:var(--mist);fon
 @media (max-width:760px){.reader-promo{grid-template-columns:minmax(0,1fr);padding:20px}.covers-fan{min-height:150px;order:-1}.covers-fan a{width:64px;margin-left:-22px}}
 .reader-promo{overflow:hidden}
 .cards.five{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+
+/* вход на сайт: осколки разлетаются от названия */
+.title-shards.burst .sh{animation:shardIn 1.25s cubic-bezier(.12,.75,.2,1) var(--bd,0s) both,shard 6s ease-in-out calc(var(--bd,0s) + 1.25s + var(--d)) infinite}
+@keyframes shardIn{0%{transform:translate(var(--dx),var(--dy)) scale(.15) rotate(-140deg);opacity:0}15%{opacity:1}100%{transform:translate(0,0) scale(1) rotate(0);opacity:.85}}
+.sh-p{stroke-width:1;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:center;opacity:0;animation:spark 1.5s cubic-bezier(.1,.7,.25,1) var(--bd,0s) forwards}
+@keyframes spark{0%{transform:translate(0,0) scale(.3) rotate(0);opacity:0}12%{opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(1) rotate(var(--rot));opacity:0}}
+.title-shards.burst h1.gold{animation:titleCrack .9s ease-out both,goldshine 9s ease-in-out 1s infinite}
+@keyframes titleCrack{0%{filter:brightness(2.2) blur(3px);transform:scale(1.06);opacity:.2}35%{filter:brightness(1.6) blur(0);opacity:1}100%{filter:none;transform:none}}
+.title-shards .flash{position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;
+  background:radial-gradient(circle,rgba(255,236,190,.95),rgba(233,194,122,.35) 40%,transparent 70%);animation:flash .9s ease-out forwards}
+@keyframes flash{0%{width:10px;height:10px;opacity:1}100%{width:520px;height:520px;opacity:0}}
+@media (prefers-reduced-motion:reduce){.title-shards.burst .sh,.sh-p,.title-shards.burst h1.gold,.title-shards .flash{animation:none}.sh-p,.title-shards .flash{display:none}}

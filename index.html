@@ -171,6 +171,35 @@ function showNext(){
 }
 showNext(); setInterval(showNext, 30000);
 document.getElementById("latest-vk").href = vkLink(last.clip);
+
+/* вход: осколки собираются из центра названия и разлетаются по местам, мелкие искры улетают дальше */
+(function(){
+  const box = document.querySelector(".title-shards"); if (!box || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const svg = box.querySelector(".shards"), NS = "http://www.w3.org/2000/svg";
+  // центр взрыва — середина самого текста названия (строки могут быть разной ширины)
+  const rg = document.createRange(); rg.selectNodeContents(box.querySelector("h1"));
+  const rs = [...rg.getClientRects()], sb = svg.getBoundingClientRect(), bb = box.getBoundingClientRect();
+  const L = Math.min(...rs.map(r => r.left)), R = Math.max(...rs.map(r => r.right)), T = Math.min(...rs.map(r => r.top)), B = Math.max(...rs.map(r => r.bottom));
+  const mx = (L + R) / 2, my = (T + B) / 2;
+  const CX = (mx - sb.left) / sb.width * 600, CY = (my - sb.top) / sb.height * 240;
+  svg.querySelectorAll(".sh").forEach((p, i) => {
+    const b = p.getBBox(), cx = b.x + b.width / 2, cy = b.y + b.height / 2;
+    p.style.setProperty("--dx", (CX - cx) + "px"); p.style.setProperty("--dy", (CY - cy) + "px");
+    p.style.setProperty("--bd", (i * 0.03) + "s");
+  });
+  for (let i = 0; i < 22; i++) {
+    const a = Math.random() * Math.PI * 2, r = 220 + Math.random() * 260, s = 4 + Math.random() * 9;
+    const t = document.createElementNS(NS, "polygon");
+    t.setAttribute("points", `${CX},${CY - s} ${CX + s * .9},${CY + s * .6} ${CX - s * .7},${CY + s * .8}`);
+    t.setAttribute("class", "sh-p " + (i % 3 ? "sh-g" : "sh-b"));
+    t.style.setProperty("--tx", Math.cos(a) * r + "px"); t.style.setProperty("--ty", Math.sin(a) * r * .55 + "px");
+    t.style.setProperty("--rot", (Math.random() * 540 - 270) + "deg"); t.style.setProperty("--bd", (Math.random() * .15) + "s");
+    svg.appendChild(t);
+  }
+  const f = document.createElement("span"); f.className = "flash"; f.style.left = (mx - bb.left) + "px"; f.style.top = (my - bb.top) + "px"; box.appendChild(f);
+  box.classList.add("burst");
+  setTimeout(() => { f.remove(); svg.querySelectorAll(".sh-p").forEach(t => t.remove()); }, 1800);
+})();
 </script>
 </body>
 </html>
