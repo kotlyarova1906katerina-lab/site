@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&family=PT+Serif:ital@0;1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&family=PT+Serif:ital@0;1&family=Lora:ital@0;1&family=PT+Sans&display=swap">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/icon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/icon-180.png">
@@ -29,7 +29,7 @@
 .ann .tagline{font-style:italic;color:var(--glass)}
 
 /* читалка */
-.reader{max-width:720px;margin:0 auto;background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,5vw,48px) clamp(18px,5vw,56px) 28px}
+.reader{--rbg:#0a0a0a;--rfg:#f2f2f2;--rmuted:#9a9a9a;--rline:rgba(255,255,255,.14);--rfont:"PT Serif",Georgia,serif;--rsize:18px;max-width:720px;margin:0 auto;background:var(--rbg);color:var(--rfg);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,5vw,48px) clamp(18px,5vw,56px) 28px}
 .run{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--mist);font-size:13px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:22px}
 .run .ch{display:inline-flex;align-items:center;gap:8px;min-width:0}
 .run .ch span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -38,7 +38,23 @@
 .chapter-head .skate{width:64px;height:auto}
 .chapter-head .num{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ember)}
 .chapter-head h2{font-size:clamp(26px,5vw,34px)}
-.text{font-family:var(--serif);font-size:clamp(17px,2.4vw,19px);line-height:1.75;color:#e4e9ef;min-height:50vh}
+.text{font-family:var(--rfont);font-size:var(--rsize);line-height:1.75;color:var(--rfg);min-height:50vh}
+.reader.light{--rbg:#ffffff;--rfg:#141414;--rmuted:#6b6b6b;--rline:rgba(0,0,0,.12)}
+.reader .run{color:var(--rmuted);border-bottom-color:var(--rline)}
+.reader .chapter-head h2{color:var(--rfg)}
+.reader .pager{border-top-color:var(--rline)}
+.reader .pager button{color:var(--rfg);border-color:var(--rline)}
+.reader .pager .gap,.reader .pageinfo{color:var(--rmuted)}
+.reader.light .continue{background:#f6f1ec;border-color:rgba(224,137,106,.5)}
+.reader.light .continue h3{color:#141414}.reader.light .continue p{color:#555}
+.reader.light .skate .boot{fill:#f4f6f8;stroke:#9aa7b4;stroke-width:1}
+.settings{max-width:720px;margin:0 auto 14px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{appearance:none;border:0;background:transparent;color:var(--mist);font:500 14px var(--body);padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink2);color:var(--frost)}
+.seg .sw{width:14px;height:14px;border-radius:50%;border:1px solid var(--mist)}
+.size-val{min-width:44px;text-align:center;color:var(--frost);font:500 14px var(--body);font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;justify-content:center}
 .text p{margin:0 0 .25em;text-indent:1.6em}
 .text p.dlg{text-indent:1.6em}
 .pager{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
@@ -82,7 +98,12 @@
 
 <section id="read"><div class="wrap">
   <div class="toc" id="toc"></div>
-  <article class="reader" aria-live="polite">
+  <div class="settings" role="group" aria-label="Настройки чтения">
+    <div class="seg" id="themeSeg"><button data-theme="light"><span class="sw" style="background:#fff"></span>Белый фон</button><button data-theme="dark"><span class="sw" style="background:#000"></span>Чёрный фон</button></div>
+    <div class="seg" id="fontSeg"><button data-font="pt" style="font-family:'PT Serif',serif">PT Serif</button><button data-font="lora" style="font-family:Lora,serif">Lora</button><button data-font="sans" style="font-family:'PT Sans',sans-serif">PT Sans</button></div>
+    <div class="seg" id="sizeSeg"><button data-size="-1" aria-label="Уменьшить шрифт">A−</button><span class="size-val" id="sizeVal">18</span><button data-size="1" aria-label="Увеличить шрифт">A+</button></div>
+  </div>
+  <article class="reader" id="reader" aria-live="polite">
     <div class="run"><span class="ch" id="run"></span><span id="runPage"></span></div>
     <div id="page"></div>
     <nav class="pager" id="pager" aria-label="Страницы"></nav>
@@ -100,7 +121,7 @@ document.querySelectorAll("[data-litnet]").forEach(a => a.href = LITNET);
 
 /* конёк у названия главы */
 const SKATE = (w, h) => `<svg class="skate" width="${w}" height="${h}" viewBox="0 0 64 48" aria-hidden="true">
-  <path d="M14 4h13c2 0 3 1.2 3 3v13c0 2 1.4 3 3.2 3.4l12 2.4c5 1 8.8 4.4 8.8 8.2V37H14c-2.4 0-4-1.6-4-4V8c0-2.2 1.6-4 4-4z" fill="#e8eef4"/>
+  <path class="boot" d="M14 4h13c2 0 3 1.2 3 3v13c0 2 1.4 3 3.2 3.4l12 2.4c5 1 8.8 4.4 8.8 8.2V37H14c-2.4 0-4-1.6-4-4V8c0-2.2 1.6-4 4-4z" fill="#e8eef4"/>
   <path d="M10 30h46v4c0 1.7-1.3 3-3 3H14c-2.4 0-4-1.6-4-4z" fill="#c9d4df"/>
   <path d="M30 9h-6M30 13.5h-6M30 18h-6M34 22l-4 1.5" stroke="#e0896a" stroke-width="2" stroke-linecap="round"/>
   <path d="M15 37v4M50 37v4" stroke="#93a3b4" stroke-width="2.4" stroke-linecap="round"/>
@@ -108,24 +129,54 @@ const SKATE = (w, h) => `<svg class="skate" width="${w}" height="${h}" viewBox="
   <path d="M8 42.5l-2 2.8M11 42.5l-2 2.8" stroke="#b9d3e6" stroke-width="1.6" stroke-linecap="round"/>
 </svg>`;
 
-/* раскладка на страницы */
-const PAGE_CHARS = 1900;
-const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-const pages = [];
-BOOK_TEXT.forEach(ch => {
-  let cur = { ch, first: true, paras: [] }, len = 0;
-  ch.p.forEach(par => {
-    const budget = cur.first ? PAGE_CHARS - 350 : PAGE_CHARS;
-    if (len > 0 && len + par.length > budget){ pages.push(cur); cur = { ch, first: false, paras: [] }; len = 0; }
-    cur.paras.push(par); len += par.length;
-  });
-  pages.push(cur);
-});
-const N = pages.length;
+/* настройки чтения */
+const FONTS = { pt: '"PT Serif", Georgia, serif', lora: 'Lora, Georgia, serif', sans: '"PT Sans", "Golos Text", system-ui, sans-serif' };
+const SET_KEY = "olv-settings";
+let SET = { theme: "light", font: "pt", size: 18 };
+try { Object.assign(SET, JSON.parse(localStorage.getItem(SET_KEY)) || {}); } catch (e) {}
+const reader = document.getElementById("reader");
+function applySettings(){
+  reader.classList.toggle("light", SET.theme === "light");
+  reader.style.setProperty("--rfont", FONTS[SET.font] || FONTS.pt);
+  reader.style.setProperty("--rsize", SET.size + "px");
+  document.getElementById("sizeVal").textContent = SET.size;
+  document.querySelectorAll("#themeSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.theme === SET.theme));
+  document.querySelectorAll("#fontSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.font === SET.font));
+  try { localStorage.setItem(SET_KEY, JSON.stringify(SET)); } catch (e) {}
+}
 
-const KEY = "olv-page";
+/* раскладка на страницы: чем крупнее шрифт, тем меньше текста на странице */
+const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+let pages = [], N = 0;
+function paginate(){
+  const PAGE_CHARS = Math.round(1900 * 18 / SET.size);
+  pages = [];
+  BOOK_TEXT.forEach(ch => {
+    let cur = { ch, first: true, paras: [], start: 0 }, len = 0;
+    ch.p.forEach((par, k) => {
+      const budget = cur.first ? PAGE_CHARS - 350 : PAGE_CHARS;
+      if (len > 0 && len + par.length > budget){ pages.push(cur); cur = { ch, first: false, paras: [], start: k }; len = 0; }
+      cur.paras.push(par); len += par.length;
+    });
+    pages.push(cur);
+  });
+  N = pages.length;
+}
+paginate();
+
+const KEY = "olv-pos";
 let i = 0;
-try { const s = parseInt(localStorage.getItem(KEY)); if (s >= 0 && s < N) i = s; } catch (e) {}
+try { const pos = JSON.parse(localStorage.getItem(KEY)); if (pos) i = Math.max(0, pages.findIndex((p, k) => p.ch.n === pos.ch && (k === N - 1 || pages[k + 1].ch.n !== pos.ch || pages[k + 1].start > pos.par))); } catch (e) {}
+function relayout(){
+  const keep = { ch: pages[i].ch.n, par: pages[i].start };
+  paginate();
+  i = Math.max(0, pages.findIndex((p, k) => p.ch.n === keep.ch && (k === N - 1 || pages[k + 1].ch.n !== keep.ch || pages[k + 1].start > keep.par)));
+  render(false);
+}
+document.getElementById("themeSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; SET.theme = b.dataset.theme; applySettings(); });
+document.getElementById("fontSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; SET.font = b.dataset.font; applySettings(); });
+document.getElementById("sizeSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; SET.size = Math.min(26, Math.max(14, SET.size + (+b.dataset.size))); applySettings(); relayout(); });
+applySettings();
 
 function pagerHtml(){
   const nums = new Set([0, N - 1, i - 1, i, i + 1].filter(x => x >= 0 && x < N));
@@ -151,7 +202,7 @@ function render(scroll){
   document.getElementById("pager").innerHTML = pagerHtml();
   document.getElementById("pageinfo").textContent = `Страница ${i + 1} из ${N}`;
   document.querySelectorAll("#toc button").forEach(b => b.setAttribute("aria-current", +b.dataset.ch === ch.n ? "true" : "false"));
-  try { localStorage.setItem(KEY, i); } catch (e) {}
+  try { localStorage.setItem(KEY, JSON.stringify({ ch: pg.ch.n, par: pg.start })); } catch (e) {}
   if (scroll) document.getElementById("read").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 document.getElementById("toc").innerHTML = BOOK_TEXT.map(c => `<button data-ch="${c.n}">${SKATE(18, 14)}Глава ${c.n}</button>`).join("");
