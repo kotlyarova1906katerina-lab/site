@@ -6,6 +6,7 @@ window.SITE = {
   tiktok: "https://www.tiktok.com/@ekaterinakotlyarova",
   telegram: "https://t.me/ek_kotlyarova",
   instagram: "https://www.instagram.com/katekotlyarovaauthor",
+  litnet: "https://litnet.com/ru/ekaterina-kotlyarova-u3917137",
   preorder: "" /* ссылка на предзаказ — вставить, когда откроется */
 };
 window.vkEmbed = clip => {

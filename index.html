@@ -10,8 +10,8 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/icon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/icon-180.png">
-<title>Екатерина Котлярова — «Осколки первой любви»</title>
-<meta name="description" content="Мини-сериал по книге «Осколки первой любви», тест «Кто ты из героев» и предзаказ печатной книги Екатерины Котляровой.">
+<title>Екатерина Котлярова — сайт автора, сериал «Осколки первой любви»</title>
+<meta name="description" content="Сайт автора Екатерины Котляровой: мини-сериал «Осколки первой любви», бесплатные книги и фрагменты в удобной читалке, игра, тест, раскраска и песни.">
 <meta property="og:title" content="«Осколки первой любви» — Екатерина Котлярова">
 <meta property="og:description" content="Смотри мини-сериал по книге и узнай, кто ты из героев.">
 <meta property="og:image" content="assets/artur.jpg">
@@ -19,7 +19,7 @@
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <a class="brand" href="./">Екатерина Котлярова</a>
+  <a class="brand" href="./"><small>Сайт автора</small>Екатерина Котлярова</a>
   <nav class="nav"><a href="./" aria-current="page"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="raskraska/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-2 0-3 1.6-3 3.4V20h3.6C8.4 20 10 19 10 17"/><path d="m17 3 4 4"/></svg><span class="lbl">Раскраска</span></a><a href="igra/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игра</span></a></nav>
 </div></header>
 
@@ -52,42 +52,64 @@
 </div></section>
 
 <section id="latest"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">Новые серии по понедельникам и четвергам</div><h2 id="latest-title">Последняя серия</h2></div>
+  <div class="sec-head"><div class="eyebrow">Сериал «Осколки первой любви»</div><h2 id="latest-title">Последняя серия</h2></div>
   <div class="player-row">
     <div class="player" id="latest-player"></div>
     <div class="ep-info">
+      <div class="schedule" id="schedule">
+        <div class="days2"><b>Понедельник</b><b>Четверг</b></div>
+        <div class="nx"><span>Новые серии выходят по понедельникам и четвергам в 18:00 МСК</span><strong id="next-ep">Следующая серия скоро</strong><span class="cd" id="next-cd"></span></div>
+      </div>
       <p class="muted">Все серии по порядку, с первой, — на странице сериала. Смотреть можно прямо здесь, без перехода в ВК.</p>
       <div class="btns"><a class="btn btn-main" href="serial/#1">Смотреть с первой серии</a><a class="btn btn-ghost" id="latest-vk" href="#" target="_blank" rel="noopener">Открыть в ВК</a></div>
     </div>
   </div>
 </div></section>
 
+<section id="read"><div class="wrap">
+  <div class="reader-promo">
+    <div class="txt">
+      <div class="eyebrow" style="color:var(--violet)">Своя читалка</div>
+      <h2>Книги автора — бесплатно, прямо на сайте</h2>
+      <p class="muted" style="margin:0">Здесь можно читать бесплатные книги Екатерины Котляровой целиком и ознакомительные фрагменты новых романов. Без регистрации и без перехода на другие сайты.</p>
+      <ul class="feat"><li>Светлая и тёмная тема</li><li>Свой шрифт и размер текста</li><li>Лентой или по страницам</li><li>Полноэкранный режим</li></ul>
+      <div class="btns"><a class="btn btn-violet" href="knigi/">Выбрать книгу</a><a class="btn btn-ghost" href="knigi/ostrye-lezviya-lyubvi/#read">Начать с «Острых лезвий любви»</a></div>
+    </div>
+    <div class="covers-fan"><a href="knigi/ostrye-lezviya-lyubvi/" style="--r:-12deg;--y:18px" title="«Острые лезвия любви»"><img src="knigi/ostrye-lezviya-lyubvi/cover.jpg" alt="Обложка «Острые лезвия любви»" loading="lazy" width="600" height="900"></a><a href="knigi/zauchka-dlya-buntarya/" style="--r:-7deg;--y:8px" title="«Заучка для Бунтаря»"><img src="knigi/zauchka-dlya-buntarya/cover.jpg" alt="Обложка «Заучка для Бунтаря»" loading="lazy" width="600" height="900"></a><a href="knigi/zubrilka-dlya-chernogo/" style="--r:-3deg;--y:2px" title="«Зубрилка для Чёрного»"><img src="knigi/zubrilka-dlya-chernogo/cover.jpg" alt="Обложка «Зубрилка для Чёрного»" loading="lazy" width="600" height="900"></a><a href="knigi/plen-moei-dushi/" style="--r:0deg;--y:0px" title="«Плен моей души»"><img src="knigi/plen-moei-dushi/cover.jpg" alt="Обложка «Плен моей души»" loading="lazy" width="600" height="900"></a><a href="knigi/zaberi-moyu-dushu/" style="--r:3deg;--y:2px" title="«Забери мою душу»"><img src="knigi/zaberi-moyu-dushu/cover.jpg" alt="Обложка «Забери мою душу»" loading="lazy" width="600" height="900"></a><a href="knigi/pisatelnica-dlya-belova/" style="--r:7deg;--y:8px" title="«Писательница для Белова»"><img src="knigi/pisatelnica-dlya-belova/cover.jpg" alt="Обложка «Писательница для Белова»" loading="lazy" width="600" height="900"></a><a href="knigi/ne-veryu-v-lyubov/" style="--r:12deg;--y:18px" title="«(Не) верю. В любовь»"><img src="knigi/ne-veryu-v-lyubov/cover.jpg" alt="Обложка «(Не) верю. В любовь»" loading="lazy" width="600" height="900"></a></div>
+  </div>
+</div></section>
+
 <section><div class="wrap">
-  <div class="cards">
-    <article class="card" id="preorder">
+  <div class="sec-head"><div class="eyebrow">Ещё на сайте</div><h2>Для читательниц</h2></div>
+  <div class="cards five">
+    <article class="card tint c-gold" id="preorder">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg></span>
       <span class="badge">Скоро</span>
       <h3>Предзаказ печатной книги</h3>
       <p>«Осколки первой любви» выходят в печати. Подпишись на канал, чтобы первой узнать, когда откроется предзаказ.</p>
-      <a class="btn btn-main" id="preorder-btn" href="#" target="_blank" rel="noopener">Узнать первой</a>
+      <a class="btn btn-acc" id="preorder-btn" href="#" target="_blank" rel="noopener">Узнать первой</a>
     </article>
-    <article class="card">
-      <h3>Тест по «Осколкам»</h3>
-      <p>Кто ты из героев: тихая Аня, ледяной Артур, солнечный Антон или королева класса Лика? Восемь вопросов, одна минута.</p>
-      <a class="btn btn-ghost" href="test/">Пройти тест</a>
+    <article class="card tint c-rose">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg></span>
+      <h3>Тест: кто ты из героев</h3>
+      <p>Тихая Аня, ледяной Артур, солнечный Антон или королева класса Лика? Восемь вопросов, одна минута.</p>
+      <a class="btn btn-ghost" href="testy/">Пройти тест</a>
     </article>
-    <article class="card">
+    <article class="card tint c-violet">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg></span>
       <span class="badge">Новое</span>
       <h3>Игра: стань Аней</h3>
       <p>Делай выборы, меняй отношения с Артуром и Ликой и открывай разные концовки. Новая глава каждую неделю.</p>
       <a class="btn btn-ghost" href="igra/">Играть</a>
     </article>
-    <article class="card">
-      <span class="badge">Новое</span>
+    <article class="card tint c-green">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-2 0-3 1.6-3 3.4V20h3.6C8.4 20 10 19 10 17"/><path d="m17 3 4 4"/></svg></span>
       <h3>Раскраска по номерам</h3>
       <p>Раскрась Аню, Артура, Антона и Лику прямо в телефоне. С каждой серией — новый кадр.</p>
       <a class="btn btn-ghost" href="raskraska/">Раскрашивать</a>
     </article>
-    <article class="card">
+    <article class="card tint c-teal">
+      <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg></span>
       <h3>Песни Артура — ArXo</h3>
       <p>Артур не говорит о чувствах вслух. Он о них поёт. Слушай альбом прямо на сайте.</p>
       <a class="btn btn-ghost" href="music/">Слушать</a>
@@ -104,14 +126,16 @@
 </div></section>
 
 <section id="socials"><div class="wrap">
-  <div class="sec-head"><div class="eyebrow">Автор</div><h2>Екатерина Котлярова</h2></div>
-  <div class="socials">
-    <a data-link="vkChannel" href="#" target="_blank" rel="noopener">Канал ВКонтакте</a>
-    <a data-link="vk" href="#" target="_blank" rel="noopener">Сообщество ВК</a>
-    <a data-link="telegram" href="#" target="_blank" rel="noopener">Telegram</a>
-    <a data-link="tiktok" href="#" target="_blank" rel="noopener">TikTok</a>
-    <a data-link="max" href="#" target="_blank" rel="noopener">MAX</a>
-    <a data-link="instagram" href="#" target="_blank" rel="noopener">Instagram</a>
+  <div class="sec-head"><div class="eyebrow">Автор</div><h2>Екатерина Котлярова</h2>
+    <p class="muted" style="margin:0">Все книги — на Литнет, новости, серии и кодовые слова для игры — в соцсетях.</p></div>
+  <div class="links">
+    <a class="lnk main l-litnet" data-link="litnet" href="#" target="_blank" rel="noopener"><span class="dot">Lit</span><span><b>Литнет</b><span class="s">Все книги автора, новинки и продолжения</span></span></a>
+    <a class="lnk l-vk" data-link="vk" href="#" target="_blank" rel="noopener"><span class="dot">VK</span><span><b>Сообщество ВК</b><span class="s">Новости и обсуждения</span></span></a>
+    <a class="lnk l-vk" data-link="vkChannel" href="#" target="_blank" rel="noopener"><span class="dot">VK</span><span><b>Канал ВКонтакте</b><span class="s">Серии первыми</span></span></a>
+    <a class="lnk l-tg" data-link="telegram" href="#" target="_blank" rel="noopener"><span class="dot">TG</span><span><b>Telegram</b><span class="s">Кадры и подарки</span></span></a>
+    <a class="lnk l-max" data-link="max" href="#" target="_blank" rel="noopener"><span class="dot">MAX</span><span><b>MAX</b><span class="s">Канал автора</span></span></a>
+    <a class="lnk l-tt" data-link="tiktok" href="#" target="_blank" rel="noopener"><span class="dot">TT</span><span><b>TikTok</b><span class="s">Ролики и серии</span></span></a>
+    <a class="lnk l-ig" data-link="instagram" href="#" target="_blank" rel="noopener"><span class="dot">IG</span><span><b>Instagram</b><span class="s">Ролики и кадры</span></span></a>
   </div>
 </div></section>
 </main>
@@ -128,6 +152,24 @@ else pb.href = SITE.vkChannel;
 const last = EPISODES[EPISODES.length - 1];
 document.getElementById("latest-title").textContent = "Серия " + last.n;
 renderEpisode(document.getElementById("latest-player"), last, "");
+/* следующая серия: понедельник или четверг, 18:00 по Москве */
+function nextEpisode(){
+  const MSK = 3 * 36e5, now = Date.now();
+  for (let d = 0; d < 8; d++) {
+    const t = new Date(now + MSK + d * 864e5);
+    const at = Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate(), 18) - MSK;   // 18:00 МСК этого дня
+    const wd = new Date(at + MSK).getUTCDay();
+    if ((wd === 1 || wd === 4) && at > now) return at;
+  }
+}
+function showNext(){
+  const at = nextEpisode(); if (!at) return;
+  const left = at - Date.now(), d = Math.floor(left / 864e5), h = Math.floor(left / 36e5) % 24, m = Math.floor(left / 6e4) % 60;
+  const day = new Date(at).toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Moscow" });
+  document.getElementById("next-ep").textContent = "Серия " + (last.n + 1) + " — " + day + ", 18:00";
+  document.getElementById("next-cd").textContent = "через " + (d ? d + " д " : "") + h + " ч " + m + " мин";
+}
+showNext(); setInterval(showNext, 30000);
 document.getElementById("latest-vk").href = vkLink(last.clip);
 </script>
 </body>
