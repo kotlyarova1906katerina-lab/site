@@ -14,7 +14,7 @@
 <meta property="og:title" content="Игра «Осколки первой любви» — выбор за тобой">
 <meta property="og:description" content="Стань Аней и реши, что будет дальше. Новая глава каждую неделю.">
 <meta property="og:image" content="img/artur.webp">
-<link rel="stylesheet" href="../assets/style.css?v=20261012b">
+<link rel="stylesheet" href="../assets/style.css?v=20261012c">
 <style>
 [hidden]{display:none!important}
 :root{--gold:#e9c27a;--gold2:#f7e2ad;--ok:#5cc27a}
@@ -274,7 +274,7 @@
   </div>
 </div>
 
-<script src="../assets/site.js?v=20261012b"></script>
+<script src="../assets/site.js?v=20261012c"></script>
 <script src="story.js"></script>
 <script>
 (() => {
@@ -533,6 +533,7 @@ function tap() {
   waiting = false; S.i++; save(); step();
 }
 box.addEventListener('click', tap);
+['copy', 'cut', 'contextmenu', 'selectstart', 'dragstart'].forEach(ev => play.addEventListener(ev, e => { if (!(e.target.closest && e.target.closest('input'))) e.preventDefault(); }));
 $('stage').addEventListener('click', e => { if (e.target.closest('.box,.choices,.hud,.modal,.endscr')) return; tap(); });
 document.addEventListener('keydown', e => {
   if (play.hidden || !$('modal').hidden) return;

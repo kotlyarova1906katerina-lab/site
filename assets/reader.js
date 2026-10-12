@@ -1,7 +1,16 @@
 /* Читалка книг. Настройки книги — window.BOOK, текст — window.BOOK_TEXT (из chapters.js).
    BOOK = { key, title, litnet, fragment: true|false, total: число глав на Литнет, sequel: {title, url}, mark: "skate"|"pen"|... } */
 (function () {
-  const B = window.BOOK, CH = window.BOOK_TEXT;
+  /* текст книги хранится зашифрованным (tools/protect_book.py) и собирается только здесь, на экране */
+  function fnv(str) { let h = 0x811c9dc5; for (const b of new TextEncoder().encode(str)) { h ^= b; h = Math.imul(h, 16777619) >>> 0; } return h || 0x9E3779B9; }
+  function unlock(b64, seed) {
+    const bin = atob(b64), n = bin.length, out = new Uint8Array(n); let x = fnv(seed);
+    for (let i = 0; i < n; i++) { x ^= x << 13; x >>>= 0; x ^= x >>> 17; x ^= x << 5; x >>>= 0; out[i] = bin.charCodeAt(i) ^ (x & 255); }
+    return new TextDecoder().decode(out);
+  }
+  const E = window.BOOK_ENC;
+  const CH = window.BOOK_TEXT || (E ? E.m.map((m, i) => Object.assign({}, m, { p: JSON.parse(unlock(E.c[i], E.k + ":" + i)) })) : []);
+  const B = window.BOOK;
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const store = {
@@ -175,6 +184,32 @@
   document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && R.classList.contains("fs")) toggleFs(false); });
 
   document.querySelectorAll("[data-litnet]").forEach(a => a.href = B.litnet);
+
+  /* защита текста: без выделения, копирования, меню, печати; текст прячется, когда окно неактивно или нажата клавиша снимка экрана */
+  const inForm = e => e.target.closest && e.target.closest("input,textarea,select");
+  ["copy", "cut", "contextmenu", "selectstart", "dragstart"].forEach(ev => R.addEventListener(ev, e => { if (!inForm(e)) e.preventDefault(); }));
+  R.insertAdjacentHTML("beforeend", `<div class="r-veil" id="rVeil" hidden><div><b>Текст скрыт</b><span>Нажми, чтобы продолжить чтение</span></div></div>`);
+  const veil = $("rVeil");
+  let veilT;
+  function hide(ms) { R.classList.add("veiled"); veil.hidden = false; clearTimeout(veilT); if (ms) veilT = setTimeout(show, ms); }
+  function show() { R.classList.remove("veiled"); veil.hidden = true; }
+  veil.onclick = show;
+  window.addEventListener("blur", () => hide());
+  window.addEventListener("focus", () => setTimeout(show, 250));
+  document.addEventListener("visibilitychange", () => { if (document.hidden) hide(); });
+  document.addEventListener("keydown", e => {
+    const k = (e.key || "").toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && ["c", "x", "a", "s", "p", "u"].includes(k) && !inForm(e)) { e.preventDefault(); }
+    if (e.metaKey && e.shiftKey) hide(2500);                    // снимок экрана на Mac (Cmd+Shift+3/4/5)
+    if (k === "printscreen" || (e.key === "S" && e.shiftKey && e.metaKey)) hide(2500);
+  });
+  document.addEventListener("keyup", e => {
+    if ((e.key || "").toLowerCase() === "printscreen") {          // Windows: затираем снимок в буфере обмена
+      hide(2500);
+      try { navigator.clipboard && navigator.clipboard.writeText("Текст книги защищён. Читай на сайте автора Екатерины Котляровой."); } catch (er) {}
+    }
+  });
+  window.addEventListener("beforeprint", () => hide());
 
   applySettings(); paginate(); render(false);
 })();
