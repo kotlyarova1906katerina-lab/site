@@ -24,7 +24,8 @@ h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;l
 .brand{font-family:var(--display);font-size:18px;text-decoration:none;white-space:nowrap}
 .nav{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
 .nav a{text-decoration:none;font-size:14px;color:var(--mist);padding:6px 10px;border-radius:999px}
-.nav a:hover,.nav a[aria-current="page"]{color:var(--frost);background:var(--ink2)}
+.nav a:hover{color:var(--frost);background:var(--ink2)}
+.nav a[aria-current="page"]{color:#9be3b0;background:rgba(92,194,122,.16);box-shadow:inset 0 0 0 1px rgba(92,194,122,.35)}
 
 /* кнопки */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 16px/1.2 var(--body);text-decoration:none;border-radius:14px;padding:15px 22px;border:0;cursor:pointer;transition:background .15s,border-color .15s}
@@ -45,6 +46,20 @@ section + section{border-top:1px solid var(--line)}
 .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
 .hero h1{font-size:clamp(36px,7vw,62px)}
 .hero h1 em{font-style:normal;color:var(--glass)}
+/* золотое название с осколками вокруг */
+.title-shards{position:relative;display:inline-block;max-width:100%;padding:24px 14px;margin:-24px -14px}
+.hero{overflow-x:clip}
+.title-shards .shards{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.sh{stroke-width:1.2;vector-effect:non-scaling-stroke;animation:shard 6s ease-in-out infinite;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
+.sh-g{fill:rgba(226,178,90,.16);stroke:rgba(244,214,140,.75)}
+.sh-b{fill:rgba(185,211,230,.10);stroke:rgba(185,211,230,.55)}
+@keyframes shard{0%,100%{transform:translateY(0) rotate(0deg);opacity:.85}50%{transform:translateY(-4px) rotate(4deg);opacity:1}}
+.hero h1.gold{position:relative;background:linear-gradient(100deg,#f7e7b4 0%,#e3b65f 28%,#fff3cf 48%,#c8923e 70%,#f3d791 100%);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:goldshine 9s ease-in-out infinite}
+.hero h1.gold em{color:transparent;-webkit-text-fill-color:transparent}
+@keyframes goldshine{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@media (prefers-reduced-motion:reduce){.sh,.hero h1.gold{animation:none}}
+
 .dialog{font-family:var(--display);font-size:18px;line-height:1.6;color:var(--frost);border-left:2px solid var(--ember);padding-left:16px;margin:0}
 .dialog span{display:block}
 .hero-text{display:flex;flex-direction:column;gap:20px;min-width:0}
@@ -90,4 +105,13 @@ footer{border-top:1px solid var(--line);padding-block:28px;color:var(--mist);fon
   .brand{font-size:16px}
   .nav a:first-child{display:none}
   section{padding-block:44px}
+}
+
+/* шапка на телефоне: имя сверху, меню одной строкой с прокруткой */
+@media (max-width:640px){
+  .top .wrap{flex-wrap:wrap;gap:6px;padding-block:10px}
+  .brand{width:100%}
+  .nav{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;width:100%;margin-inline:-6px;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav a{white-space:nowrap}
 }
