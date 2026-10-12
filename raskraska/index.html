@@ -135,8 +135,8 @@
 <div id="finish" hidden>
   <div class="fcard">
     <h2>Готово!</h2>
-    <img id="finImg" alt="Готовая раскраска">
-    <p>Сохрани картинку и выложи в сторис — отметь меня, мне будет очень приятно.</p>
+    <img id="finImg" alt="Оригинальная иллюстрация">
+    <p>Ты раскрасила все области — держи оригинальную иллюстрацию в высоком качестве. Сохрани её и выложи в сторис, отметь меня — мне будет очень приятно.</p>
     <div class="btns">
       <a class="btn btn-main" id="dl" href="#" download="oskolki.png">Скачать картинку</a>
       <button class="btn btn-ghost" id="again">Раскрасить заново</button>
@@ -336,15 +336,25 @@ function hint() {
 }
 
 function showFinish() {
-  const W = 1080, pad = 54, band = 150, c = document.createElement("canvas"); c.width = W; c.height = W + band;
-  const x = c.getContext("2d"); x.fillStyle = "#0d1219"; x.fillRect(0, 0, W, W + band);
-  x.imageSmoothingEnabled = true; x.drawImage(paintCv, pad, pad, W - pad * 2, W - pad * 2);
-  x.textAlign = "center"; x.fillStyle = "#e8eef4"; x.font = "52px Prata, Georgia, serif"; x.fillText("Осколки первой любви", W / 2, W + 38);
-  x.fillStyle = "#93a3b4"; x.font = "500 24px 'Golos Text', system-ui, sans-serif"; x.fillText("ЕКАТЕРИНА КОТЛЯРОВА", W / 2, W + 86);
-  const url = c.toDataURL("image/png");
-  document.getElementById("finImg").src = url;
-  const dl = document.getElementById("dl"); dl.href = url; dl.download = `oskolki-${P.id}.png`;
-  document.getElementById("finish").hidden = false;
+  // в награду показываем и даём скачать оригинальную иллюстрацию в высоком качестве
+  const W = 1080, pad = 54, band = 150;
+  const compose = src => {
+    const c = document.createElement("canvas"); c.width = W; c.height = W + band;
+    const x = c.getContext("2d"); x.fillStyle = "#0d1219"; x.fillRect(0, 0, W, W + band);
+    x.imageSmoothingEnabled = true; x.imageSmoothingQuality = "high";
+    const side = W - pad * 2, sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height, k = Math.min(sw, sh);
+    x.drawImage(src, (sw - k) / 2, (sh - k) / 2, k, k, pad, pad, side, side);
+    x.textAlign = "center"; x.fillStyle = "#e8eef4"; x.font = "52px Prata, Georgia, serif"; x.fillText("Осколки первой любви", W / 2, W + 38);
+    x.fillStyle = "#93a3b4"; x.font = "500 24px 'Golos Text', system-ui, sans-serif"; x.fillText("ЕКАТЕРИНА КОТЛЯРОВА", W / 2, W + 86);
+    const url = c.toDataURL("image/jpeg", 0.92);
+    document.getElementById("finImg").src = url;
+    const dl = document.getElementById("dl"); dl.href = url; dl.download = `oskolki-${P.id}.jpg`;
+    document.getElementById("finish").hidden = false;
+  };
+  const img = new Image();
+  img.onload = () => compose(img);
+  img.onerror = () => compose(paintCv);            // если оригинал не загрузился — отдаём раскраску
+  img.src = "full/" + P.id + ".jpg";
 }
 
 /* жесты */
