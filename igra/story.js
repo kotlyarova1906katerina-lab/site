@@ -36,8 +36,8 @@ window.GAME = {
     { h: "0ba2455ddcff0bbd88c18688c2109f477d28c6d5eb1920da97af94756cacfb0a", gems: 30, label: "Подарок подписчикам Telegram" }   // ОСКОЛКИ
   ],
 
-  /* База для приглашений (Supabase). Пока пусто — приглашения показываются как «скоро». */
-  supabase: { url: "", key: "" },
+  /* База для приглашений (Supabase, проект oskolki). Ключ publishable — открытый, так и задумано. */
+  supabase: { url: "https://svnhmstqcoshhmbscepq.supabase.co", key: "sb_publishable_q7KJgapG_K-yLw3EBZS4mg_QG_D59a-" },
 
   chapters: [
     { n: 1, title: "Новенькая", start: "c1_start", endings: ["Он смотрит", "Объявление войны", "Одна против всех"] },
