@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
+<title>Игра — «Осколки первой любви»</title>
+<meta name="description" content="Стань Аней из «Осколков первой любви»: делай выборы, меняй отношения с Артуром и Ликой, открывай разные концовки. Новая глава — каждую неделю.">
+<meta property="og:title" content="Игра «Осколки первой любви» — выбор за тобой">
+<meta property="og:description" content="Стань Аней и реши, что будет дальше. Новая глава каждую неделю.">
+<meta property="og:image" content="img/artur.webp">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+[hidden]{display:none!important}
+:root{--gold:#e9c27a;--gold2:#f7e2ad;--ok:#5cc27a}
+
+/* ---------- меню игры ---------- */
+.g-hero{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);min-height:440px;display:flex;align-items:flex-end;isolation:isolate}
+.g-hero .bgimg{position:absolute;inset:0;background:url(img/bg_class.webp) center/cover;filter:brightness(.55) saturate(1.1);z-index:-2}
+.g-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,18,25,0) 30%,rgba(13,18,25,.92) 78%);z-index:-1}
+.g-hero .duo{position:absolute;inset:0 0 0 auto;width:min(560px,100%);z-index:-1;pointer-events:none}
+.g-hero .duo img{position:absolute;bottom:0;height:auto}
+.g-hero .duo .a{right:34%;width:52%;bottom:-6%}
+.g-hero .duo .b{right:-4%;width:56%}
+.g-hero .txt{padding:26px;display:flex;flex-direction:column;gap:14px;max-width:560px}
+.g-hero h1{font-size:clamp(34px,7vw,56px);background:linear-gradient(100deg,#f7e7b4,#e3b65f 30%,#fff3cf 50%,#c8923e 72%,#f3d791);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.g-hero p{margin:0;color:#c9d4de;max-width:46ch}
+.g-hero .btn-main{background:linear-gradient(180deg,#f3d58f,#d9a54c);color:#2a1a05}
+.small-link{appearance:none;background:none;border:0;color:var(--mist);font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;padding:6px 0}
+
+.chapters{display:grid;gap:12px}
+.chap{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:14px;background:var(--ink);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.chap .num{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font:400 24px var(--display);background:var(--ink2);color:var(--gold2)}
+.chap h3{font-size:20px}
+.chap .st{font-size:14px;color:var(--mist);font-variant-numeric:tabular-nums}
+.chap.locked{opacity:.75}
+.chap.locked .num{color:var(--mist)}
+.chap .go{appearance:none;border:1px solid rgba(233,194,122,.5);background:transparent;color:var(--gold2);font:600 14px var(--body);border-radius:999px;padding:9px 14px;cursor:pointer;white-space:nowrap}
+.chap .go:disabled{border-color:var(--line);color:var(--mist);cursor:default}
+.chap .ends{display:flex;gap:5px;margin-top:6px}
+.chap .ends i{width:22px;height:6px;border-radius:3px;background:var(--ink2)}
+.chap .ends i.on{background:var(--gold)}
+.perks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.perk{border-left:2px solid var(--gold);padding-left:14px;color:var(--mist);font-size:15px}
+.perk b{display:block;color:var(--frost);font-weight:600;margin-bottom:2px}
+.tg-card{display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg,#20283a,#151d27);border:1px solid rgba(233,194,122,.35);border-radius:18px;padding:22px}
+.tg-card h3{font-size:24px}
+.tg-card p{margin:0;color:var(--mist)}
+.unlocked-note{color:#9be3b0;font-weight:600}
+
+/* ---------- сцена ---------- */
+.play{position:fixed;inset:0;z-index:50;background:#05080c;display:flex;justify-content:center;overflow:hidden;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.play .blurbg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.45);transition:background-image .6s}
+.stage{position:relative;width:100%;max-width:520px;height:100%;height:100dvh;overflow:hidden}
+.bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .7s ease}
+.bg.b2{opacity:0}
+.stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0,rgba(0,0,0,0) 18%,rgba(0,0,0,0) 50%,rgba(0,0,0,.55) 100%);pointer-events:none}
+.sprites{position:absolute;inset:0}
+.spr{position:absolute;bottom:var(--lift,118px);left:50%;height:auto;transform:translateX(-50%) translateY(0);opacity:0;transition:opacity .35s ease,transform .45s cubic-bezier(.2,.8,.2,1),filter .3s;pointer-events:none;will-change:transform,opacity;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent 99%);mask-image:linear-gradient(180deg,#000 80%,transparent 99%)}
+.spr.on{opacity:1}
+.spr.dim{filter:brightness(.55) saturate(.8)}
+.spr.p-anya{width:80%;--lift:96px;left:0;transform:translateX(-110%)}
+.spr.p-anya.on{transform:translateX(-12%)}
+.spr.p-artur{width:100%;--lift:150px;left:56%;transform:translate(-50%,8%)}
+.spr.p-anton{width:98%;--lift:146px;left:56%;transform:translate(-50%,8%)}
+.spr.p-lika{width:82%;--lift:104px;left:56%;transform:translate(-50%,8%)}
+.spr.p-artur.on,.spr.p-anton.on,.spr.p-lika.on{transform:translate(-50%,0)}
+.spr.side.on{transform:translate(-20%,0)}
+.spr.speaking{animation:breathe 3.6s ease-in-out infinite}
+@keyframes breathe{0%,100%{scale:1}50%{scale:1.008}}
+
+.hud{position:absolute;left:0;right:0;top:0;z-index:8;pointer-events:none;display:flex;align-items:center;gap:8px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top,0px))}
+.hud .x{pointer-events:auto;appearance:none;border:1px solid rgba(255,255,255,.25);background:rgba(10,14,20,.55);backdrop-filter:blur(6px);color:#fff;width:40px;height:40px;border-radius:12px;font-size:18px;cursor:pointer}
+.hud .ttl{flex:1;font-size:13px;color:rgba(255,255,255,.85);text-shadow:0 1px 3px #000;letter-spacing:.04em}
+.hud .ttl b{font-family:var(--display);font-weight:400;font-size:15px;display:block;letter-spacing:0}
+
+.box{position:absolute;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:6;min-height:132px;
+  background:rgba(250,246,240,.95);color:#1b1f26;border-radius:18px;padding:22px 20px 18px;box-shadow:0 10px 40px rgba(0,0,0,.45);cursor:pointer;transition:opacity .25s, transform .25s}
+.box.gone{opacity:0;transform:translateY(12px);pointer-events:none}
+.box .who{position:absolute;top:-15px;left:16px;font:600 15px var(--body);padding:5px 14px;border-radius:999px;color:#fff;background:#4b5b6e;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.box .who.w-anya{background:#5b7fa6}.box .who.w-artur{background:#2b3442}.box .who.w-lika{background:#b8442f}
+.box .who.w-anton{background:#c48a3c}.box .who.w-teacher{background:#6b5d4f}.box .who.w-think{background:#8a7fb0}
+.box .txt{font-size:17px;line-height:1.5;min-height:3em}
+.box.narr{background:rgba(16,22,30,.88);color:#eef2f6;border:1px solid rgba(255,255,255,.12)}
+.box.think .txt{font-style:italic;color:#4b4370}
+.box .more{position:absolute;right:16px;bottom:8px;font-size:12px;opacity:0;color:inherit}
+.box.ready .more{opacity:.55;animation:bob 1.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(3px)}}
+
+.choices{position:absolute;inset:0;z-index:7;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;padding:16px 14px calc(22px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(180deg,rgba(5,8,12,0) 20%,rgba(5,8,12,.78) 60%)}
+.choices .q{color:#fff;font:400 21px var(--display);text-align:center;margin-bottom:6px;text-shadow:0 2px 8px #000}
+.opt{appearance:none;text-align:left;border:0;cursor:pointer;font:500 16px/1.35 var(--body);color:#1b1f26;background:rgba(250,246,240,.97);border-radius:16px;padding:15px 18px;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px;animation:rise .35s both}
+.opt:nth-of-type(2){animation-delay:.06s}.opt:nth-of-type(3){animation-delay:.12s}
+.opt:active{transform:scale(.98)}
+.opt.prem{background:linear-gradient(135deg,#2a2213,#4a3816);color:#fff3d6;box-shadow:0 0 0 1.5px var(--gold),0 6px 22px rgba(233,194,122,.25)}
+.opt .gem{flex:none;font-size:18px}
+.opt .lock{margin-left:auto;font-size:12px;color:var(--gold2);border:1px solid rgba(233,194,122,.5);border-radius:999px;padding:3px 8px;white-space:nowrap}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+
+.toast{position:absolute;left:50%;top:calc(64px + env(safe-area-inset-top,0px));z-index:9;transform:translate(-50%,-8px);opacity:0;transition:opacity .3s,transform .3s;
+  background:rgba(10,14,20,.82);border:1px solid rgba(233,194,122,.5);color:var(--gold2);padding:9px 16px;border-radius:18px;font-size:14px;font-weight:600;line-height:1.5;text-align:center;max-width:calc(100% - 32px);width:max-content;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+.modal{position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:16px;background:rgba(5,8,12,.72);backdrop-filter:blur(4px)}
+.sheet{width:100%;max-width:400px;background:#141b25;border:1px solid rgba(233,194,122,.4);border-radius:22px;padding:24px 20px;display:flex;flex-direction:column;gap:12px;color:var(--frost)}
+.sheet h3{font-size:24px;color:var(--gold2)}
+.sheet p{margin:0;color:var(--mist);font-size:15px}
+.sheet input{font:600 18px var(--body);letter-spacing:.08em;text-transform:uppercase;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:var(--night);color:var(--frost);width:100%}
+.sheet input:focus{outline:2px solid var(--gold);outline-offset:1px}
+.sheet .err{color:#f08a7a;font-size:14px;min-height:1.2em}
+.sheet .btn{width:100%}
+.btn-gold{background:linear-gradient(180deg,#f3d58f,#d9a54c);color:#2a1a05}
+
+.endscr{position:absolute;inset:0;z-index:15;overflow-y:auto;background:linear-gradient(180deg,rgba(8,11,16,.75),rgba(8,11,16,.96) 40%);padding:calc(70px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;animation:fade .6s both}
+@keyframes fade{from{opacity:0}}
+.endscr .eyebrow{color:var(--gold)}
+.endscr h2{font-size:34px;color:var(--gold2)}
+.endscr .ending{font-family:var(--display);font-size:19px}
+.meters{display:grid;gap:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:16px;padding:16px}
+.meter{display:grid;gap:5px;font-size:14px}
+.meter .row{display:flex;justify-content:space-between;color:var(--mist)}
+.meter .row b{color:var(--frost);font-weight:600}
+.meter .track{height:8px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+.meter .track i{display:block;height:100%;border-radius:4px;transition:width 1s ease .3s}
+.next-ch{border:1px dashed rgba(233,194,122,.5);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.next-ch .cd{font:400 26px var(--display);color:var(--gold2);font-variant-numeric:tabular-nums}
+.endscr .btns .btn{flex:1 1 100%}
+
+@media (prefers-reduced-motion:reduce){.spr,.opt,.box,.bg{transition:none;animation:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../">Екатерина Котлярова</a>
+  <nav class="nav"><a href="../">Главная</a><a href="../serial/">Сериал</a><a href="../music/">Песни</a><a href="../test/">Тест</a><a href="../raskraska/">Раскраска</a><a href="./" aria-current="page">Игра</a></nav>
+</div></header>
+
+<main id="menu">
+<section><div class="wrap">
+  <div class="g-hero">
+    <div class="bgimg"></div>
+    <div class="duo"><img class="a" src="img/anya.webp" alt=""><img class="b" src="img/artur.webp" alt=""></div>
+    <div class="txt">
+      <div class="eyebrow">Игра с выборами</div>
+      <h1>Осколки первой любви</h1>
+      <p>Ты — Аня. Новый город, новая школа и парень, который вчера спас тебя, а сегодня делает вид, что вы не знакомы. Каждый выбор меняет то, как к тебе относятся Артур и Лика.</p>
+      <div class="btns"><button class="btn btn-main" id="playBtn">Начать главу 1</button></div>
+      <button class="small-link" id="resetBtn" hidden>Начать всё заново</button>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Главы</div><h2>Новая глава — каждую неделю</h2></div>
+  <div class="chapters" id="chapters"></div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="perks">
+    <div class="perk"><b>Свои концовки</b>У каждой главы несколько финалов. Пройди ещё раз и выбери по-другому.</div>
+    <div class="perk"><b>Отношения</b>Артур, Лика и твоя смелость запоминают каждое решение и влияют на следующие главы.</div>
+    <div class="perk"><b>💎 Особые выборы</b>Самые дерзкие варианты открываются кодом для подписчиков канала.</div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="tg-card">
+    <div class="eyebrow">Для подписчиков</div>
+    <h3>Код для особых выборов</h3>
+    <p id="tgText">Подпишись на Telegram-канал: там лежит код, который открывает все 💎-выборы, и первой приходит новость о новой главе.</p>
+    <div class="btns"><a class="btn btn-gold" id="tgBtn" target="_blank" rel="noopener">Подписаться в Telegram</a><button class="btn btn-ghost" id="codeBtn">У меня есть код</button></div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">© Екатерина Котлярова · «Осколки первой любви»</div></footer>
+
+<!-- сцена -->
+<div class="play" id="play" hidden>
+  <div class="blurbg" id="blurbg"></div>
+  <div class="stage" id="stage">
+    <div class="bg" id="bg1"></div><div class="bg b2" id="bg2"></div>
+    <div class="sprites" id="sprites"></div>
+    <div class="hud"><button class="x" id="exitBtn" aria-label="В меню">✕</button><div class="ttl" id="hudTitle"></div></div>
+    <div class="toast" id="toast"></div>
+    <div class="box gone" id="box" role="button" tabindex="0" aria-live="polite"><div class="who" id="who" hidden></div><div class="txt" id="txt"></div><div class="more">▼</div></div>
+    <div class="choices" id="choices" hidden></div>
+    <div class="endscr" id="endscr" hidden></div>
+    <div class="modal" id="codeModal" hidden>
+      <div class="sheet">
+        <h3>💎 Особый выбор</h3>
+        <p>Этот вариант открывается кодом из Telegram-канала Екатерины Котляровой. Один раз ввела — и все особые выборы открыты навсегда.</p>
+        <a class="btn btn-gold" id="tgBtn2" target="_blank" rel="noopener">Взять код в Telegram</a>
+        <input id="codeIn" placeholder="Введи код" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <div class="err" id="codeErr"></div>
+        <button class="btn btn-main" id="codeOk">Открыть</button>
+        <button class="btn btn-ghost" id="codeNo">Выбрать другой вариант</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/site.js"></script>
+<script src="story.js"></script>
+<script>
+(() => {
+const G = window.GAME, $ = id => document.getElementById(id);
+const KEY = 'oskolki-game', PKEY = 'oskolki-premium', EKEY = 'oskolki-endings';
+const tg = (window.SITE && SITE.telegram) || '#';
+$('tgBtn').href = tg; $('tgBtn2').href = tg;
+
+/* ---------- хранилище (в приватном режиме может не работать) ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+let premium = store.get(PKEY, false);
+let endings = store.get(EKEY, {});          // {1: ["Он смотрит", ...]}
+let S = store.get(KEY, null);               // текущее прохождение
+
+function fresh(ch) {
+  const c = G.chapters.find(c => c.n === ch);
+  // отношения переносятся из прошлых глав; при перепрохождении берём то, что было в начале главы
+  let base = { artur: 0, lika: 0, courage: 0, f: {} };
+  if (S && S.ch === ch && S.snap) base = S.snap;
+  else if (S && S.finished) base = { artur: S.artur, lika: S.lika, courage: S.courage, f: S.f };
+  base = JSON.parse(JSON.stringify(base));
+  return { ch, node: c.start, i: 0, artur: base.artur, lika: base.lika, courage: base.courage, f: { ...base.f },
+           snap: base, bg: null, shown: [], done: S && S.done ? S.done.slice() : [], ending: null, finished: false };
+}
+const save = () => store.set(KEY, S);
+
+/* ---------- главы и обратный отсчёт ---------- */
+const opensAt = c => c.opens ? new Date(c.opens).getTime() : 0;
+const isOpen = c => !!c.start && Date.now() >= opensAt(c);
+function countdown(ms) {
+  if (ms <= 0) return 'скоро';
+  const d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60, s = Math.floor(ms / 1e3) % 60;
+  const p = n => String(n).padStart(2, '0');
+  return d > 0 ? `${d} д ${p(h)} ч ${p(m)} мин` : `${p(h)}:${p(m)}:${p(s)}`;
+}
+function dateRu(c) {
+  return new Date(c.opens).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Moscow' }) + ' МСК';
+}
+function nextLocked() { return G.chapters.find(c => !isOpen(c)); }
+
+function renderMenu() {
+  const box = $('chapters'); box.innerHTML = '';
+  G.chapters.forEach(c => {
+    const open = isOpen(c), done = S && S.done && S.done.includes(c.n);
+    const inProg = S && S.ch === c.n && !S.finished;
+    const el = document.createElement('div');
+    el.className = 'chap' + (open ? '' : ' locked');
+    const got = endings[c.n] || [];
+    let st;
+    if (!open) st = c.opens && opensAt(c) > Date.now() ? `Откроется ${dateRu(c)} · <span data-cd="${opensAt(c)}">${countdown(opensAt(c) - Date.now())}</span>` : 'Скоро';
+    else if (done) st = `Пройдена · концовок ${got.length} из ${(c.endings || []).length}`;
+    else if (inProg) st = 'Ты остановилась на середине';
+    else st = 'Открыта';
+    el.innerHTML = `<div class="num">${open ? c.n : '🔒'}</div>
+      <div><h3>Глава ${c.n}. ${c.title}</h3><div class="st">${st}</div>
+      ${open && c.endings ? `<div class="ends">${c.endings.map(e => `<i class="${got.includes(e) ? 'on' : ''}" title="${got.includes(e) ? e : '???'}"></i>`).join('')}</div>` : ''}</div>
+      <button class="go" ${open ? '' : 'disabled'}>${!open ? 'Ждём' : inProg ? 'Дальше' : done ? 'Заново' : 'Играть'}</button>`;
+    el.querySelector('.go').onclick = () => { if (open) startChapter(c.n, !inProg); };
+    box.appendChild(el);
+  });
+  const cur = S && !S.finished ? S.ch : null;
+  const firstNew = G.chapters.find(c => isOpen(c) && !(S && S.done && S.done.includes(c.n)));
+  $('playBtn').textContent = cur ? `Продолжить главу ${cur}` : firstNew ? `Начать главу ${firstNew.n}` : 'Пройти главу заново';
+  $('playBtn').onclick = () => cur ? startChapter(cur, false) : startChapter(firstNew ? firstNew.n : 1, true);
+  $('resetBtn').hidden = !S;
+  if (premium) { $('tgText').innerHTML = '<span class="unlocked-note">✓ Особые выборы открыты.</span> Новые главы и коды первыми появляются в Telegram-канале.'; $('codeBtn').hidden = true; }
+}
+setInterval(() => document.querySelectorAll('[data-cd]').forEach(e => {
+  const left = +e.dataset.cd - Date.now();
+  if (left <= 0) { renderMenu(); return; }
+  e.textContent = countdown(left);
+}), 1000);
+
+$('resetBtn').onclick = () => {
+  if (!confirm('Стереть прохождение и начать с первой главы? Открытые концовки и код останутся.')) return;
+  S = null; store.del(KEY); renderMenu();
+};
+
+/* ---------- сцена ---------- */
+const play = $('play'), box = $('box'), txt = $('txt'), who = $('who'), choices = $('choices');
+const sprites = {};
+Object.entries(G.people).forEach(([id, p]) => {
+  if (!p.img) return;
+  const im = new Image(); im.src = p.img; im.alt = p.name; im.className = 'spr p-' + id; im.draggable = false;
+  $('sprites').appendChild(im); sprites[id] = im;
+});
+Object.values(G.backgrounds).forEach(src => { const i = new Image(); i.src = src; });
+
+let bgFlip = false;
+function setBg(name, instant) {
+  const src = G.backgrounds[name]; if (!src) return;
+  const a = $('bg1'), b = $('bg2'), front = bgFlip ? b : a, back = bgFlip ? a : b;
+  back.style.backgroundImage = `url(${src})`;
+  if (instant) { back.style.transition = 'none'; front.style.transition = 'none'; }
+  back.style.opacity = 1; front.style.opacity = 0;
+  if (instant) requestAnimationFrame(() => { back.style.transition = ''; front.style.transition = ''; });
+  bgFlip = !bgFlip;
+  $('blurbg').style.backgroundImage = `url(${src})`;
+}
+function layout(speaker) {
+  // Аня выходит слева только на свои реплики и мысли; остальные стоят справа
+  const anyaOn = speaker === 'anya' || speaker === 'think';
+  Object.entries(sprites).forEach(([id, el]) => {
+    if (id === 'anya') { el.classList.toggle('on', anyaOn); el.classList.remove('dim'); el.classList.toggle('speaking', anyaOn); return; }
+    const on = S.shown.includes(id);
+    el.classList.toggle('on', on);
+    el.classList.toggle('dim', on && speaker && speaker !== id && speaker !== 'narr');
+    el.classList.toggle('side', on && anyaOn);
+    el.classList.toggle('speaking', on && speaker === id);
+  });
+}
+
+let typing = null, full = '', waiting = false;
+function say(kind, text, speaker) {
+  box.classList.remove('gone', 'ready', 'narr', 'think');
+  if (kind === 'n') { box.classList.add('narr'); who.hidden = true; layout('narr'); }
+  else if (kind === 't') { box.classList.add('think'); who.hidden = false; who.className = 'who w-think'; who.textContent = 'Аня · мысли'; layout('think'); }
+  else {
+    const p = G.people[speaker] || { name: speaker };
+    who.hidden = false; who.className = 'who w-' + speaker; who.textContent = p.name; layout(speaker);
+  }
+  full = text; txt.textContent = ''; let k = 0;
+  clearInterval(typing);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { txt.textContent = full; box.classList.add('ready'); typing = null; }
+  else typing = setInterval(() => {
+    k += 2; txt.textContent = full.slice(0, k);
+    if (k >= full.length) { clearInterval(typing); typing = null; box.classList.add('ready'); }
+  }, 28);
+  waiting = true;
+}
+function tap() {
+  if (!waiting) return;
+  if (typing) { clearInterval(typing); typing = null; txt.textContent = full; box.classList.add('ready'); return; }
+  waiting = false; S.i++; save(); step();
+}
+box.addEventListener('click', tap);
+$('stage').addEventListener('click', e => { if (e.target.closest('.box,.choices,.hud,.modal,.endscr')) return; tap(); });
+document.addEventListener('keydown', e => {
+  if (play.hidden || !$('codeModal').hidden) return;
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); tap(); }
+  if (e.key === 'Escape') exitGame();
+});
+
+function goto(node) { S.node = node; S.i = 0; }
+function step() {
+  // проходим служебные шаги, пока не дойдём до текста, выбора или конца
+  for (let guard = 0; guard < 500; guard++) {
+    const list = G.scenes[S.node];
+    if (!list) { console.warn('Нет сцены', S.node); return endChapter(); }
+    const st = list[S.i];
+    if (!st) { console.warn('Сцена кончилась без перехода', S.node); return endChapter(); }
+    if (st.when && !st.when(S)) { S.i++; continue; }
+    if (st.bg) { S.bg = st.bg; setBg(st.bg); S.i++; continue; }
+    if (st.show) { if (!S.shown.includes(st.show)) S.shown.push(st.show); layout(null); S.i++; continue; }
+    if (st.hide) { S.shown = S.shown.filter(x => x !== st.hide); layout(null); S.i++; continue; }
+    if (st.mark) { S.ending = st.mark; S.i++; continue; }
+    if (st.if) { if (st.if(S)) goto(st.go); else S.i++; continue; }
+    if (st.end) { save(); return endChapter(); }
+    if (st.choice) { save(); return showChoice(st); }
+    if (st.n) { save(); return say('n', st.n); }
+    if (st.t) { save(); return say('t', st.t); }
+    if (st.s) { save(); return say('s', st.x, st.s); }
+    if (st.go) { goto(st.go); continue; }
+    S.i++;
+  }
+}
+
+/* ---------- выборы ---------- */
+let pendingOpt = null;
+function showChoice(st) {
+  box.classList.add('gone'); waiting = false; layout('narr');
+  choices.innerHTML = `<div class="q">${st.choice}</div>`;
+  st.options.forEach(o => {
+    const b = document.createElement('button');
+    b.className = 'opt' + (o.premium ? ' prem' : '');
+    b.innerHTML = (o.premium ? '<span class="gem">💎</span>' : '') + `<span>${o.x}</span>` + (o.premium && !premium ? '<span class="lock">по коду</span>' : '');
+    b.onclick = () => o.premium && !premium ? askCode(o) : pick(o);
+    choices.appendChild(b);
+  });
+  choices.hidden = false;
+}
+function pick(o) {
+  choices.hidden = true;
+  const notes = [];
+  if (o.set) Object.entries(o.set).forEach(([k, v]) => {
+    S[k] = (S[k] || 0) + v;
+    if (k === 'artur' && v > 0) notes.push('Артур это запомнит');
+    if (k === 'lika' && v > 0) notes.push('Лика это запомнит');
+    if (k === 'courage' && v > 0) notes.push('Смелость +' + v);
+  });
+  if (o.flag) S.f[o.flag] = true;
+  if (notes.length) toast(notes.join('<br>'));
+  goto(o.go); save(); step();
+}
+let toastT;
+function toast(t) { const el = $('toast'); el.innerHTML = t; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2200); }
+
+/* ---------- код для особых выборов ---------- */
+async function sha(s) {
+  const norm = s.trim().toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, '');
+  if (!crypto.subtle) return '';
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(norm));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+function askCode(opt) {
+  pendingOpt = opt;
+  const m = $('codeModal');
+  // из меню модалка открывается поверх пустой сцены — показываем её без истории
+  $('codeNo').textContent = opt ? 'Выбрать другой вариант' : 'Закрыть';
+  $('codeErr').textContent = ''; $('codeIn').value = '';
+  m.hidden = false; setTimeout(() => $('codeIn').focus(), 50);
+}
+async function tryCode() {
+  const h = await sha($('codeIn').value);
+  if (h && h === G.premiumHash) {
+    premium = true; store.set(PKEY, true);
+    $('codeModal').hidden = true; toast('💎 Особые выборы открыты');
+    if (pendingOpt) pick(pendingOpt); else { play.hidden = true; document.body.style.overflow = ''; renderMenu(); }
+  } else $('codeErr').textContent = 'Код не подошёл. Проверь его в последнем посте канала.';
+}
+$('codeOk').onclick = tryCode;
+$('codeIn').addEventListener('keydown', e => { if (e.key === 'Enter') tryCode(); });
+$('codeNo').onclick = () => {
+  $('codeModal').hidden = true;
+  if (!pendingOpt) { play.hidden = true; document.body.style.overflow = ''; }
+};
+$('codeBtn').onclick = () => {
+  play.hidden = false; document.body.style.overflow = 'hidden';
+  choices.hidden = true; box.classList.add('gone'); $('endscr').hidden = true;
+  Object.values(sprites).forEach(s => s.classList.remove('on'));
+  setBg('class', true); $('hudTitle').innerHTML = '';
+  askCode(null);
+};
+
+/* ---------- начало и конец главы ---------- */
+function startChapter(n, restart) {
+  if (restart || !S || S.ch !== n || S.finished) S = fresh(n);
+  const c = G.chapters.find(c => c.n === n);
+  $('hudTitle').innerHTML = `Глава ${n}<b>${c.title}</b>`;
+  play.hidden = false; document.body.style.overflow = 'hidden';
+  $('endscr').hidden = true; choices.hidden = true; $('codeModal').hidden = true; box.classList.add('gone');
+  if (S.bg) setBg(S.bg, true); else { const first = (G.scenes[S.node] || []).find(x => x.bg); if (first) setBg(first.bg, true); }
+  layout(null);
+  setTimeout(step, 350);
+}
+function exitGame() {
+  play.hidden = true; document.body.style.overflow = '';
+  clearInterval(typing); typing = null; waiting = false;
+  renderMenu();
+}
+$('exitBtn').onclick = exitGame;
+
+function endChapter() {
+  box.classList.add('gone'); choices.hidden = true; waiting = false;
+  if (!S.finished) {
+    S.finished = true;
+    if (!S.done.includes(S.ch)) S.done.push(S.ch);
+    if (S.ending) { const l = endings[S.ch] || []; if (!l.includes(S.ending)) l.push(S.ending); endings[S.ch] = l; store.set(EKEY, endings); }
+    save();
+  }
+  const c = G.chapters.find(c => c.n === S.ch), nxt = G.chapters.find(x => x.n === S.ch + 1);
+  const got = endings[S.ch] || [], total = (c.endings || []).length;
+  const m = (label, val, max, note, color) => `<div class="meter"><div class="row"><span>${label}</span><b>${note}</b></div><div class="track"><i style="width:0;background:${color}" data-w="${Math.min(100, Math.round(val / max * 100))}"></i></div></div>`;
+  const ar = S.artur >= 4 ? 'Он заинтересован' : S.artur >= 2 ? 'Он присматривается' : 'Ему всё равно… пока';
+  const li = S.lika >= 3 ? 'Война объявлена' : S.lika >= 1 ? 'Она насторожилась' : 'Ты для неё пустое место';
+  const co = S.courage >= 3 ? 'Дерзкая' : S.courage >= 1 ? 'Не даёт себя в обиду' : 'Тихая';
+  const nxtOpen = nxt && isOpen(nxt);
+  let nextHtml = '';
+  if (nxt && nxtOpen) nextHtml = `<div class="next-ch"><div class="eyebrow">Уже доступна</div><div class="ending">Глава ${nxt.n}. ${nxt.title}</div><button class="btn btn-gold" id="goNext">Играть дальше</button></div>`;
+  else if (nxt) nextHtml = `<div class="next-ch"><div class="eyebrow">Глава ${nxt.n}. ${nxt.title}</div>${nxt.opens ? `<div class="cd" data-cd="${opensAt(nxt)}">${countdown(opensAt(nxt) - Date.now())}</div><div class="muted" style="font-size:14px">Откроется ${dateRu(nxt)}. Твои выборы сохранятся и повлияют на неё.</div>` : '<div class="muted">Скоро</div>'}<a class="btn btn-gold" href="${tg}" target="_blank" rel="noopener">Узнать первой в Telegram</a></div>`;
+  const e = $('endscr');
+  e.innerHTML = `<div class="eyebrow">Конец главы ${S.ch}</div><h2>${c.title}</h2>
+    ${S.ending ? `<div><div class="muted" style="font-size:14px">Твоя концовка</div><div class="ending">«${S.ending}»</div><div class="muted" style="font-size:14px">Открыто концовок: ${got.length} из ${total}</div></div>` : ''}
+    <div class="meters">${m('Артур', S.artur, 7, ar, 'linear-gradient(90deg,#9fb6cc,#e8eef4)')}${m('Лика', S.lika, 6, li, 'linear-gradient(90deg,#d0603f,#f08a5a)')}${m('Смелость', S.courage, 4, co, 'linear-gradient(90deg,#d9a54c,#f7e2ad)')}</div>
+    ${nextHtml}
+    <div class="btns"><button class="btn btn-ghost" id="again">Пройти главу по-другому</button><button class="btn btn-ghost" id="toMenu">В меню</button></div>`;
+  e.hidden = false;
+  requestAnimationFrame(() => requestAnimationFrame(() => e.querySelectorAll('[data-w]').forEach(i => i.style.width = i.dataset.w + '%')));
+  $('again').onclick = () => {
+    // перепроходим главу с отношениями, какими они были до неё
+    startChapter(S.ch, true);
+  };
+  $('toMenu').onclick = exitGame;
+  if ($('goNext')) $('goNext').onclick = () => startChapter(nxt.n, true);
+}
+
+renderMenu();
+if (location.hash === '#play') $('playBtn').click();
+})();
+</script>
+</body>
+</html>
