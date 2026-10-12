@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
+<title>Сериал «Осколки первой любви» — все серии</title>
+<meta name="description" content="Все серии мини-сериала «Осколки первой любви» по книге Екатерины Котляровой. Новые серии по понедельникам и четвергам.">
+<meta property="og:title" content="«Осколки первой любви» — все серии">
+<meta property="og:image" content="../assets/artur.jpg">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../">Екатерина Котлярова</a>
+  <nav class="nav"><a href="../">Главная</a><a href="./" aria-current="page">Сериал</a><a href="../test/">Тест</a><a href="../#preorder">Предзаказ</a></nav>
+</div></header>
+
+<main>
+<section><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Мини-сериал по книге Екатерины Котляровой</div><h2>Осколки первой любви</h2></div>
+  <div class="player-row">
+    <div class="player" id="player"></div>
+    <div class="ep-info">
+      <h3 id="ep-title">Серия 1</h3>
+      <div class="nav-eps">
+        <button class="btn btn-ghost" id="prev">← Предыдущая</button>
+        <button class="btn btn-main" id="next">Следующая →</button>
+      </div>
+      <a class="muted" id="ep-vk" href="#" target="_blank" rel="noopener">Открыть эту серию в ВК</a>
+      <div class="eyebrow" style="margin-top:12px">Все серии</div>
+      <div class="ep-grid" id="grid"></div>
+      <p class="muted">Новые серии выходят по понедельникам и четвергам.</p>
+      <div class="btns"><a class="btn btn-ghost" data-link="vkChannel" href="#" target="_blank" rel="noopener">Подписаться на канал</a><a class="btn btn-ghost" href="../test/">Кто ты из героев?</a></div>
+    </div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">© Екатерина Котлярова. Видео создано с помощью нейросетей по мотивам книги.</div></footer>
+
+<script src="../assets/site.js"></script>
+<script src="../data/episodes.js"></script>
+<script>
+document.querySelectorAll("[data-link]").forEach(a => a.href = SITE[a.dataset.link]);
+const grid = document.getElementById("grid"), player = document.getElementById("player");
+const total = EPISODES.length;
+grid.innerHTML = EPISODES.map(e => `<a class="ep" href="#${e.n}" data-n="${e.n}">${e.n}</a>`).join("")
+  + `<span class="ep soon" title="Скоро">${total + 1}</span>`;
+function show(n){
+  const i = Math.min(Math.max(n, 1), total) - 1, e = EPISODES[i];
+  player.innerHTML = `<iframe src="${vkEmbed(e.clip)}" title="Серия ${e.n}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock" allowfullscreen></iframe>`;
+  document.getElementById("ep-title").textContent = "Серия " + e.n;
+  document.getElementById("ep-vk").href = vkLink(e.clip);
+  grid.querySelectorAll("a.ep").forEach(a => a.setAttribute("aria-current", a.dataset.n == e.n ? "true" : "false"));
+  document.getElementById("prev").disabled = i === 0;
+  document.getElementById("next").disabled = i === total - 1;
+  document.getElementById("prev").style.visibility = i === 0 ? "hidden" : "visible";
+  document.getElementById("next").style.visibility = i === total - 1 ? "hidden" : "visible";
+  document.title = "Серия " + e.n + " — «Осколки первой любви»";
+}
+const cur = () => parseInt(location.hash.slice(1)) || 1;
+window.addEventListener("hashchange", () => { show(cur()); player.scrollIntoView({behavior:"smooth", block:"start"}); });
+document.getElementById("prev").onclick = () => location.hash = cur() - 1;
+document.getElementById("next").onclick = () => location.hash = cur() + 1;
+show(cur());
+</script>
+</body>
+</html>

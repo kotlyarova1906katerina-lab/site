@@ -2,21 +2,94 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Екатерина Котлярова</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;600&display=swap">
-<style>
-body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0d1219;color:#e8eef4;font-family:"Golos Text",system-ui,sans-serif;text-align:center;padding:24px}
-h1{font-family:"Prata",Georgia,serif;font-weight:400;font-size:clamp(28px,7vw,44px);margin:0 0 12px}
-p{color:#93a3b4;margin:0 0 24px}
-a{display:inline-block;background:#e0896a;color:#1a0f0a;text-decoration:none;font-weight:600;padding:14px 22px;border-radius:14px}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
+<title>Екатерина Котлярова — «Осколки первой любви»</title>
+<meta name="description" content="Мини-сериал по книге «Осколки первой любви», тест «Кто ты из героев» и предзаказ печатной книги Екатерины Котляровой.">
+<meta property="og:title" content="«Осколки первой любви» — Екатерина Котлярова">
+<meta property="og:description" content="Смотри мини-сериал по книге и узнай, кто ты из героев.">
+<meta property="og:image" content="assets/artur.jpg">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="./">Екатерина Котлярова</a>
+  <nav class="nav"><a href="./" aria-current="page">Главная</a><a href="serial/">Сериал</a><a href="test/">Тест</a><a href="#preorder">Предзаказ</a></nav>
+</div></header>
+
 <main>
-<h1>Екатерина Котлярова</h1>
-<p>Сайт скоро откроется. А пока узнай, кто ты из «Осколков первой любви».</p>
-<a href="test/">Пройти тест</a>
+<section class="hero"><div class="wrap hero-grid">
+  <div class="hero-text">
+    <div class="eyebrow">Мини-сериал по книге</div>
+    <h1>Осколки <em>первой любви</em></h1>
+    <p class="dialog"><span>— Будешь играть роль моей девушки.</span><span>— Что?</span><span>— Ты. Будешь. Играть. Роль. Моей. Девушки.</span></p>
+    <p class="muted">Аня переехала в другой город, чтобы сбежать от прошлого, и хотела быть незаметной. Но в первый же день привлекла внимание Артура Холодова — холодного, резкого и опасного.</p>
+    <div class="btns"><a class="btn btn-main" href="serial/">Смотреть сериал</a><a class="btn btn-ghost" href="test/">Кто ты из героев?</a></div>
+  </div>
+  <div class="pair"><img src="assets/anya.jpg" alt="Аня Теплова" width="720" height="720"><img src="assets/artur.jpg" alt="Артур Холодов" width="720" height="720"></div>
+</div></section>
+
+<section id="latest"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Новые серии по понедельникам и четвергам</div><h2 id="latest-title">Последняя серия</h2></div>
+  <div class="player-row">
+    <div class="player" id="latest-player"></div>
+    <div class="ep-info">
+      <p class="muted">Все серии по порядку, с первой, — на странице сериала. Смотреть можно прямо здесь, без перехода в ВК.</p>
+      <div class="btns"><a class="btn btn-main" href="serial/#1">Смотреть с первой серии</a><a class="btn btn-ghost" id="latest-vk" href="#" target="_blank" rel="noopener">Открыть в ВК</a></div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="cards">
+    <article class="card" id="preorder">
+      <span class="badge">Скоро</span>
+      <h3>Предзаказ печатной книги</h3>
+      <p>«Осколки первой любви» выходят в печати. Подпишись на канал, чтобы первой узнать, когда откроется предзаказ.</p>
+      <a class="btn btn-main" id="preorder-btn" href="#" target="_blank" rel="noopener">Узнать первой</a>
+    </article>
+    <article class="card">
+      <h3>Кто ты из «Осколков»?</h3>
+      <p>Тихая Аня, ледяной Артур, солнечный Антон или королева класса Лика? Восемь вопросов, одна минута.</p>
+      <a class="btn btn-ghost" href="test/">Пройти тест</a>
+    </article>
+    <article class="card">
+      <span class="badge">Скоро</span>
+      <h3>Закладки с героями</h3>
+      <p>Закладки с Аней и Артуром для твоей книги. Расскажу в канале, когда можно будет заказать.</p>
+      <a class="btn btn-ghost" data-link="vkChannel" href="#" target="_blank" rel="noopener">Следить за новостями</a>
+    </article>
+  </div>
+</div></section>
+
+<section id="socials"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Автор</div><h2>Екатерина Котлярова</h2></div>
+  <div class="socials">
+    <a data-link="vkChannel" href="#" target="_blank" rel="noopener">Канал ВКонтакте</a>
+    <a data-link="vk" href="#" target="_blank" rel="noopener">Сообщество ВК</a>
+    <a data-link="telegram" href="#" target="_blank" rel="noopener">Telegram</a>
+    <a data-link="tiktok" href="#" target="_blank" rel="noopener">TikTok</a>
+    <a data-link="max" href="#" target="_blank" rel="noopener">MAX</a>
+    <a data-link="instagram" href="#" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</div></section>
 </main>
+
+<footer><div class="wrap">© Екатерина Котлярова. Сериал создан с помощью нейросетей по мотивам книги.</div></footer>
+
+<script src="assets/site.js"></script>
+<script src="data/episodes.js"></script>
+<script>
+document.querySelectorAll("[data-link]").forEach(a => a.href = SITE[a.dataset.link]);
+const pb = document.getElementById("preorder-btn");
+if (SITE.preorder){ pb.href = SITE.preorder; pb.textContent = "Оформить предзаказ"; pb.closest(".card").querySelector(".badge").textContent = "Открыт"; }
+else pb.href = SITE.vkChannel;
+const last = EPISODES[EPISODES.length - 1];
+document.getElementById("latest-title").textContent = "Серия " + last.n;
+document.getElementById("latest-player").innerHTML = `<iframe src="${vkEmbed(last.clip)}" title="Серия ${last.n}" loading="lazy" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock" allowfullscreen></iframe>`;
+document.getElementById("latest-vk").href = vkLink(last.clip);
+</script>
 </body>
 </html>
