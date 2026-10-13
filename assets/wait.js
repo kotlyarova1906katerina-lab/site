@@ -3,7 +3,7 @@
 (function () {
   const SB = window.SITE && window.SITE.supabase;
   const STEP = 200;                       // осколков в первой картине; дальше 400, 600…
-  const IMG = "covers/serial.jpg";
+  const IMG = "assets/zhdu-bg.jpg";
   const $ = id => document.getElementById(id);
   const stage = $("waitStage"); if (!stage) return;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -66,7 +66,7 @@
     const wide = W > Hh * 1.05;
     const k = wide ? Math.max(sh / img.height * 1.08, sw * 0.5 / img.width) : Math.max(sw / img.width, sh / img.height);
     const iw = img.width * k, ih = img.height * k;
-    const x = wide ? sw - iw - sw * 0.04 : (sw - iw) / 2, y = (sh - ih) * (wide ? 0.25 : 0.3);
+    const x = wide ? sw - iw - sw * 0.02 : (sw - iw) / 2, y = (sh - ih) * (wide ? 0.45 : 0.4);
     const layer = document.createElement("canvas"); layer.width = sw; layer.height = sh;
     const l = layer.getContext("2d"); l.drawImage(img, x, y, iw, ih);
     if (wide) {   // мягкий левый край, чтобы картинка перетекала в фон
@@ -98,6 +98,7 @@
         cx.fillStyle = g; cx.fill(); cx.restore();
         path(c.poly); cx.strokeStyle = "rgba(235,244,250,.28)"; cx.lineWidth = .8; cx.stroke();
       } else {
+        if (blurred) { cx.save(); path(c.poly); cx.clip(); cx.globalAlpha = .14; cx.drawImage(blurred, 0, 0); cx.restore(); }   // призрак картины за пустым стеклом
         path(c.poly); cx.fillStyle = "rgba(185,211,230,.025)"; cx.fill();
         cx.strokeStyle = "rgba(185,211,230,.10)"; cx.lineWidth = .6; cx.stroke();
       }
@@ -128,12 +129,18 @@
 
   /* ---------- банка с сердечками ---------- */
   const HEART = "M0 3.2C-1.6-.6-6-.6-6 3c0 2.6 3.2 4.8 6 7.4C2.8 7.8 6 5.6 6 3c0-3.6-4.4-3.6-6 .2z";
-  const SLOTS = (() => { const s = [], r = rng(42); for (let row = 0; row < 9; row++) for (let col = 0; col < 8; col++) {
-    const x = 46 + col * 15.5 + (row % 2 ? 7 : 0) + (r() - .5) * 3, y = 222 - row * 15 + (r() - .5) * 3;
-    if (x > 158) continue; s.push({ x, y, rot: (r() - .5) * 50, c: ["#f08aa9", "#e0896a", "#d9534f", "#f6b7cb", "#ec7aa0"][Math.floor(r() * 5)], s: .95 + r() * .35 }); }
-    return s; })();
+  const SLOTS = (() => {
+    const s = [], r = rng(42);
+    for (let row = 0; row < 8; row++) {
+      const y = 214 - row * 17, half = y > 204 ? 42 : y > 192 ? 50 : 56;   // у дна банка скруглена — там ряд уже
+      const xs = []; for (let x = 100 - half; x <= 100 + half; x += 18.5) xs.push(x + (row % 2 ? 9 : 0));
+      xs.filter(x => x <= 100 + half).sort((a, b) => Math.abs(a - 100) - Math.abs(b - 100)).forEach(x =>
+        s.push({ x: x + (r() - .5) * 3, y: y + (r() - .5) * 3, rot: (r() - .5) * 50, c: ["#f08aa9", "#e0896a", "#d9534f", "#f6b7cb", "#ec7aa0"][Math.floor(r() * 5)], s: 1.45 + r() * .3 }));
+    }
+    return s;
+  })();
   function jarSvg(n, isNew) {
-    const hearts = SLOTS.slice(0, n).map((h, i) => `<path class="jar-heart${isNew && i === n - 1 ? " new" : ""}" d="${HEART}" fill="${h.c}" transform="translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${h.rot.toFixed(0)}) scale(${h.s.toFixed(2)})"/>`).join("");
+    const hearts = SLOTS.slice(0, n).map((h, i) => `<g transform="translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) rotate(${h.rot.toFixed(0)}) scale(${h.s.toFixed(2)})"><path class="jar-heart${isNew && i === n - 1 ? " new" : ""}" d="${HEART}" fill="${h.c}"/></g>`).join("");
     return `<svg viewBox="0 0 200 250" role="img" aria-label="Банка с сердечками">
       <defs><clipPath id="jarIn"><path d="M64 52h72c0 8 30 14 30 40v108c0 18-13 30-31 30H65c-18 0-31-12-31-30V92c0-26 30-32 30-40z"/></clipPath>
       <linearGradient id="jarGlass" x1="0" x2="1"><stop offset="0" stop-color="#cfe3f0" stop-opacity=".22"/><stop offset=".5" stop-color="#cfe3f0" stop-opacity=".06"/><stop offset="1" stop-color="#cfe3f0" stop-opacity=".18"/></linearGradient></defs>
@@ -168,6 +175,7 @@
   /* ---------- кнопка ---------- */
   const btn = $("waitBtn"), note = $("waitNote");
   const say = (t, err) => { note.textContent = t || ""; note.className = "wait-note" + (err ? " err" : ""); };
+  const DONE = "Следи за новостями здесь и в социальных сетях, чтобы не пропустить предзаказ.";
   function markVoted() {
     btn.disabled = true;
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.2 4.3 2.4.7-1.2 2.1-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>Твоё сердечко в банке`;
@@ -181,8 +189,7 @@
       const r = await rpc("preorder_wait", { p_token: t });
       if (r && r.error === "auth") { say("Войди в аккаунт ещё раз — сессия устарела.", true); busy = false; return; }
       markVoted();
-      if (r.added) { setCount(+r.count, true); say("Твой осколок встал на место! Расскажу в канале, когда откроется предзаказ."); }
-      else { setCount(+r.count, false); say("Ты уже ждёшь эту книгу — одна отметка на аккаунт."); }
+      setCount(+r.count, !!r.added); say(DONE);
     } catch (e) { say("Не получилось сохранить отметку. Попробуй позже. (" + e.message + ")", true); }
     busy = false;
   }
@@ -208,6 +215,6 @@
   if (t0) {
     let pending = false; try { pending = sessionStorage.getItem("wait-pending") === "1"; } catch (e) {}
     if (pending) setTimeout(doVote, 600);
-    else rpc("preorder_me", { p_token: t0 }).then(r => { if (r && r.voted) markVoted(); }).catch(() => {});
+    else rpc("preorder_me", { p_token: t0 }).then(r => { if (r && r.voted) { markVoted(); say(DONE); } }).catch(() => {});
   }
 })();
