@@ -161,7 +161,7 @@
     $("waitJarSvg").innerHTML = jarSvg(n, isNew);
     $("waitCount").textContent = count.toLocaleString("ru-RU");
     $("waitCountSub").textContent = word(count);
-    $("waitTier").innerHTML = `Картина из <b>${goal}</b> осколков: собрано <b>${count}</b>. Ещё <b>${goal - count}</b> — и она станет больше.`;
+    if ($("waitTier")) $("waitTier").innerHTML = `Картина из <b>${goal}</b> осколков: собрано <b>${count}</b>. Ещё <b>${goal - count}</b> — и она станет больше.`;
     $("waitBar").style.width = (100 * f).toFixed(1) + "%";
   }
   function setCount(n, isNew) {
