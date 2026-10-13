@@ -21,6 +21,7 @@
 <meta property="og:description" content="Сериал по книге, бесплатные книги в удобной читалке, игра с выборами, тест, раскраска и песни героев.">
 
 <link rel="stylesheet" href="assets/style.css?v=20261012c">
+<link rel="stylesheet" href="assets/wait.css?v=20261013a">
 <script src="assets/account.js?v=20261012g"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0d1219">
@@ -59,6 +60,28 @@
     <div class="btns"><a class="btn btn-main" href="serial/">Смотреть сериал</a><a class="btn btn-ghost" href="test/">Кто ты из героев?</a></div>
   </div>
   <div class="pair"><img src="assets/anya.jpg" alt="Аня Теплова" width="720" height="720"><img src="assets/artur.jpg" alt="Артур Холодов" width="720" height="720"></div>
+</div></section>
+
+<section id="zhdu"><div class="wrap">
+  <div class="wait-stage" id="waitStage">
+    <canvas id="waitGlass" aria-hidden="true"></canvas>
+    <div class="wait-over">
+      <div class="wait-text">
+        <div class="eyebrow" style="color:#f6b7cb">Печатная книга · скоро предзаказ</div>
+        <h2>Ждёшь «Осколки» в печати?</h2>
+        <p>Отметься, и твоё сердечко упадёт в банку, а в картину встанет ещё один осколок. Соберём все — картина станет больше, и мы начнём новую.</p>
+        <div class="wait-tier" id="waitTier"></div>
+        <div class="wait-bar"><i id="waitBar"></i></div>
+        <div class="wait-cta"><button class="btn btn-heart" id="waitBtn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.2 0 3.6 1.2 4.3 2.4.7-1.2 2.1-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>Я жду книгу</button></div>
+        <div class="wait-note" id="waitNote" aria-live="polite"></div>
+      </div>
+      <div class="wait-jar" id="waitJar">
+        <div id="waitJarSvg"></div>
+        <div class="jar-count" id="waitCount">0</div>
+        <div class="jar-sub" id="waitCountSub">человек ждут</div>
+      </div>
+    </div>
+  </div>
 </div></section>
 
 <section id="read"><div class="wrap">
@@ -152,7 +175,8 @@
 
 <footer><div class="wrap">© Екатерина Котлярова. Сериал создан с помощью нейросетей по мотивам книги. · <a href="privacy/">Политика конфиденциальности</a></div></footer>
 
-<script src="assets/site.js?v=20261012c"></script>
+<script src="assets/site.js?v=20261013a"></script>
+<script src="assets/wait.js?v=20261013a" defer></script>
 <script src="data/episodes.js?v=20261012c"></script>
 <script>
 document.querySelectorAll("[data-link]").forEach(a => a.href = SITE[a.dataset.link]);

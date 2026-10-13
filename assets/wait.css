@@ -1,0 +1,36 @@
+/* «Жду книгу»: стеклянная картина из осколков + банка с сердечками */
+.wait-stage{position:relative;border-radius:26px;overflow:hidden;border:1px solid var(--line);background:#070a0f;min-height:560px;isolation:isolate}
+.wait-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+.wait-stage::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,rgba(7,10,15,.92) 0%,rgba(7,10,15,.7) 38%,rgba(7,10,15,.08) 70%,rgba(7,10,15,.25) 100%)}
+.wait-over{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:24px;align-items:end;min-height:560px;padding:clamp(22px,4vw,44px)}
+.wait-text{display:flex;flex-direction:column;gap:14px;max-width:46ch;align-self:center}
+.wait-text h2{font-size:clamp(28px,5vw,44px)}
+.wait-text p{margin:0;color:#c9d3dd}
+.wait-tier{font-size:14px;color:#b7c3cf;max-width:40ch}
+.wait-tier b{color:var(--frost);font-weight:600}
+.wait-bar{height:6px;border-radius:999px;background:rgba(185,211,230,.15);overflow:hidden;max-width:340px}
+.wait-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f0a8bf,#e0896a);border-radius:999px;transition:width .9s ease}
+.wait-cta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn-heart{background:linear-gradient(135deg,#f08aa9,#e0896a);color:#1a0d10;box-shadow:0 10px 28px rgba(236,122,160,.28)}
+.btn-heart:hover{filter:brightness(1.06)}
+.btn-heart svg{width:18px;height:18px}
+.btn-heart[disabled]{opacity:1;cursor:default;background:rgba(236,122,160,.16);color:#f6b7cb;box-shadow:none;border:1px solid rgba(236,122,160,.45)}
+.wait-note{font-size:14px;color:var(--mist);min-height:20px}
+.wait-note.err{color:#f2a08f}
+.wait-jar{justify-self:end;align-self:end;display:flex;flex-direction:column;align-items:center;gap:6px;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
+.wait-jar svg{width:var(--jarw,190px);height:auto;transition:width .8s ease;overflow:visible}
+.jar-count{font-family:var(--display);font-size:clamp(30px,5vw,42px);line-height:1;color:var(--frost);text-shadow:0 2px 14px rgba(0,0,0,.7);font-variant-numeric:tabular-nums}
+.jar-sub{font-size:13px;color:#c9d3dd;text-shadow:0 1px 8px rgba(0,0,0,.8)}
+.jar-heart{transform-box:fill-box;transform-origin:center}
+.jar-heart.new{animation:heartDrop .9s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes heartDrop{from{transform:translateY(-140px) scale(.6);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.jar-heart.new{animation:none}}
+@media (max-width:760px){
+  .wait-stage,.wait-over{min-height:640px}
+  .wait-stage::after{background:linear-gradient(180deg,rgba(7,10,15,.25) 0%,rgba(7,10,15,.2) 35%,rgba(7,10,15,.88) 62%,rgba(7,10,15,.96) 100%)}
+  .wait-over{grid-template-columns:1fr;align-items:end}
+  .wait-jar{justify-self:center;order:-1;align-self:end;margin-top:auto}
+  .wait-text{align-self:end}
+}
+

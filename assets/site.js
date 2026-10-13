@@ -7,7 +7,9 @@ window.SITE = {
   telegram: "https://t.me/ek_kotlyarova",
   instagram: "https://www.instagram.com/katekotlyarovaauthor",
   litnet: "https://litnet.com/ru/ekaterina-kotlyarova-u3917137",
-  preorder: "" /* ссылка на предзаказ — вставить, когда откроется */
+  preorder: "", /* ссылка на предзаказ — вставить, когда откроется */
+  /* База для счётчика «Жду книгу» (Supabase, проект oskolki). Ключ publishable — открытый, так и задумано. */
+  supabase: { url: "https://svnhmstqcoshhmbscepq.supabase.co", key: "sb_publishable_q7KJgapG_K-yLw3EBZS4mg_QG_D59a-" }
 };
 window.vkEmbed = clip => {
   const m = clip.match(/^clip(-?\d+)_(\d+)$/);
