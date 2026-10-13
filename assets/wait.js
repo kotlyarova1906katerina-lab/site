@@ -162,7 +162,7 @@
     $("waitCount").textContent = count.toLocaleString("ru-RU");
     $("waitCountSub").textContent = word(count);
     if ($("waitTier")) $("waitTier").innerHTML = `Картина из <b>${goal}</b> осколков: собрано <b>${count}</b>. Ещё <b>${goal - count}</b> — и она станет больше.`;
-    $("waitBar").style.width = (100 * f).toFixed(1) + "%";
+    if ($("waitBar")) $("waitBar").style.width = (100 * f).toFixed(1) + "%";
   }
   function setCount(n, isNew) {
     const newGoal = STEP * (Math.floor(n / STEP) + 1), prev = shown;
