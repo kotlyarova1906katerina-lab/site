@@ -17,8 +17,8 @@
     if (path.startsWith("stats")) return;
 
     // откуда пришли: метка ?utm_source=… в ссылке или сайт, с которого перешли
-    const NAMES = [[/(^|\.)(vk\.(com|ru|cc|me)|vkvideo\.ru)$/, "ВКонтакте"], [/tiktok/, "TikTok"], [/(^|\.)(t\.me|telegram)/, "Telegram"],
-      [/instagram|(^|\.)l\.instagram/, "Instagram"], [/max\.ru$/, "MAX"], [/youtube|youtu\.be/, "YouTube"], [/yandex|ya\.ru|dzen/, "Яндекс"],
+    const NAMES = [[/^vk$|(^|\.)(vk\.(com|ru|cc|me)|vkvideo\.ru)$/, "ВКонтакте"], [/tiktok/, "TikTok"], [/^tg$|(^|\.)(t\.me|telegram)/, "Telegram"],
+      [/instagram|(^|\.)l\.instagram/, "Instagram"], [/^max$|max\.ru$/, "MAX"], [/youtube|youtu\.be/, "YouTube"], [/yandex|ya\.ru|dzen/, "Яндекс"],
       [/google/, "Google"], [/litnet/, "Литнет"], [/claude\.ai/, "Ссылка из Claude"]];
     const tag = new URLSearchParams(location.search).get("utm_source");
     let src = "";
