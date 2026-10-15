@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <title>Статистика сайта</title>
-<link rel="stylesheet" href="../assets/style.css?v=20261012c">
+<link rel="stylesheet" href="../assets/style.css?v=20261015p">
 <style>
 /* Страница для автора: сводка сверху, график по дням, потом страницы и источники */
 .st-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:22px}
@@ -195,6 +195,9 @@ td .pct{color:var(--mist);font-size:12px;margin-left:6px}
       { title: "До какой главы дошли", chapters: true } ] },
     { id: "serial", title: "Сериал", tables: [
       { title: "Серии на сайте", cols: [["play", "Запустили"]], order: "num" } ] },
+    { id: "predict", title: "Предсказания", tables: [
+      { title: "Какие осколки открыли", cols: [["open", "Открыли"]], order: "num" },
+      { title: "Чьими делились", cols: [["share", "Поделились"]] } ] },
     { id: "link", title: "Переходы", tables: [
       { title: "Куда уходили с сайта", cols: [["click", "Людей"]] } ] }
   ];
