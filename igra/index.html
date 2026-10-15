@@ -105,6 +105,10 @@
 .opt:active{transform:scale(.98)}
 .opt.prem{background:linear-gradient(135deg,#2a2213,#4a3816);color:#fff3d6;box-shadow:0 0 0 1.5px var(--gold),0 6px 22px rgba(233,194,122,.25)}
 .opt .gem{flex:none;font-size:18px}
+.opt.off{cursor:not-allowed;opacity:.62;background:rgba(250,246,240,.7)}
+.opt.off:active{transform:none}
+.opt .why{display:block;margin-top:4px;font-size:12.5px;font-weight:400;color:#6b5a48}
+.opt .txt2{display:flex;flex-direction:column}
 .opt .lock{margin-left:auto;font-size:12px;color:var(--gold2);border:1px solid rgba(233,194,122,.5);border-radius:999px;padding:3px 8px;white-space:nowrap}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}}
 
@@ -284,7 +288,8 @@
 </div>
 
 <script src="../assets/site.js?v=20261012c"></script>
-<script src="story.js"></script>
+<script src="story.js?v=20261015"></script>
+<script src="story-vetki.js?v=20261015"></script>
 <script>
 (() => {
 const G = window.GAME, E = G.economy, $ = id => document.getElementById(id);
@@ -298,7 +303,9 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
   del(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
-let endings = store.get(EKEY, {});          // {1: ["Он смотрит", ...]}
+let endings = store.get(EKEY, {});          // {1: ["Он смотрит", ...], "4-artur": [...]}
+const RKEY = 'oskolki-route';                // ветка, выбранная в конце главы 3: artur | anton | self
+const ROUTE_NAMES = { artur: 'С Артуром', anton: 'С Антоном', self: 'Сама по себе' };
 let S = store.get(KEY, null);               // текущее прохождение
 
 /* ---------- кошелёк ---------- */
@@ -410,6 +417,16 @@ function refreshSprites() {
 }
 
 /* ---------- главы и обратный отсчёт ---------- */
+// у глав с routes своя версия для каждой ветки: заголовок, первая сцена, концовки
+const curRoute = () => (S && S.f && S.f.route) || store.get(RKEY, null);
+function view(c, route) {
+  if (!c.routes) return { title: c.title, start: c.start, endings: c.endings || [], key: c.n, route: null, need: false };
+  route = route || curRoute();
+  const r = route && c.routes[route];
+  if (!r) return { title: c.title, start: null, endings: [], key: c.n, route: null, need: true };
+  return { title: r.title, start: r.start, endings: r.endings || [], key: c.n + '-' + route, route, need: false };
+}
+const isDone = v => !!(S && S.done && S.done.includes(v.key));
 function fresh(ch) {
   const c = G.chapters.find(c => c.n === ch);
   // отношения переносятся из прошлых глав; при перепрохождении берём то, что было в начале главы
@@ -417,14 +434,15 @@ function fresh(ch) {
   if (S && S.ch === ch && S.snap) base = S.snap;
   else if (S && S.finished) base = { artur: S.artur, lika: S.lika, anton: S.anton || 0, courage: S.courage, f: S.f };
   base = JSON.parse(JSON.stringify(base));
-  return { ch, node: c.start, i: 0, artur: base.artur, lika: base.lika, anton: base.anton || 0, courage: base.courage, f: { ...base.f },
+  if (c.routes && !(base.f && base.f.route) && store.get(RKEY, null)) base.f = Object.assign({}, base.f, { route: store.get(RKEY, null) });
+  return { ch, node: view(c, base.f && base.f.route).start, i: 0, artur: base.artur, lika: base.lika, anton: base.anton || 0, courage: base.courage, f: { ...base.f },
            snap: base, names: S && S.names ? { ...S.names } : {}, bg: null, shown: [], done: S && S.done ? S.done.slice() : [], ending: null, finished: false };
 }
 const save = () => store.set(KEY, S);
 const opensAt = c => c.opens ? new Date(c.opens).getTime() : 0;
 // ?preview=oskolki — автор видит закрытые главы до даты выхода
 const PREVIEW = new URLSearchParams(location.search).get('preview') === 'oskolki';
-const isOpen = c => !!c.start && (PREVIEW || Date.now() >= opensAt(c));
+const isOpen = c => !!(c.start || c.routes) && (PREVIEW || Date.now() >= opensAt(c));
 function countdown(ms) {
   if (ms <= 0) return 'скоро';
   const d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60, s = Math.floor(ms / 1e3) % 60;
@@ -438,25 +456,26 @@ function dateRu(c) {
 function renderMenu() {
   const box = $('chapters'); box.innerHTML = '';
   G.chapters.forEach(c => {
-    const open = isOpen(c), done = S && S.done && S.done.includes(c.n);
+    const v = view(c), open = isOpen(c) && !v.need, done = isDone(v);
     const inProg = S && S.ch === c.n && !S.finished;
     const el = document.createElement('div');
     el.className = 'chap' + (open ? '' : ' locked');
-    const got = endings[c.n] || [];
+    const got = endings[v.key] || [];
     let st;
-    if (!open) st = c.opens && opensAt(c) > Date.now() ? `Откроется ${dateRu(c)} · <span data-cd="${opensAt(c)}">${countdown(opensAt(c) - Date.now())}</span>` : 'Скоро';
-    else if (done) st = `Пройдена · концовок ${got.length} из ${(c.endings || []).length}`;
+    if (isOpen(c) && v.need) st = 'Откроется, когда ты сделаешь выбор в конце главы 3';
+    else if (!open) st = c.opens && opensAt(c) > Date.now() ? `Откроется ${dateRu(c)} · <span data-cd="${opensAt(c)}">${countdown(opensAt(c) - Date.now())}</span>` : 'Скоро';
+    else if (done) st = `Пройдена · концовок ${got.length} из ${v.endings.length}`;
     else if (inProg) st = 'Ты остановилась на середине';
     else st = 'Открыта';
     el.innerHTML = `<div class="num">${open ? c.n : '🔒'}</div>
-      <div><h3>Глава ${c.n}. ${c.title}</h3><div class="st">${st}</div>
-      ${open && c.endings ? `<div class="ends">${c.endings.map(e => `<i class="${got.includes(e) ? 'on' : ''}" title="${got.includes(e) ? e : '???'}"></i>`).join('')}</div>` : ''}</div>
-      <button class="go" ${open ? '' : 'disabled'}>${!open ? 'Ждём' : inProg ? 'Дальше' : done ? 'Заново' : 'Играть'}</button>`;
+      <div><h3>Глава ${c.n}. ${v.title}</h3>${v.route ? `<div class="st" style="color:var(--gold2)">Твой путь: ${ROUTE_NAMES[v.route]}</div>` : ''}<div class="st">${st}</div>
+      ${open && v.endings.length ? `<div class="ends">${v.endings.map(e => `<i class="${got.includes(e) ? 'on' : ''}" title="${got.includes(e) ? e : '???'}"></i>`).join('')}</div>` : ''}</div>
+      <button class="go" ${open ? '' : 'disabled'}>${isOpen(c) && v.need ? 'Впереди' : !open ? 'Ждём' : inProg ? 'Дальше' : done ? 'Заново' : 'Играть'}</button>`;
     el.querySelector('.go').onclick = () => { if (open) startChapter(c.n, !inProg); };
     box.appendChild(el);
   });
   const cur = S && !S.finished ? S.ch : null;
-  const firstNew = G.chapters.find(c => isOpen(c) && !(S && S.done && S.done.includes(c.n)));
+  const firstNew = G.chapters.find(c => { const v = view(c); return isOpen(c) && !v.need && !isDone(v); });
   $('playBtn').textContent = cur ? `Продолжить главу ${cur}` : firstNew ? `Начать главу ${firstNew.n}` : 'Пройти главу заново';
   $('playBtn').onclick = () => cur ? startChapter(cur, false) : startChapter(firstNew ? firstNew.n : 1, true);
   $('resetBtn').hidden = !S;
@@ -473,7 +492,7 @@ setInterval(() => {
 
 $('resetBtn').onclick = () => {
   if (!confirm('Стереть прохождение и начать с первой главы? Концовки, кристаллы и наряды останутся.')) return;
-  S = null; store.del(KEY); renderMenu();
+  S = null; store.del(KEY); store.del(RKEY); renderMenu();
 };
 
 /* ---------- сцена ---------- */
@@ -487,7 +506,8 @@ Object.entries(G.people).forEach(([id, p]) => {
   $('sprites').appendChild(im); sprites[id] = im;
   (p.emotions || []).forEach(e => { const i = new Image(); i.src = sprSrc(id, e); });
 });
-Object.values(G.backgrounds).forEach(src => { const i = new Image(); i.src = src; });
+Object.values(G.backgrounds).forEach(src => String(src).split('|').forEach(u => { const i = new Image(); i.src = u; }));
+const bgCss = src => String(src).split('|').map(u => `url(${u})`).join(', ');   // если первой картинки нет, видна запасная
 function setFace(id, emo) {
   faces[id] = emo || null;
   const el = sprites[id]; if (!el) return;
@@ -498,12 +518,12 @@ let bgFlip = false;
 function setBg(name, instant) {
   const src = G.backgrounds[name]; if (!src) return;
   const a = $('bg1'), b = $('bg2'), front = bgFlip ? b : a, back = bgFlip ? a : b;
-  back.style.backgroundImage = `url(${src})`;
+  back.style.backgroundImage = bgCss(src);
   if (instant) { back.style.transition = 'none'; front.style.transition = 'none'; }
   back.style.opacity = 1; front.style.opacity = 0;
   if (instant) requestAnimationFrame(() => { back.style.transition = ''; front.style.transition = ''; });
   bgFlip = !bgFlip;
-  $('blurbg').style.backgroundImage = `url(${src})`;
+  $('blurbg').style.backgroundImage = bgCss(src);
 }
 const playerId = Object.keys(G.people).find(id => G.people[id].player) || 'anya';
 function layout(speaker) {
@@ -584,8 +604,14 @@ function showChoice(st) {
   box.classList.add('gone'); waiting = false; layout('narr');
   choices.innerHTML = `<div class="q">${st.choice}</div>`;
   st.options.forEach((o, idx) => {
+    if (o.hideUnless && !o.hideUnless(S)) return;
     const key = S.node + '#' + idx, cost = o.cost || E.premiumCost, owned = !!W.bought[key];
     const b = document.createElement('button');
+    if (o.need && !o.need(S)) {                         // вариант виден, но закрыт: подсказка, чего не хватает
+      b.className = 'opt off'; b.disabled = true;
+      b.innerHTML = `<span class="gem">🔒</span><span class="txt2"><span>${o.x}</span><span class="why">${o.lock || 'Пока недоступно'}</span></span>`;
+      choices.appendChild(b); return;
+    }
     b.className = 'opt' + (o.premium ? ' prem' : '');
     b.innerHTML = (o.premium ? '<span class="gem">💎</span>' : '') + `<span>${o.x}</span>` + (o.premium ? `<span class="lock">${owned ? '✓ твой' : cost + ' 💎'}</span>` : '');
     b.onclick = () => o.premium && !owned ? buyChoice(o, key, cost) : pick(o);
@@ -625,6 +651,7 @@ function pick(o) {
     if (k === 'courage' && v > 0) notes.push('Смелость +' + v);
   });
   if (o.flag) S.f[o.flag] = true;
+  if (o.route) { S.f.route = o.route; store.set(RKEY, o.route); }
   if (notes.length) toast(notes.join('<br>'));
   goto(o.go); save(); step();
 }
@@ -637,9 +664,10 @@ function toast(t) {
 
 /* ---------- начало и конец главы ---------- */
 function startChapter(n, restart) {
-  if (restart || !S || S.ch !== n || S.finished) S = fresh(n);
   const c = G.chapters.find(c => c.n === n);
-  $('hudTitle').innerHTML = `Глава ${n}<b>${c.title}</b>`;
+  if (c.routes && view(c).need && !(S && S.ch === n && !S.finished)) { renderMenu(); return; }
+  if (restart || !S || S.ch !== n || S.finished) S = fresh(n);
+  $('hudTitle').innerHTML = `Глава ${n}<b>${view(c).title}</b>`;
   play.hidden = false; document.body.style.overflow = 'hidden';
   $('endscr').hidden = true; choices.hidden = true; closeSheet(); box.classList.add('gone');
   if (S.bg) setBg(S.bg, true); else { const first = (G.scenes[S.node] || []).find(x => x.bg); if (first) setBg(first.bg, true); }
@@ -658,18 +686,20 @@ function endChapter() {
   box.classList.add('gone'); choices.hidden = true; waiting = false;
   if (!S.finished) {
     S.finished = true;
-    if (!S.done.includes(S.ch)) S.done.push(S.ch);
-    if (S.ending) { const l = endings[S.ch] || []; if (!l.includes(S.ending)) l.push(S.ending); endings[S.ch] = l; store.set(EKEY, endings); }
+    const vk = view(G.chapters.find(c => c.n === S.ch)).key;
+    if (!S.done.includes(vk)) S.done.push(vk);
+    if (S.ending) { const l = endings[vk] || []; if (!l.includes(S.ending)) l.push(S.ending); endings[vk] = l; store.set(EKEY, endings); }
     save();
   }
-  const c = G.chapters.find(c => c.n === S.ch), nxt = G.chapters.find(x => x.n === S.ch + 1);
-  const got = endings[S.ch] || [], total = (c.endings || []).length;
+  const c0 = G.chapters.find(c => c.n === S.ch), cv = view(c0), c = { title: cv.title }, nxt0 = G.chapters.find(x => x.n === S.ch + 1);
+  const nxt = nxt0 ? Object.assign({}, nxt0, { title: view(nxt0).title }) : null;
+  const got = endings[cv.key] || [], total = cv.endings.length;
   const m = (label, val, max, note, color) => `<div class="meter"><div class="row"><span>${label}</span><b>${note}</b></div><div class="track"><i style="width:0;background:${color}" data-w="${Math.min(100, Math.round(val / max * 100))}"></i></div></div>`;
   const ar = S.artur >= 9 ? 'Не может отвести глаз' : S.artur >= 4 ? 'Он заинтересован' : S.artur >= 2 ? 'Он присматривается' : 'Ему всё равно… пока';
   const li = S.lika >= 7 ? 'Ненавидит тебя' : S.lika >= 3 ? 'Война объявлена' : S.lika >= 1 ? 'Она насторожилась' : 'Ты для неё пустое место';
   const co = S.courage >= 3 ? 'Дерзкая' : S.courage >= 1 ? 'Не даёт себя в обиду' : 'Тихая';
   const an = (S.anton || 0) >= 3 ? 'Доверяет тебе' : (S.anton || 0) >= 1 ? 'Тепло к тебе относится' : '';
-  const nxtOpen = nxt && isOpen(nxt);
+  const nxtOpen = nxt && isOpen(nxt0) && !view(nxt0).need;
   let nextHtml = '';
   if (nxt && nxtOpen) nextHtml = `<div class="next-ch"><div class="eyebrow">Уже доступна</div><div class="ending">Глава ${nxt.n}. ${nxt.title}</div><button class="btn btn-gold" id="goNext">Играть дальше</button></div>`;
   else if (nxt) nextHtml = `<div class="next-ch"><div class="eyebrow">Глава ${nxt.n}. ${nxt.title}</div>${nxt.opens ? `<div class="cd" data-cd="${opensAt(nxt)}">${countdown(opensAt(nxt) - Date.now())}</div><div class="muted" style="font-size:14px">Откроется ${dateRu(nxt)}. Твои выборы сохранятся и повлияют на неё. А пока — собирай кристаллы каждый день.</div>` : '<div class="muted">Скоро</div>'}<a class="btn btn-gold" href="${tg}" target="_blank" rel="noopener">Узнать первой в Telegram</a></div>`;
