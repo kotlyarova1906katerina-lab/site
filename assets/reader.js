@@ -108,6 +108,14 @@
     return out + `<button data-go="${i + 1}" ${i === N - 1 ? "disabled" : ""} aria-label="Следующая страница">›</button>`;
   }
 
+  // статистика: какую книгу открыли и до какой главы дошли (assets/visit.js)
+  let opened = false;
+  function report(ci, atEnd) {
+    if (!window.track) return;
+    if (!opened) { opened = true; track("knigi", "open", B.title); }
+    track("knigi", "chapter", B.title + " · гл. " + (ci + 1));
+    if (atEnd) track("knigi", "end", B.title);
+  }
   function render(scroll) {
     const body = $("rBody");
     if (SET.mode === "paged") {
@@ -119,6 +127,7 @@
       $("rPane").querySelectorAll(".tapzone").forEach(z => z.remove());
       $("rPane").insertAdjacentHTML("beforeend", `<div class="tapzone l" data-step="-1" aria-hidden="true"></div><div class="tapzone r" data-step="1" aria-hidden="true"></div>`);
       toc.value = pg.ci;
+      report(pg.ci, i === N - 1);
     } else {
       const c = CH[pos.ci];
       body.innerHTML = run(c, `${pos.ci + 1} / ${CH.length}`) + head(c) + paras(c, 0, c.p.length);
@@ -128,6 +137,7 @@
       $("rPager").hidden = false;
       $("rInfo").textContent = `Глава ${pos.ci + 1} из ${CH.length}`;
       $("rEnd").innerHTML = last ? endCard() : "";
+      report(pos.ci, last);
       toc.value = pos.ci;
     }
     store.set(POSKEY, pos);

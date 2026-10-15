@@ -287,7 +287,7 @@
   </div>
 </div>
 
-<script src="../assets/site.js?v=20261012c"></script>
+<script src="../assets/site.js?v=20261015e"></script>
 <script src="story.js?v=20261015"></script>
 <script src="story-vetki.js?v=20261015"></script>
 <script>
@@ -625,7 +625,7 @@ function buyChoice(o, key, cost) {
   if (W.gems >= cost) {
     sheet(`<h3>💎 Особый выбор</h3><p style="color:var(--frost)">${o.x}</p><p>Стоит ${cost} 💎. У тебя ${W.gems} 💎. Купленный выбор остаётся твоим и при перепрохождении главы.</p>
       <button class="btn btn-gold" id="mYes">Выбрать за ${cost} 💎</button><button class="btn btn-ghost" id="mNo">Выбрать другой вариант</button>`);
-    $('mYes').onclick = () => { W.gems -= cost; W.bought[key] = true; saveW(); showGems(true); closeSheet(); pick(o); };
+    $('mYes').onclick = () => { window.track && track('igra', 'premium', 'Глава ' + S.ch + ' · ' + String(o.x).replace(/<[^>]*>/g, '').slice(0, 50)); W.gems -= cost; W.bought[key] = true; saveW(); showGems(true); closeSheet(); pick(o); };
   } else {
     sheet(`<h3>Не хватает кристаллов</h3><p>Этот выбор стоит ${cost} 💎, а у тебя ${W.gems} 💎.</p>
       <p>Забери ежедневную награду или введи кодовое слово из постов ВКонтакте и MAX.</p>
@@ -651,7 +651,7 @@ function pick(o) {
     if (k === 'courage' && v > 0) notes.push('Смелость +' + v);
   });
   if (o.flag) S.f[o.flag] = true;
-  if (o.route) { S.f.route = o.route; store.set(RKEY, o.route); }
+  if (o.route) { S.f.route = o.route; store.set(RKEY, o.route); window.track && track('igra', 'route', ROUTE_NAMES[o.route]); }
   if (notes.length) toast(notes.join('<br>'));
   goto(o.go); save(); step();
 }
@@ -666,7 +666,7 @@ function toast(t) {
 function startChapter(n, restart) {
   const c = G.chapters.find(c => c.n === n);
   if (c.routes && view(c).need && !(S && S.ch === n && !S.finished)) { renderMenu(); return; }
-  if (restart || !S || S.ch !== n || S.finished) S = fresh(n);
+  if (restart || !S || S.ch !== n || S.finished) { S = fresh(n); window.track && track('igra', 'start', 'Глава ' + n); }
   $('hudTitle').innerHTML = `Глава ${n}<b>${view(c).title}</b>`;
   play.hidden = false; document.body.style.overflow = 'hidden';
   $('endscr').hidden = true; choices.hidden = true; closeSheet(); box.classList.add('gone');
@@ -676,6 +676,7 @@ function startChapter(n, restart) {
   setTimeout(step, 350);
 }
 function exitGame() {
+  if (S && !S.finished && !play.hidden) window.track && track('igra', 'quit', 'Глава ' + S.ch);
   play.hidden = true; document.body.style.overflow = '';
   clearInterval(typing); typing = null; waiting = false; closeSheet();
   renderMenu();
@@ -687,6 +688,7 @@ function endChapter() {
   if (!S.finished) {
     S.finished = true;
     const vk = view(G.chapters.find(c => c.n === S.ch)).key;
+    if (window.track) { track('igra', 'finish', 'Глава ' + S.ch); if (S.ending) track('igra', 'ending', 'Глава ' + S.ch + ' · «' + S.ending + '»'); }
     if (!S.done.includes(vk)) S.done.push(vk);
     if (S.ending) { const l = endings[vk] || []; if (!l.includes(S.ending)) l.push(S.ending); endings[vk] = l; store.set(EKEY, endings); }
     save();

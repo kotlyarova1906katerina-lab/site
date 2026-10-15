@@ -26,5 +26,5 @@ window.renderEpisode = (box, e, base = "") => {
       <img src="${base}${cover}" alt="Обложка серии ${e.n}" loading="lazy">
       <span class="poster-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></span>
     </button>`;
-  box.querySelector(".poster").onclick = () => { box.innerHTML = frame(true); };
+  box.querySelector(".poster").onclick = () => { window.track && track("serial", "play", "Серия " + e.n); box.innerHTML = frame(true); };
 };

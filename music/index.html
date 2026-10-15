@@ -164,11 +164,11 @@ function load(i, play){
   if (play) audio.play().catch(() => {});
 }
 const ICON_PLAY = '<path d="M7 4.5v15l13-7.5z"/>', ICON_PAUSE = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
-audio.addEventListener("play", () => { $("play-ico").innerHTML = ICON_PAUSE; $("play").setAttribute("aria-label", "Пауза"); });
+audio.addEventListener("play", () => { window.track && track("music", "play", TRACKS[cur].title); $("play-ico").innerHTML = ICON_PAUSE; $("play").setAttribute("aria-label", "Пауза"); });
 audio.addEventListener("pause", () => { $("play-ico").innerHTML = ICON_PLAY; $("play").setAttribute("aria-label", "Слушать"); });
 audio.addEventListener("loadedmetadata", () => $("t-dur").textContent = fmt(audio.duration));
 audio.addEventListener("timeupdate", () => { if (!dragging){ draw(audio.currentTime / audio.duration); $("t-cur").textContent = fmt(audio.currentTime); } });
-audio.addEventListener("ended", () => load(cur + 1, true));
+audio.addEventListener("ended", () => { window.track && track("music", "end", TRACKS[cur].title); load(cur + 1, true); });
 $("play").onclick = e => { e.stopPropagation(); audio.paused ? audio.play().catch(() => {}) : audio.pause(); };
 $("prev").onclick = () => load(audio.currentTime > 3 ? cur : cur - 1, true);
 $("next").onclick = () => load(cur + 1, true);

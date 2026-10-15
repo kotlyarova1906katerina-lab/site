@@ -233,7 +233,7 @@ function intro(){
       <p class="small">По мотивам мини-сериала «Осколки первой любви». <a href="../serial/" style="color:var(--glass)">Смотреть сериал</a></p>
     </div>
   </section>`;
-  document.getElementById("start").onclick = () => ask(0);
+  document.getElementById("start").onclick = () => { window.track && track("test", "start", "Тест по «Осколкам»"); ask(0); };
   crack(0.3);
 }
 
@@ -263,6 +263,7 @@ function result(){
   const ranked = score();
   const total = ranked.reduce((t, r) => t + r.v, 0) || 1;
   const top = ranked[0].k, h = HEROES[top];
+  window.track && track("test", "result", h.name);
   const pct = v => Math.round(v / total * 100);
   const shareText = `Мой результат в тесте «Кто ты из „Осколков первой любви“»: ${h.name}. ${h.tagline}. А ты кто?` + (SHARE_URL ? ` ${SHARE_URL}` : "");
   app.innerHTML = `

@@ -6,7 +6,9 @@
   const SYNC = /^(oskolki-|pos-|reader-settings$)/;              // что сохраняем в аккаунт
   const TKEY = "acct-token", NKEY = "acct-name", TSKEY = "acct-ts";
   const ROOT = ((document.currentScript && document.currentScript.src) || "").replace(/assets\/account\.js.*$/, "");
-  { const v = document.createElement("script"); v.src = ROOT + "assets/visit.js?v=20261015b"; v.defer = true; document.head.appendChild(v); }   // счётчик посещений
+  // счётчик посещений и действий: track("igra", "start", "Глава 3") можно звать сразу, события подождут загрузки visit.js
+  window.track = window.track || function () { (window.__tq = window.__tq || []).push([].slice.call(arguments)); };
+  { const v = document.createElement("script"); v.src = ROOT + "assets/visit.js?v=20261015c"; v.defer = true; document.head.appendChild(v); }
 
   let ls; try { ls = window.localStorage; ls.setItem("acct-probe", "1"); ls.removeItem("acct-probe"); } catch (e) { return; }
   const rawSet = Storage.prototype.setItem, rawDel = Storage.prototype.removeItem;

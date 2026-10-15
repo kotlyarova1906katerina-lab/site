@@ -49,6 +49,18 @@ tr:last-child td{border-bottom:0}
 .note{font-size:14px;color:var(--mist)}
 .err{color:#f2a08f;font-size:14px;min-height:20px}
 .dim{opacity:.5;transition:opacity .2s}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}
+.tabs button{appearance:none;border:1px solid var(--line);background:transparent;color:var(--mist);font:500 14px var(--body);padding:8px 13px;border-radius:999px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink2);color:var(--frost);border-color:rgba(224,137,106,.55)}
+.tabs button i{font-style:normal;color:var(--ember);margin-left:6px;font-variant-numeric:tabular-nums}
+.sec-tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px}
+.sec-tables h3{font:500 16px var(--body);color:var(--frost);margin:0 0 8px}
+.sec-tables .tb{min-width:0;overflow-x:auto}
+.lead{font-size:15px;color:var(--frost);margin:0 0 14px}
+details{border-top:1px solid var(--line);padding:6px 0}
+details summary{cursor:pointer;color:var(--frost);font-size:15px;padding:6px 0}
+details summary span{color:var(--mist);font-size:13px;margin-left:6px}
+td .pct{color:var(--mist);font-size:12px;margin-left:6px}
 @media (max-width:760px){.two{grid-template-columns:1fr}.chart svg{height:200px}}
 </style>
 </head>
@@ -84,6 +96,12 @@ tr:last-child td{border-bottom:0}
     <div class="two">
       <div class="card2"><h2>Страницы</h2><p class="sub">Сколько разных людей открывали страницу</p><table id="pages"></table></div>
       <div class="card2"><h2>Откуда пришли</h2><p class="sub">Чтобы видеть ВК, TikTok и Telegram отдельно, добавляй к ссылке на сайт метку: <b>?utm_source=tiktok</b></p><table id="sources"></table></div>
+    </div>
+    <div class="card2">
+      <h2>Что делали на сайте</h2>
+      <p class="sub">Сколько разных людей сделали действие за выбранный период</p>
+      <div class="tabs" id="tabs"></div>
+      <div id="act"></div>
     </div>
     <p class="note">Человек считается один раз в день, сколько бы страниц он ни открыл. Повторный заход на ту же страницу в течение 30 минут не считается.</p>
   </div>
@@ -159,9 +177,91 @@ tr:last-child td{border-bottom:0}
     svg.querySelectorAll(".hit").forEach(el => { el.addEventListener("pointerenter", () => on(el)); el.addEventListener("focus", () => on(el)); });
     svg.addEventListener("pointerleave", () => tip.style.opacity = 0);
   }
+  /* ---------- что делали ---------- */
+  const SECTIONS = [
+    { id: "igra", title: "Игра", tables: [
+      { title: "Главы", cols: [["start", "Начали"], ["finish", "Прошли"], ["quit", "Бросили"]], order: "num", pct: ["finish", "start"] },
+      { title: "Какой путь выбирают", cols: [["route", "Выбрали"]] },
+      { title: "Концовки", cols: [["ending", "Получили"]], order: "num" },
+      { title: "Особые выборы за кристаллы", cols: [["premium", "Купили"]] } ] },
+    { id: "test", title: "Тест", tables: [
+      { title: "Кто выпадает", cols: [["result", "Выпало"]] } ], lead: ev => `Начали тест: ${fmt(sumP(ev, "test", "start"))} · дошли до результата: ${fmt(sumP(ev, "test", "result"))}` },
+    { id: "raskraska", title: "Раскраска", tables: [
+      { title: "Кадры", cols: [["start", "Открыли"], ["done", "Раскрасили"]], pct: ["done", "start"] } ] },
+    { id: "music", title: "Песни", tables: [
+      { title: "Треки", cols: [["play", "Включили"], ["end", "Дослушали"]], pct: ["end", "play"] } ] },
+    { id: "knigi", title: "Книги", tables: [
+      { title: "Книги", cols: [["open", "Открыли"], ["end", "Дочитали"]], pct: ["end", "open"] },
+      { title: "До какой главы дошли", chapters: true } ] },
+    { id: "serial", title: "Сериал", tables: [
+      { title: "Серии на сайте", cols: [["play", "Запустили"]], order: "num" } ] },
+    { id: "link", title: "Переходы", tables: [
+      { title: "Куда уходили с сайта", cols: [["click", "Людей"]] } ] }
+  ];
+  let events = null, tab = get("stats-tab") || "igra";
+  const sumP = (ev, sec, act) => ev.filter(e => e.section === sec && e.action === act).reduce((a, e) => a + e.people, 0);
+  const numOf = s => { const m = String(s).match(/(\d+)/); return m ? +m[1] : 0; };
+  function el(tag, cls, text) { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; }
+  function grid(ev, sec, t) {
+    const rows = new Map();
+    ev.filter(e => e.section === sec && t.cols.some(c => c[0] === e.action)).forEach(e => {
+      const k = e.detail || "—"; if (!rows.has(k)) rows.set(k, {}); rows.get(k)[e.action] = e.people;
+    });
+    let list = [...rows.entries()];
+    list.sort(t.order === "num" ? (a, b) => numOf(a[0]) - numOf(b[0]) || (b[1][t.cols[0][0]] || 0) - (a[1][t.cols[0][0]] || 0) : (a, b) => (b[1][t.cols[0][0]] || 0) - (a[1][t.cols[0][0]] || 0));
+    const tb = el("table");
+    if (!list.length) { const td = tb.insertRow().insertCell(); td.className = "empty"; td.textContent = "Пока пусто"; return tb; }
+    const h = tb.createTHead().insertRow(); h.appendChild(el("th", "", "")); t.cols.forEach(c => h.appendChild(el("th", "n", c[1])));
+    const body = tb.createTBody();
+    list.forEach(([k, v]) => {
+      const tr = body.insertRow(); tr.insertCell().textContent = k;
+      t.cols.forEach(c => {
+        const td = tr.insertCell(); td.className = "n"; td.textContent = fmt(v[c[0]] || 0);
+        if (t.pct && c[0] === t.pct[0] && v[t.pct[1]]) td.appendChild(el("span", "pct", Math.round(100 * (v[c[0]] || 0) / v[t.pct[1]]) + "%"));
+      });
+    });
+    return tb;
+  }
+  function chapters(ev) {
+    const box = el("div"), byBook = new Map();
+    ev.filter(e => e.section === "knigi" && e.action === "chapter" && e.detail).forEach(e => {
+      const [book, ch] = e.detail.split(" · гл. "); if (!byBook.has(book)) byBook.set(book, []); byBook.get(book).push([+ch, e.people]);
+    });
+    if (!byBook.size) { box.appendChild(el("div", "empty", "Пока пусто")); return box; }
+    [...byBook.entries()].sort((a, b) => Math.max(...b[1].map(x => x[1])) - Math.max(...a[1].map(x => x[1]))).forEach(([book, chs]) => {
+      chs.sort((a, b) => a[0] - b[0]);
+      const d = el("details"), sm = el("summary", "", book); sm.appendChild(el("span", "", `дальше всех — до главы ${chs[chs.length - 1][0]}`)); d.appendChild(sm);
+      const tb = el("table"), h = tb.createTHead().insertRow(); h.appendChild(el("th", "", "Глава")); h.appendChild(el("th", "n", "Людей"));
+      const body = tb.createTBody(); chs.forEach(([n, p]) => { const tr = body.insertRow(); tr.insertCell().textContent = "Глава " + n; const td = tr.insertCell(); td.className = "n"; td.textContent = fmt(p); });
+      d.appendChild(tb); box.appendChild(d);
+    });
+    return box;
+  }
+  function renderActs() {
+    const tabs = $("tabs"), act = $("act"); tabs.textContent = ""; act.textContent = "";
+    if (!events) { act.appendChild(el("p", "note", "Чтобы видеть, что делают на сайте, запусти в Supabase скрипт supabase_events.sql.")); return; }
+    SECTIONS.forEach(sec => {
+      const people = Math.max(0, ...events.filter(e => e.section === sec.id).map(e => e.people));
+      const b = el("button", "", sec.title); b.appendChild(el("i", "", fmt(people))); b.setAttribute("aria-pressed", sec.id === tab);
+      b.onclick = () => { tab = sec.id; put("stats-tab", tab); renderActs(); }; tabs.appendChild(b);
+    });
+    const sec = SECTIONS.find(s => s.id === tab) || SECTIONS[0];
+    if (sec.lead) act.appendChild(el("p", "lead", sec.lead(events)));
+    const wrap = el("div", "sec-tables");
+    sec.tables.forEach(t => { const c = el("div", "tb"); c.appendChild(el("h3", "", t.title)); c.appendChild(t.chapters ? chapters(events) : grid(events, sec.id, t)); wrap.appendChild(c); });
+    act.appendChild(wrap);
+  }
+  async function loadEvents() {
+    try {
+      const r = await fetch(SB + "/rest/v1/rpc/event_stats", { method: "POST", headers: { apikey: KEY, "Content-Type": "application/json" }, body: JSON.stringify({ p_key: key, p_days: days }) });
+      const j = await r.json(); events = r.ok && Array.isArray(j) ? j : null;
+    } catch (e) { events = null; }
+    renderActs();
+  }
+
   async function go() {
     $("err").textContent = "";
-    try { show(await load()); put("stats-key", key); }
+    try { show(await load()); put("stats-key", key); loadEvents(); }
     catch (e) { $("board").classList.remove("dim"); $("err").textContent = e.message; $("login").hidden = false; $("board").hidden = true; }
   }
   $("go").onclick = () => { key = $("key").value.trim(); go(); };

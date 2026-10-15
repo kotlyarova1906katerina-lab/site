@@ -206,6 +206,7 @@ const lum = ([r, g, b]) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
 function toast(t) { toastEl.textContent = t; toastEl.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => toastEl.classList.remove("on"), 1500); }
 
 async function openPic(p) {
+  window.track && track("raskraska", "start", p.name);
   P = p; ready = false; room.hidden = false; document.body.style.overflow = "hidden";
   document.getElementById("rname").textContent = p.name; document.getElementById("rprog").textContent = "";
   document.getElementById("sw").innerHTML = ""; loadingEl.hidden = false; loadingEl.textContent = "Загружаю кадр…";
@@ -320,7 +321,7 @@ function tapAt(sx, sy) {
   filled[r] = 1; remain[c]--; saveFilled(); pulse = null;
   if (remain[c] === 0) { nextColor(); toast(sel >= 0 ? `Цвет ${c + 1} готов! Дальше — ${sel + 1}` : "Последний мазок!"); }
   refreshSwatches(); repaint();
-  if (updateProg()) setTimeout(showFinish, 450);
+  if (updateProg()) { window.track && track("raskraska", "done", P.name); setTimeout(showFinish, 450); }
 }
 
 function hint() {
