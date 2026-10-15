@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta property="og:image" content="https://kotlyarova1906katerina-lab.github.io/site/assets/share.jpg">
+<meta property="og:url" content="https://kotlyarova1906katerina-lab.github.io/site/slova/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Сайт автора Екатерины Котляровой">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600;700&display=swap">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<title>Слова из слова — «Осколки первой любви»</title>
+<meta name="description" content="Игра «Слова из слова» по книге «Осколки первой любви»: собирай слова из букв длинного слова из книги. Заходи каждый день и получай звёзды за подсказки.">
+<meta property="og:title" content="Слова из слова по «Осколкам первой любви»">
+<meta property="og:description" content="Собери слова из букв слова из книги. Каждый день — звёзды в подарок.">
+
+<link rel="stylesheet" href="../assets/style.css?v=20261015p">
+<style>
+[hidden]{display:none!important}
+body{background:var(--night)}
+/* размытые Аня и Артур за игрой */
+.sl-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.sl-bg img{position:absolute;top:50%;height:min(110vh,900px);width:auto;max-width:none;transform:translateY(-50%);filter:blur(7px) saturate(1.05) brightness(.6);opacity:.75}
+.sl-bg .a{left:-8%;-webkit-mask-image:linear-gradient(90deg,#000 45%,transparent 92%);mask-image:linear-gradient(90deg,#000 45%,transparent 92%)}
+.sl-bg .b{right:-8%;-webkit-mask-image:linear-gradient(270deg,#000 45%,transparent 92%);mask-image:linear-gradient(270deg,#000 45%,transparent 92%)}
+.sl-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 70% at 50% 45%,rgba(13,18,25,.55),rgba(13,18,25,.25) 70%),linear-gradient(180deg,rgba(13,18,25,.2),rgba(13,18,25,.75))}
+@media (max-width:640px){.sl-bg img{height:70vh;opacity:.6}.sl-bg .a{left:-38%}.sl-bg .b{right:-38%}}
+
+.sl{max-width:760px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;gap:18px;min-height:calc(100vh - 70px)}
+.sl-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sl-lvl{font:400 clamp(22px,4.5vw,30px) var(--display)}
+.sl-lvl b{font:600 .9em var(--body)}
+.sl-lvl small{display:block;font:500 12px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+.sl-stars{display:inline-flex;align-items:center;gap:8px;font:700 22px var(--body);font-variant-numeric:tabular-nums;background:rgba(21,29,39,.75);border:1px solid rgba(233,194,122,.4);border-radius:999px;padding:6px 14px 6px 10px;backdrop-filter:blur(6px)}
+.sl-stars svg{width:26px;height:26px;color:var(--gold);filter:drop-shadow(0 0 6px rgba(233,194,122,.5))}
+.sl-stars.bump{animation:bump .6s}
+@keyframes bump{40%{transform:scale(1.18)}}
+
+/* найденные слова */
+.sl-found{flex:1;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:8px;min-height:120px;padding:4px 0}
+.sl-found .w{font:600 16px var(--body);letter-spacing:.04em;text-transform:uppercase;background:rgba(21,29,39,.8);border:1px solid var(--line);border-radius:10px;padding:7px 11px;backdrop-filter:blur(4px)}
+.sl-found .w.hint{border-color:rgba(233,194,122,.5);color:var(--gold)}
+.sl-found .w.new{animation:pop .5s}
+.sl-found .empty{color:var(--mist);text-align:center;align-self:center;margin:auto;max-width:360px}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1)}100%{transform:none;opacity:1}}
+
+/* собираемое слово */
+.sl-entry{min-height:56px;display:flex;justify-content:center;align-items:center;gap:6px;flex-wrap:wrap}
+.sl-entry .c{width:40px;height:48px;display:grid;place-items:center;font:700 24px var(--body);text-transform:uppercase;color:#10141b;background:var(--gold);border-radius:10px;box-shadow:0 3px 0 #b48a3e}
+.sl-entry.bad{animation:shake .4s}
+.sl-entry.good .c{background:var(--green);box-shadow:0 3px 0 #3d9a5c}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.sl-msg{text-align:center;min-height:22px;color:var(--mist);font-size:15px}
+
+/* буквы слова уровня */
+.sl-tiles{display:flex;justify-content:center;gap:clamp(4px,1.2vw,8px);flex-wrap:nowrap}
+.sl-tiles button{appearance:none;border:0;cursor:pointer;flex:0 1 64px;min-width:0;aspect-ratio:.9;max-height:76px;border-radius:clamp(8px,2vw,14px);background:#fbfaf7;color:#10202c;
+  font:700 clamp(20px,5.6vw,38px) var(--body);text-transform:uppercase;box-shadow:0 clamp(4px,1vw,7px) 0 #b9c0c8;transition:transform .1s,opacity .15s}
+.sl-tiles button:active{transform:translateY(3px);box-shadow:0 3px 0 #b9c0c8}
+.sl-tiles button.used{opacity:.25;transform:translateY(4px);box-shadow:none;cursor:default}
+.sl-count{text-align:center;font:700 22px var(--body);font-variant-numeric:tabular-nums}
+.sl-count small{display:block;font:400 13px var(--body);color:var(--mist)}
+
+.sl-acts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.sl-acts .btn{padding:13px 10px;font-size:15px}
+.btn-ok{background:var(--green);color:#0d1a12}
+.btn-ok:hover{background:#86dba1}
+.btn-hint{background:linear-gradient(180deg,#f3d791,#d9a64c);color:#2a1a05}
+.btn-hint svg{width:18px;height:18px}
+.btn-hint:disabled{opacity:.45;cursor:default}
+
+/* окна */
+.sl-modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:16px;background:rgba(5,8,12,.7);backdrop-filter:blur(4px)}
+.sl-box{width:min(420px,100%);background:linear-gradient(165deg,#1f2733,#151d27);border:1px solid rgba(233,194,122,.4);border-radius:22px;padding:26px 22px;text-align:center;display:flex;flex-direction:column;gap:12px;animation:pop .4s}
+.sl-box h2{font-size:28px}
+.sl-box .big{font:700 40px var(--body);color:var(--gold)}
+.sl-box .btn{align-self:center}
+.sl-days{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.sl-days span{width:38px;height:44px;border-radius:10px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--mist)}
+.sl-days span b{font-size:14px;color:var(--frost)}
+.sl-days span.on{border-color:var(--gold);background:rgba(233,194,122,.15)}
+.sl-days span.on b{color:var(--gold)}
+.sl-note{font-size:13px;color:var(--mist);text-align:center;margin:0}
+@media (prefers-reduced-motion:reduce){.sl-found .w.new,.sl-entry.bad,.sl-box,.sl-stars.bump{animation:none}}
+</style>
+<script src="../assets/account.js?v=20261012g"></script>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1219">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../"><small>Сайт автора</small> Екатерины Котляровой</a>
+  <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="../raskraska/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-2 0-3 1.6-3 3.4V20h3.6C8.4 20 10 19 10 17"/><path d="m17 3 4 4"/></svg><span class="lbl">Раскраска</span></a><a href="../igra/" aria-current="page"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игра</span></a></nav>
+</div></header>
+
+<div class="sl-bg" aria-hidden="true"><img class="a" src="../assets/anya.jpg" alt=""><img class="b" src="../assets/artur.jpg" alt=""></div>
+
+<main class="sl">
+  <div class="sl-top">
+    <div class="sl-lvl" id="lvl"><small>Слова из слова</small>Уровень <b>1</b></div>
+    <button class="sl-stars" id="stars" type="button" title="Звёзды: ежедневный бонус и подсказки"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6L2.5 9.3l6.6-.8z"/></svg><span id="starN">0</span></button>
+  </div>
+
+  <div class="sl-found" id="found" aria-live="polite"></div>
+
+  <div class="sl-count" id="count">0/5<small>найди слова, чтобы пройти уровень</small></div>
+  <div class="sl-entry" id="entry" aria-live="polite"></div>
+  <div class="sl-msg" id="msg">Нажимай на буквы и собирай слова</div>
+  <div class="sl-tiles" id="tiles"></div>
+  <div class="sl-acts">
+    <button class="btn btn-ghost" id="del" type="button">Стереть</button>
+    <button class="btn btn-ok" id="ok" type="button">Готово</button>
+    <button class="btn btn-hint" id="hint" type="button"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6L2.5 9.3l6.6-.8z"/></svg><span id="hintL">Слово · 5</span></button>
+  </div>
+  <p class="sl-note">Слова уровней взяты из книги «Осколки первой любви». Засчитываются существительные в начальной форме: «кот», а не «коты». Заходи каждый день — за это дарим звёзды.</p>
+</main>
+
+<div class="sl-modal" id="modal" hidden><div class="sl-box" id="box" role="dialog" aria-modal="true"></div></div>
+
+<script src="words.js?v=20261015s"></script>
+<script>
+(function () {
+  const LV = window.SLOVA, KEY = "oskolki-slova", HINT = 5;
+  const $ = id => document.getElementById(id);
+  const norm = s => s.toLowerCase().replace(/ё/g, "е");
+  const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 10 || h >= 20) ? b : c; };
+
+  /* сохранение: уровень, найденные слова по уровням, звёзды и дни заходов. Ключ oskolki-* уходит в аккаунт. */
+  const load = () => { try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s.lvl === "number") return s; } catch (e) {} return { lvl: 0, found: {}, hints: {}, stars: 0, day: "", streak: 0 }; };
+  let st = load();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+
+  /* сколько слов нужно для уровня: 5 на первом, дальше больше, но не больше половины возможных */
+  const goal = i => Math.max(4, Math.min(5 + Math.floor(i / 3), 15, Math.ceil(LV[i].k * .6)));
+
+  let L, letters, used, pick;
+  function setLevel(i) {
+    st.lvl = Math.min(i, LV.length - 1); save();
+    L = LV[st.lvl]; letters = [...L.w]; used = letters.map(() => false); pick = [];
+    $("lvl").innerHTML = `<small>Слова из слова</small>Уровень <b>${st.lvl + 1}</b>`;
+    $("tiles").innerHTML = letters.map((c, k) => `<button type="button" data-k="${k}" aria-label="Буква ${c.toUpperCase()}">${c}</button>`).join("");
+    $("tiles").querySelectorAll("button").forEach(b => b.onclick = () => tap(+b.dataset.k));
+    renderFound(); renderEntry(); say("Нажимай на буквы и собирай слова");
+  }
+  const foundList = () => st.found[st.lvl] || (st.found[st.lvl] = []);
+  function renderFound(fresh) {
+    const f = foundList(), hints = st.hints[st.lvl] || [];
+    $("found").innerHTML = f.length ? f.slice().sort((a, b) => a.length - b.length || a.localeCompare(b, "ru"))
+      .map(w => `<span class="w${hints.includes(w) ? " hint" : ""}${w === fresh ? " new" : ""}">${w}</span>`).join("")
+      : `<div class="empty">Из букв слова «${L.w.toUpperCase()}» можно собрать ${L.s.length} ${plural(L.s.length, "слово", "слова", "слов")}. Сколько найдёшь ты?</div>`;
+    const g = goal(st.lvl), n = f.length;
+    $("count").innerHTML = n < g ? `${n}/${g}<small>найди ${g} ${plural(g, "слово", "слова", "слов")}, чтобы пройти уровень</small>`
+      : `${n}/${L.s.length}<small>уровень пройден — можно искать дальше</small>`;
+    $("hint").disabled = st.stars < HINT || n >= L.s.length;
+    $("starN").textContent = st.stars;
+  }
+  function renderEntry(cls) {
+    $("entry").className = "sl-entry" + (cls ? " " + cls : "");
+    $("entry").innerHTML = pick.map(k => `<span class="c">${letters[k]}</span>`).join("");
+    $("tiles").querySelectorAll("button").forEach((b, k) => { b.classList.toggle("used", used[k]); b.disabled = used[k]; });
+  }
+  const say = t => $("msg").textContent = t;
+  function tap(k) { if (used[k]) return; used[k] = true; pick.push(k); renderEntry(); }
+  function back() { const k = pick.pop(); if (k != null) used[k] = false; renderEntry(); }
+  function clear() { pick = []; used = used.map(() => false); }
+
+  function submit() {
+    const w = pick.map(k => letters[k]).join("");
+    if (!w) return;
+    const f = foundList();
+    let bad = "";
+    if (w.length < 3) bad = "Нужно хотя бы три буквы";
+    else if (f.includes(w)) bad = "Это слово уже есть";
+    else if (w === L.w) bad = "Это само слово уровня 🙂";
+    else if (!L.s.includes(w)) bad = "Такого слова нет в словаре";
+    if (bad) { say(bad); renderEntry("bad"); setTimeout(() => { clear(); renderEntry(); }, 420); return; }
+    add(w, false);
+    renderEntry("good"); setTimeout(() => { clear(); renderEntry(); }, 350);
+  }
+  function add(w, isHint) {
+    const f = foundList(), before = f.length, g = goal(st.lvl);
+    f.push(w);
+    if (isHint) (st.hints[st.lvl] = st.hints[st.lvl] || []).push(w);
+    save(); renderFound(w);
+    say(isHint ? `Подсказка: «${w}»` : ["Отлично!", "Есть!", "Здорово!", "Так держать!", "Верно!"][f.length % 5]);
+    if (before < g && f.length >= g) setTimeout(win, 600);
+  }
+  function win() {
+    window.track && track("slova", "level", "Уровень " + (st.lvl + 1));
+    const last = st.lvl >= LV.length - 1;
+    modal(`<h2>Уровень <b style="font:600 .9em var(--body)">${st.lvl + 1}</b> пройден!</h2>
+      <p class="muted" style="margin:0">Найдено ${foundList().length} из ${L.s.length}. ${last ? "Это был последний уровень — новые появятся вместе с новыми главами." : "Можешь остаться и поискать ещё слова или идти дальше."}</p>
+      <div class="btns" style="justify-content:center">${last ? "" : `<button class="btn btn-main" id="mNext">Следующий уровень</button>`}<button class="btn btn-ghost" data-close>Искать ещё</button></div>`);
+    if (!last) $("mNext").onclick = () => { closeModal(); setLevel(st.lvl + 1); };
+  }
+
+  $("del").onclick = back;
+  $("ok").onclick = submit;
+  $("hint").onclick = () => {
+    const f = foundList(), w = L.s.find(x => !f.includes(x));
+    if (!w || st.stars < HINT) return;
+    st.stars -= HINT; window.track && track("slova", "hint", "Уровень " + (st.lvl + 1));
+    clear(); renderEntry(); add(w, true);
+  };
+  $("hintL").textContent = "Слово · " + HINT;
+  document.addEventListener("keydown", e => {
+    if (!$("modal").hidden || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === "Enter") { e.preventDefault(); submit(); return; }
+    if (e.key === "Backspace") { e.preventDefault(); back(); return; }
+    if (e.key === "Escape") { clear(); renderEntry(); return; }
+    const c = norm(e.key); if (c.length !== 1) return;
+    const k = letters.findIndex((x, i) => x === c && !used[i]);
+    if (k >= 0) tap(k);
+  });
+
+  /* окна */
+  function modal(html) { $("box").innerHTML = html; $("modal").hidden = false; $("box").querySelectorAll("[data-close]").forEach(b => b.onclick = closeModal); const b = $("box").querySelector("button"); b && b.focus(); }
+  function closeModal() { $("modal").hidden = true; }
+  $("modal").addEventListener("click", e => { if (e.target === $("modal")) closeModal(); });
+
+  /* ежедневный бонус за заход: 10 звёзд и ещё по 2 за каждый день подряд (до +10). Первый заход — 20 звёзд. */
+  const DAY = 864e5, today = Math.floor((Date.now() + 3 * 3600e3) / DAY);
+  const iso = d => new Date(d * DAY).toISOString().slice(0, 10);
+  const reward = s => 10 + Math.min(s - 1, 5) * 2;
+  function daily() {
+    if (st.day === iso(today)) return;
+    const first = !st.day;
+    st.streak = st.day === iso(today - 1) ? st.streak + 1 : 1;
+    const gift = first ? 20 : reward(st.streak);
+    st.stars += gift; st.day = iso(today); save();
+    window.track && track("slova", "bonus", "День подряд: " + Math.min(st.streak, 7));
+    const days = [1, 2, 3, 4, 5, 6, 7].map(d => `<span class="${d <= Math.min(st.streak, 7) ? "on" : ""}"><b>+${reward(d)}</b>${d} д.</span>`).join("");
+    modal(`<h2>${first ? "Добро пожаловать!" : "Ежедневный бонус"}</h2>
+      <div class="big">+${gift} ★</div>
+      <p class="muted" style="margin:0">${first ? "Звёзды на подсказки для начала. Заходи каждый день: чем дольше без пропусков, тем больше звёзд." : `Ты заходишь ${st.streak} ${plural(st.streak, "день", "дня", "дней")} подряд. Не пропускай — бонус растёт до +20 в день.`}</p>
+      <div class="sl-days">${days}</div>
+      <button class="btn btn-main" data-close>Играть</button>`);
+    $("stars").classList.add("bump");
+  }
+  $("stars").onclick = () => modal(`<h2>Звёзды</h2><div class="big">${st.stars} ★</div>
+    <p class="muted" style="margin:0">Звёзды дарим за заходы: каждый день +10 и ещё по +2 за каждый день подряд, до +20. Подсказка «Слово» стоит ${HINT} ★ и открывает одно ненайденное слово.</p>
+    <p class="muted" style="margin:0">Сейчас без пропусков: ${st.streak} ${plural(st.streak, "день", "дня", "дней")}.</p>
+    <button class="btn btn-main" data-close>Понятно</button>`);
+
+  setLevel(st.lvl);
+  if (!foundList().length && st.lvl === 0) window.track && track("slova", "start", "Уровень 1");
+  daily();
+  renderFound();
+})();
+</script>
+</body>
+</html>
