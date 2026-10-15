@@ -6,6 +6,7 @@
   const SYNC = /^(oskolki-|pos-|reader-settings$)/;              // что сохраняем в аккаунт
   const TKEY = "acct-token", NKEY = "acct-name", TSKEY = "acct-ts";
   const ROOT = ((document.currentScript && document.currentScript.src) || "").replace(/assets\/account\.js.*$/, "");
+  { const v = document.createElement("script"); v.src = ROOT + "assets/visit.js?v=20261015"; v.defer = true; document.head.appendChild(v); }   // счётчик посещений
 
   let ls; try { ls = window.localStorage; ls.setItem("acct-probe", "1"); ls.removeItem("acct-probe"); } catch (e) { return; }
   const rawSet = Storage.prototype.setItem, rawDel = Storage.prototype.removeItem;
