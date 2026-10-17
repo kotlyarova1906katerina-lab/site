@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600&display=swap">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <title>Статистика сайта</title>
-<link rel="stylesheet" href="../assets/style.css?v=20261012c">
+<link rel="stylesheet" href="../assets/style.css?v=20261017a">
 <style>
 /* Страница для автора: сводка сверху, график по дням, потом страницы и источники */
 .st-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:22px}
@@ -115,7 +115,7 @@ td .pct{color:var(--mist);font-size:12px;margin-left:6px}
   const put = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
   const fmt = n => Number(n || 0).toLocaleString("ru-RU");
   const PAGE_NAMES = { "/": "Главная", "serial/": "Сериал", "music/": "Песни ArXo", "igra/": "Игра", "raskraska/": "Раскраска",
-    "testy/": "Тесты", "test/": "Тест по «Осколкам»", "knigi/": "Мои книги", "privacy/": "Политика конфиденциальности",
+    "testy/": "Тесты", "slova/": "Слова из слова", "frazy/": "Чья это фраза?", "igry/": "Игры", "test/": "Тест по «Осколкам»", "knigi/": "Мои книги", "privacy/": "Политика конфиденциальности",
     "knigi/ostrye-lezviya-lyubvi/": "Книга «Острые лезвия любви»", "knigi/zauchka-dlya-buntarya/": "Книга «Заучка для Бунтаря»",
     "knigi/zubrilka-dlya-chernogo/": "Книга «Зубрилка для Чёрного»", "knigi/zaberi-moyu-dushu/": "Книга «Забери мою душу»",
     "knigi/pisatelnica-dlya-belova/": "Книга «Писательница для Белова»", "knigi/ne-veryu-v-lyubov/": "Книга «(Не) верю. В любовь»",
@@ -195,6 +195,17 @@ td .pct{color:var(--mist);font-size:12px;margin-left:6px}
       { title: "До какой главы дошли", chapters: true } ] },
     { id: "serial", title: "Сериал", tables: [
       { title: "Серии на сайте", cols: [["play", "Запустили"]], order: "num" } ] },
+    { id: "slova", title: "Слова из слова", tables: [
+      { title: "Пройденные уровни", cols: [["level", "Прошли"], ["hint", "Брали подсказку"]], order: "num" },
+      { title: "Заходы за бонусом", cols: [["bonus", "Людей"]], order: "num" } ],
+      lead: ev => `Начали играть: ${fmt(sumP(ev, "slova", "start"))}` },
+    { id: "frazy", title: "Чья это фраза?", tables: [
+      { title: "Результаты", cols: [["finish", "Людей"]] },
+      { title: "Делились результатом", cols: [["share", "Людей"]], order: "num" } ],
+      lead: ev => `Начинали раунд: ${fmt(sumP(ev, "frazy", "start"))}` },
+    { id: "predict", title: "Предсказания", tables: [
+      { title: "Какие осколки открыли", cols: [["open", "Открыли"]], order: "num" },
+      { title: "Чьими делились", cols: [["share", "Поделились"]] } ] },
     { id: "link", title: "Переходы", tables: [
       { title: "Куда уходили с сайта", cols: [["click", "Людей"]] } ] }
   ];

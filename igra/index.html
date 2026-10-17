@@ -19,19 +19,23 @@
 <meta property="og:title" content="Игра «Осколки первой любви» — выбор за тобой">
 <meta property="og:description" content="Стань Аней и реши, что будет дальше. Новая глава каждую неделю.">
 
-<link rel="stylesheet" href="../assets/style.css?v=20261012c">
+<link rel="stylesheet" href="../assets/style.css?v=20261017a">
 <style>
 [hidden]{display:none!important}
 :root{--gold:#e9c27a;--gold2:#f7e2ad;--ok:#5cc27a}
 
 /* ---------- меню игры ---------- */
 .g-hero{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);min-height:440px;display:flex;align-items:flex-end;isolation:isolate}
-.g-hero .bgimg{position:absolute;inset:0;background:url(img/bg_class.webp) center/cover;filter:brightness(.55) saturate(1.1);z-index:-2}
-.g-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,18,25,0) 30%,rgba(13,18,25,.92) 78%);z-index:-1}
-.g-hero .duo{position:absolute;inset:0 0 0 auto;width:min(560px,100%);z-index:-1;pointer-events:none}
-.g-hero .duo img{position:absolute;bottom:0;height:auto}
-.g-hero .duo .a{right:34%;width:52%;bottom:-6%}
-.g-hero .duo .b{right:-4%;width:56%}
+/* заставка — цельная картинка: ребята в классе (широкая для компьютера, повыше для телефона) */
+.g-hero .bgimg{position:absolute;inset:0 0 0 18%;z-index:-2}
+.g-hero .bgimg img{width:100%;height:100%;object-fit:cover;object-position:75% 35%;display:block}
+.g-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,18,25,1) 0%,rgba(13,18,25,.9) 22%,rgba(13,18,25,.35) 42%,rgba(13,18,25,0) 56%),linear-gradient(180deg,rgba(13,18,25,0) 60%,rgba(13,18,25,.55) 100%);z-index:-1}
+@media (max-width:640px){
+  .g-hero{min-height:660px}
+  .g-hero .bgimg{inset:0}
+  .g-hero .bgimg img{object-position:45% 0%}
+  .g-hero::after{background:linear-gradient(180deg,rgba(13,18,25,0) 38%,rgba(13,18,25,.85) 58%,rgba(13,18,25,.96) 100%)}
+}
 .g-hero .txt{padding:26px;display:flex;flex-direction:column;gap:14px;max-width:560px}
 .g-hero h1{font-size:clamp(34px,7vw,56px);background:linear-gradient(100deg,#f7e7b4,#e3b65f 30%,#fff3cf 50%,#c8923e 72%,#f3d791);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .g-hero p{margin:0;color:#c9d4de;max-width:46ch}
@@ -67,6 +71,19 @@
 .bg.b2{opacity:0}
 .stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0,rgba(0,0,0,0) 18%,rgba(0,0,0,0) 50%,rgba(0,0,0,.55) 100%);pointer-events:none}
 .sprites{position:absolute;inset:0}
+/* промежуточная сцена: картинка на весь экран поверх фона и героев */
+.cg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .8s ease;pointer-events:none}
+.cg.on{opacity:1}
+/* галерея сцен */
+.cg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.cg-card{appearance:none;border:1px solid var(--line);border-radius:14px;overflow:hidden;padding:0;background:var(--ink);color:var(--frost);cursor:pointer;text-align:left;font:inherit}
+.cg-card img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}
+.cg-card span{display:block;padding:8px 10px;font-size:13px;line-height:1.3}
+.cg-card small{display:block;color:var(--mist);font-size:11px}
+.cg-card.locked{cursor:default}
+.cg-card.locked img{filter:blur(14px) brightness(.45)}
+.cg-view{position:fixed;inset:0;z-index:60;background:rgba(5,8,12,.94);display:grid;place-items:center;padding:16px;cursor:zoom-out}
+.cg-view img{max-width:100%;max-height:100%;border-radius:12px}
 .spr{position:absolute;bottom:var(--lift,118px);left:50%;height:auto;transform:translateX(-50%) translateY(0);opacity:0;transition:opacity .35s ease,transform .45s cubic-bezier(.2,.8,.2,1),filter .3s;pointer-events:none;will-change:transform,opacity;-webkit-mask-image:linear-gradient(180deg,#000 80%,transparent 99%);mask-image:linear-gradient(180deg,#000 80%,transparent 99%)}
 .spr.on{opacity:1}
 .spr.dim{filter:brightness(.55) saturate(.8)}
@@ -198,14 +215,13 @@
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="../"><small>Сайт автора</small> Екатерины Котляровой</a>
-  <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="../raskraska/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-2 0-3 1.6-3 3.4V20h3.6C8.4 20 10 19 10 17"/><path d="m17 3 4 4"/></svg><span class="lbl">Раскраска</span></a><a href="./" aria-current="page"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игра</span></a></nav>
+  <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="../raskraska/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-2 0-3 1.6-3 3.4V20h3.6C8.4 20 10 19 10 17"/><path d="m17 3 4 4"/></svg><span class="lbl">Раскраска</span></a><a href="../igry/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игры</span></a></nav>
 </div></header>
 
 <main id="menu">
 <section><div class="wrap">
   <div class="g-hero">
-    <div class="bgimg"></div>
-    <div class="duo"><img class="a" id="duoA" src="img/anya.webp" alt=""><img class="b" id="duoB" src="img/artur.webp" alt=""></div>
+    <div class="bgimg"><picture><source media="(max-width: 640px)" srcset="img/hero-tall.webp"><img src="img/hero-wide.webp" alt="Аня в первый день в новом классе, на неё смотрят Артур, Антон и Лика"></picture></div>
     <button class="gem-chip" data-gems-go aria-label="Кристаллы">💎 <span data-gems>0</span></button>
     <div class="txt">
       <div class="eyebrow">Игра с выборами</div>
@@ -220,6 +236,11 @@
 <section><div class="wrap">
   <div class="sec-head"><div class="eyebrow">Главы</div><h2>Новая глава — каждую неделю</h2></div>
   <div class="chapters" id="chapters"></div>
+</div></section>
+
+<section id="scenes" hidden><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Галерея</div><h2>Сцены, которые ты открыла</h2></div>
+  <div class="cg-grid" id="cgGrid"></div>
 </div></section>
 
 <section id="gems"><div class="wrap">
@@ -278,6 +299,7 @@
   <div class="stage" id="stage">
     <div class="bg" id="bg1"></div><div class="bg b2" id="bg2"></div>
     <div class="sprites" id="sprites"></div>
+    <div class="cg" id="cg"></div>
     <div class="hud"><button class="x" id="exitBtn" aria-label="В меню">✕</button><div class="ttl" id="hudTitle"></div><button class="gem-chip" id="hudGems" aria-label="Кристаллы">💎 <span data-gems>0</span></button></div>
     <div class="toast" id="toast"></div>
     <div class="box gone" id="box" role="button" tabindex="0" aria-live="polite"><div class="who" id="who" hidden></div><div class="txt" id="txt"></div><div class="more">▼</div></div>
@@ -288,8 +310,8 @@
 </div>
 
 <script src="../assets/site.js?v=20261015e"></script>
-<script src="story.js?v=20261015"></script>
-<script src="story-vetki.js?v=20261015"></script>
+<script src="story.js?v=20261017c"></script>
+<script src="story-vetki.js?v=20261017c"></script>
 <script>
 (() => {
 const G = window.GAME, E = G.economy, $ = id => document.getElementById(id);
@@ -412,7 +434,6 @@ function renderWardrobe() {
   };
 }
 function refreshSprites() {
-  $('duoA').src = sprSrc('anya'); $('duoB').src = sprSrc('artur');
   Object.entries(sprites).forEach(([id, el]) => { const s = sprSrc(id, faces[id]); if (s && !el.src.endsWith(s)) el.src = s; });
 }
 
@@ -454,6 +475,7 @@ function dateRu(c) {
 }
 
 function renderMenu() {
+  renderScenes();
   const box = $('chapters'); box.innerHTML = '';
   G.chapters.forEach(c => {
     const v = view(c), open = isOpen(c) && !v.need, done = isDone(v);
@@ -525,6 +547,42 @@ function setBg(name, instant) {
   bgFlip = !bgFlip;
   $('blurbg').style.backgroundImage = bgCss(src);
 }
+/* промежуточные сцены: показываем, только если картинка уже есть (иначе шаг просто пропускается) */
+const CGKEY = 'oskolki-scenes';
+const cgOk = {};
+function cgLoad(name, cb) {
+  const c = (G.cgs || {})[name]; if (!c || !c.ready) return;
+  if (cgOk[name] !== undefined) { if (cgOk[name]) cb(c); return; }
+  const im = new Image();
+  im.onload = () => { cgOk[name] = true; cb(c); };
+  im.onerror = () => { cgOk[name] = false; };
+  im.src = c.src;
+}
+function setCg(name, instant) {
+  const el = $('cg');
+  if (!name) { S.cg = null; el.classList.remove('on'); return; }
+  S.cg = name; S.cgNode = S.node;
+  cgLoad(name, c => {
+    if (S.cg !== name) return;
+    el.style.backgroundImage = `url(${c.src})`;
+    if (instant) { el.style.transition = 'none'; requestAnimationFrame(() => el.style.transition = ''); }
+    el.classList.add('on');
+    const seen = store.get(CGKEY, []); if (!seen.includes(name)) { seen.push(name); store.set(CGKEY, seen); window.track && track('igra', 'scene', c.title); }
+  });
+}
+let scGen = 0;
+function renderScenes() {
+  const list = Object.entries(G.cgs || {}), grid = $('cgGrid'), seen = store.get(CGKEY, []), gen = ++scGen;
+  grid.innerHTML = '';
+  list.forEach(([name, c]) => cgLoad(name, () => {
+    if (gen !== scGen) return;
+    const open = seen.includes(name), b = document.createElement('button');
+    b.className = 'cg-card' + (open ? '' : ' locked'); b.type = 'button';
+    b.innerHTML = `<img src="${c.src}" alt="" loading="lazy"><span>${open ? c.title : 'Ещё не открыта'}<small>Глава ${c.ch}</small></span>`;
+    if (open) b.onclick = () => { const v = document.createElement('div'); v.className = 'cg-view'; v.innerHTML = `<img src="${c.src}" alt="${c.title}">`; v.onclick = () => v.remove(); document.body.appendChild(v); };
+    grid.appendChild(b); $('scenes').hidden = false;
+  }));
+}
 const playerId = Object.keys(G.people).find(id => G.people[id].player) || 'anya';
 function layout(speaker) {
   // Аня выходит слева только на свои реплики и мысли; остальные стоят справа
@@ -581,8 +639,10 @@ function step() {
     const st = list[S.i];
     if (!st) { console.warn('Сцена кончилась без перехода', S.node); return endChapter(); }
     if (st.when && !st.when(S)) { S.i++; continue; }
+    if (S.cg && S.cgNode !== S.node) setCg(null);              // сцена закончилась — картинка уходит
+    if ('cg' in st) { setCg(st.cg); S.i++; continue; }
     if (st.face) Object.entries(st.face).forEach(([id, e]) => setFace(id, e));
-    if (st.bg) { S.bg = st.bg; setBg(st.bg); S.i++; continue; }
+    if (st.bg) { S.bg = st.bg; setBg(st.bg); if (S.cg) setCg(null); S.i++; continue; }
     if (st.show) { if (!S.shown.includes(st.show)) S.shown.push(st.show); setFace(st.show, null); layout(null); S.i++; continue; }
     if (st.hide) { S.shown = S.shown.filter(x => x !== st.hide); layout(null); S.i++; continue; }
     if (st.mark) { S.ending = st.mark; S.i++; continue; }
@@ -670,6 +730,7 @@ function startChapter(n, restart) {
   $('hudTitle').innerHTML = `Глава ${n}<b>${view(c).title}</b>`;
   play.hidden = false; document.body.style.overflow = 'hidden';
   $('endscr').hidden = true; choices.hidden = true; closeSheet(); box.classList.add('gone');
+  $('cg').classList.remove('on'); if (S.cg) setCg(S.cg, true);
   if (S.bg) setBg(S.bg, true); else { const first = (G.scenes[S.node] || []).find(x => x.bg); if (first) setBg(first.bg, true); }
   Object.keys(sprites).forEach(id => setFace(id, null));
   showGems(); layout(null);

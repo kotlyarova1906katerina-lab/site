@@ -207,3 +207,54 @@ footer{border-top:1px solid var(--line);padding-block:28px;color:var(--mist);fon
   background:radial-gradient(circle,rgba(255,236,190,.95),rgba(233,194,122,.35) 40%,transparent 70%);animation:flash .9s ease-out forwards}
 @keyframes flash{0%{width:10px;height:10px;opacity:1}100%{width:520px;height:520px;opacity:0}}
 @media (prefers-reduced-motion:reduce){.title-shards.burst .sh,.sh-p,.title-shards.burst h1.gold,.title-shards .flash{animation:none}.sh-p,.title-shards .flash{display:none}}
+
+/* предсказание дня: осколок переворачивается раз в сутки */
+.pd-stage{display:grid;grid-template-columns:minmax(0,340px) 1fr;grid-template-areas:"card head" "card side";grid-template-rows:auto 1fr;column-gap:32px;row-gap:14px}
+.pd-head{grid-area:head;align-self:end;display:flex;flex-direction:column;gap:12px}
+.pd-stage>.pd-card{grid-area:card;align-self:center}
+.pd-side{grid-area:side}
+.pd-head h2{font-size:clamp(26px,5vw,36px)}
+.pd-card{appearance:none;border:0;padding:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;perspective:1200px;width:100%;display:block}
+.pd-card.open{cursor:default}
+.pd-inner{display:grid;transition:transform .8s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.pd-card.open .pd-inner{transform:rotateY(180deg)}
+.pd-card.still .pd-inner{transition:none}
+.pd-face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px;min-height:340px;display:flex;flex-direction:column;padding:24px}
+.pd-front{align-items:center;justify-content:center;gap:14px;position:relative;overflow:hidden;border:1px solid rgba(233,194,122,.4);
+  background:radial-gradient(120% 80% at 50% 0%,rgba(233,194,122,.18),transparent 60%),linear-gradient(165deg,#1f2733,#121922)}
+.pd-shard{width:120px;height:auto;filter:drop-shadow(0 0 18px rgba(233,194,122,.35));animation:pdfloat 4s ease-in-out infinite}
+.pd-q{position:absolute;top:50%;left:50%;transform:translate(-50%,-72%);font:400 44px var(--display);color:#f7e7b4;pointer-events:none}
+.pd-tap{font-size:14px;color:var(--gold);letter-spacing:.04em}
+.pd-card:hover .pd-front{border-color:var(--gold)}
+@keyframes pdfloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+.pd-back{transform:rotateY(180deg);gap:16px;border:1px solid color-mix(in srgb,var(--who) 45%,transparent);position:relative;overflow:hidden;isolation:isolate;
+  background:linear-gradient(165deg,color-mix(in srgb,var(--who) 16%,var(--ink)) 0%,var(--ink) 60%)}
+/* портрет героя в трамвае полосой сверху карточки, книзу уходит в тёмное */
+.pd-back::before{content:"";position:absolute;left:0;right:0;top:0;height:62%;z-index:-1;background:var(--pic) center 28%/cover;
+  -webkit-mask-image:linear-gradient(180deg,#000 45%,transparent 100%);mask-image:linear-gradient(180deg,#000 45%,transparent 100%)}
+.pd-back .pd-who{margin-top:clamp(110px,30vw,150px)}
+.pd-back .pd-ava{display:none}
+.pd-back .pd-who b,.pd-back .pd-who small{text-shadow:0 1px 6px rgba(0,0,0,.85)}
+.pd-who{display:flex;align-items:center;gap:12px}
+.pd-who b{display:block;font:400 20px var(--display)}
+.pd-who small{color:var(--mist);font-size:13px}
+.pd-ava{flex:none;width:64px;height:64px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px var(--who)}
+.pd-ava img,.pd-ava svg{display:block;width:100%;height:100%;object-fit:cover}
+.pd-ava.sm{width:36px;height:36px}
+.pd-text{font:400 clamp(19px,2.6vw,22px)/1.45 var(--display);flex:1}
+.pd-num{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--who)}
+.pd-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.pd-lead{margin:0}
+.pd-after{display:flex;flex-direction:column;gap:14px}
+.pd-after[hidden]{display:none}
+.pd-stats{display:flex;gap:10px;flex-wrap:wrap}
+.pd-stats>span{background:var(--ink);border:1px solid var(--line);border-radius:14px;padding:10px 14px;display:flex;flex-direction:column}
+.pd-stats b{font:600 22px var(--body);font-variant-numeric:tabular-nums}
+.pd-stats small{color:var(--mist);font-size:13px}
+.pd-next{font-variant-numeric:tabular-nums}
+.pd-coll summary{cursor:pointer;color:var(--gold)}
+.pd-coll ol{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:10px;max-height:360px;overflow:auto}
+.pd-coll li{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:var(--frost)}
+.pd-coll li b{display:block;font-size:13px;color:var(--mist);font-weight:500}
+@media (max-width:760px){.pd-stage{grid-template-columns:1fr;grid-template-areas:"head" "card" "side";grid-template-rows:auto;row-gap:20px}.pd-card{max-width:380px;margin-inline:auto}.pd-face{min-height:300px}}
+@media (prefers-reduced-motion:reduce){.pd-inner{transition:none}.pd-shard{animation:none}}
