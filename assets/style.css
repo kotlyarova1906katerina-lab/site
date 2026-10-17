@@ -227,12 +227,18 @@ footer{border-top:1px solid var(--line);padding-block:28px;color:var(--mist);fon
 .pd-tap{font-size:14px;color:var(--gold);letter-spacing:.04em}
 .pd-card:hover .pd-front{border-color:var(--gold)}
 @keyframes pdfloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
-.pd-back{transform:rotateY(180deg);gap:16px;border:1px solid color-mix(in srgb,var(--who) 45%,transparent);
+.pd-back{transform:rotateY(180deg);gap:16px;border:1px solid color-mix(in srgb,var(--who) 45%,transparent);position:relative;overflow:hidden;isolation:isolate;
   background:linear-gradient(165deg,color-mix(in srgb,var(--who) 16%,var(--ink)) 0%,var(--ink) 60%)}
+/* портрет героя в трамвае полосой сверху карточки, книзу уходит в тёмное */
+.pd-back::before{content:"";position:absolute;left:0;right:0;top:0;height:62%;z-index:-1;background:var(--pic) center 28%/cover;
+  -webkit-mask-image:linear-gradient(180deg,#000 45%,transparent 100%);mask-image:linear-gradient(180deg,#000 45%,transparent 100%)}
+.pd-back .pd-who{margin-top:clamp(110px,30vw,150px)}
+.pd-back .pd-ava{display:none}
+.pd-back .pd-who b,.pd-back .pd-who small{text-shadow:0 1px 6px rgba(0,0,0,.85)}
 .pd-who{display:flex;align-items:center;gap:12px}
 .pd-who b{display:block;font:400 20px var(--display)}
 .pd-who small{color:var(--mist);font-size:13px}
-.pd-ava{flex:none;width:56px;height:56px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px var(--who)}
+.pd-ava{flex:none;width:64px;height:64px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px var(--who)}
 .pd-ava img,.pd-ava svg{display:block;width:100%;height:100%;object-fit:cover}
 .pd-ava.sm{width:36px;height:36px}
 .pd-text{font:400 clamp(19px,2.6vw,22px)/1.45 var(--display);flex:1}

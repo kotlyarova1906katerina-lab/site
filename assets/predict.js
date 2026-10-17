@@ -6,17 +6,14 @@
   if (!box || !window.PREDICTIONS) return;
   const base = box.dataset.base || "";
   const LIST = window.PREDICTIONS, N = LIST.length, KEY = "oskolki-predict";
+  /* портреты героев в осеннем трамвае: assets/predict/<герой>.webp — лицо для кружка, <герой>-bg.webp — вся картинка для оборота карточки */
   const WHO = {
-    anya:  { name: "Аня", gen: "Ани", img: "test/img/anya.jpg",  c: "var(--rose)" },
-    artur: { name: "Артур", gen: "Артура", img: "test/img/artur.jpg", c: "var(--glass)" },
-    anton: { name: "Антон", gen: "Антона", img: "test/img/anton.jpg", c: "var(--gold)" },
-    lika:  { name: "Лика", gen: "Лики", img: "test/img/lika.jpg",  c: "var(--violet)" },
-    basya: { name: "Бася", gen: "Баси", img: "", c: "var(--ember)" }
+    anya:  { name: "Аня", gen: "Ани", c: "var(--rose)" },
+    artur: { name: "Артур", gen: "Артура", c: "var(--glass)" },
+    anton: { name: "Антон", gen: "Антона", c: "var(--gold)" },
+    lika:  { name: "Лика", gen: "Лики", c: "var(--violet)" },
+    basya: { name: "Бася", gen: "Баси", c: "var(--ember)" }
   };
-  const BASYA = `<svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#2a1d16"/><circle cx="32" cy="36" r="20" fill="#d98a4e"/>
-    <path d="M14 20c-6 4-6 20 2 24 4-7 5-17-2-24zM50 20c6 4 6 20-2 24-4-7-5-17 2-24z" fill="#b0652f"/>
-    <ellipse cx="32" cy="45" rx="11" ry="8" fill="#fff1e2"/><circle cx="32" cy="41" r="3.4" fill="#2a1a10"/>
-    <circle cx="24" cy="32" r="2.6" fill="#2a1a10"/><circle cx="40" cy="32" r="2.6" fill="#2a1a10"/><circle cx="36" cy="22" r="3" fill="#fff1e2" opacity=".85"/></svg>`;
 
   /* день по Москве; карточка №1 выпала 15 октября 2026 */
   const DAY = 864e5, START = Date.UTC(2026, 9, 15) / DAY;
@@ -34,7 +31,8 @@
   const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 10 || h >= 20) ? b : c; };
   const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
   const dateRu = new Date(today * DAY).toLocaleDateString("ru-RU", { day: "numeric", month: "long", timeZone: "UTC" });
-  const ava = w => w.img ? `<img src="${base}${w.img}" alt="" loading="lazy" width="56" height="56">` : BASYA;
+  const keyOf = w => Object.keys(WHO).find(k => WHO[k] === w);
+  const ava = w => `<img src="${base}assets/predict/${keyOf(w)}.webp" alt="" loading="lazy" width="64" height="64">`;
 
   box.classList.add("pd");
   box.innerHTML = `
@@ -55,7 +53,7 @@
             <span class="pd-q">?</span>
             <span class="pd-tap">Нажми, чтобы открыть</span>
           </span>
-          <span class="pd-face pd-back" style="--who:${who.c}">
+          <span class="pd-face pd-back" style="--who:${who.c};--pic:url('${base}assets/predict/${keyOf(who)}-bg.webp')">
             <span class="pd-who"><span class="pd-ava">${ava(who)}</span><span><b>${who.name}</b><small>предсказывает</small></span></span>
             <span class="pd-text">${esc(p.t)}</span>
             <span class="pd-num">Осколок № ${idx + 1}</span>
