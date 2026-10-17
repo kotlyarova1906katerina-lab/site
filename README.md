@@ -66,3 +66,9 @@
 Артур — `lovi/img/artur*.webp` (обычный, wink, joy, angry), вырезан с зелёного фона скриптом:
 
     python3 tools/chroma.py вход.jpg lovi/img/artur.webp 640
+
+Живой Артур — ленты кадров из роликов на зелёном фоне (`lovi/img/anim-idle|wink|joy|angry.webp`, по 8 кадров в ряд, 10 кадров в секунду):
+
+    python3 tools/chroma_anim.py ролик.mp4 lovi/img/anim-wink.webp 300 10
+
+Скрипт печатает число кадров и размер кадра — их нужно вписать в `ANIMS` в `lovi/index.html`. Пока ленты грузятся, видны картинки.

@@ -40,7 +40,9 @@ body{background:var(--night)}
 /* Артур */
 .lv-artur{position:absolute;bottom:0;left:0;z-index:1;width:40%;transform:translateX(-50%);will-change:transform;pointer-events:none}
 .lv-artur .body{display:block;animation:breathe 3.2s ease-in-out infinite;transform-origin:50% 100%}
-.lv-artur img,.lv-artur video{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 22px rgba(0,0,0,.55))}
+.lv-artur img,.lv-artur canvas{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 22px rgba(0,0,0,.55))}
+.lv-artur canvas{position:absolute;left:0;bottom:0}
+.lv-artur.live .body>img,.lv-artur.live .face{visibility:hidden}
 .lv-artur .face{position:absolute;inset:0}
 .lv-artur .face img{position:absolute;inset:0;opacity:0;transition:opacity .12s}
 .lv-artur .face img.on{opacity:1}
@@ -83,6 +85,7 @@ body{background:var(--night)}
       <div class="body">
         <img id="base" src="img/artur.webp" alt="Артур" width="640" height="818">
         <div class="face"><img data-f="wink" src="img/artur-wink.webp" alt=""><img data-f="joy" src="img/artur-joy.webp" alt=""><img data-f="angry" src="img/artur-angry.webp" alt=""></div>
+        <canvas id="anim" aria-hidden="true"></canvas>
       </div>
     </div>
     <canvas id="cv"></canvas>
@@ -122,7 +125,8 @@ body{background:var(--night)}
     dpr = Math.min(2, window.devicePixelRatio || 1);
     W = field.clientWidth; H = field.clientHeight;
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    artur.style.width = Math.min(W * .46, H * .42) + "px";
+    // в роликах Артур виден до пояса и выше ростом — делаем его чуть уже, чтобы он занимал ту же высоту поля
+    artur.style.width = (artur.classList.contains("live") ? Math.min(W * .4, H * .26) : Math.min(W * .46, H * .42)) + "px";
   }
   window.addEventListener("resize", size);
 
@@ -130,8 +134,26 @@ body{background:var(--night)}
   const likaImg = new Image(); likaImg.src = "../assets/predict/lika.webp";
 
   /* выражение лица: wink / joy / angry, через ms возвращается обычное */
+  /* живой Артур: ленты кадров из роликов (tools/chroma_anim.py). Пока не загрузились — меняются картинки выше */
+  const ANIMS = { idle: { n: 40, w: 300, h: 506 }, wink: { n: 40, w: 300, h: 506 }, joy: { n: 40, w: 300, h: 508 }, angry: { n: 40, w: 300, h: 508 } };
+  const FPS = 10, COLS = 8, acv = $("anim"), actx = acv.getContext("2d");
+  Object.entries(ANIMS).forEach(([k, a]) => { a.img = new Image(); a.img.onload = () => { a.ok = true; if (k === "idle") live(); }; a.img.src = `img/anim-${k}.webp?v=1`; });
+  let cur = "idle", fr = 0, acc = 0, prevT = 0;
+  function live() { artur.classList.add("live"); size(); requestAnimationFrame(drawAnim); }
+  function play(name) { if (ANIMS[name] && ANIMS[name].ok) { cur = name; fr = 0; acc = 0; } }
+  function drawAnim(t) {
+    const a = ANIMS[cur]; acc += Math.min(.1, (t - prevT) / 1000 || 0); prevT = t;
+    while (acc >= 1 / FPS) { acc -= 1 / FPS; fr++; if (fr >= a.n) { fr = 0; if (cur !== "idle") { cur = "idle"; } } }
+    const A = ANIMS[cur], w = artur.clientWidth, h = Math.round(w * A.h / A.w), d = Math.min(2, devicePixelRatio || 1);
+    if (acv.width !== Math.round(w * d) || acv.height !== Math.round(h * d)) { acv.width = Math.round(w * d); acv.height = Math.round(h * d); acv.style.height = h + "px"; }
+    actx.clearRect(0, 0, acv.width, acv.height);
+    actx.drawImage(A.img, (fr % COLS) * A.w, Math.floor(fr / COLS) * A.h, A.w, A.h, 0, 0, acv.width, acv.height);
+    requestAnimationFrame(drawAnim);
+  }
+
   let faceT = 0, faceNow = "";
   function face(f, ms) {
+    if (f) play(f);
     faceNow = f || "";
     artur.querySelectorAll(".face img").forEach(i => i.classList.toggle("on", i.dataset.f === faceNow));
     clearTimeout(faceT); if (f && ms) faceT = setTimeout(() => face(""), ms);
@@ -184,10 +206,11 @@ body{background:var(--night)}
     const ax = x * W, aw = artur.clientWidth;
     artur.style.transform = `translateX(${ax - aw / 2}px)`;
     // зона ловли — плечи и грудь Артура
-    const catchY = H - artur.clientHeight * .78, catchW = aw * .42;
+    const ah = artur.classList.contains("live") ? acv.clientHeight : artur.clientHeight;
+    const catchY = H - ah * .74, catchW = aw * .5;
 
     spawnIn -= dt; if (spawnIn <= 0) spawn(time);
-    winkIn -= dt; if (winkIn <= 0 && !faceNow) { face("wink", 650); winkIn = 7 + Math.random() * 6; }
+    winkIn -= dt; if (winkIn <= 0 && !faceNow && cur === "idle") { face("wink", 650); winkIn = 7 + Math.random() * 6; }
 
     ctx.clearRect(0, 0, W, H);
     const r = R();
@@ -215,7 +238,7 @@ body{background:var(--night)}
     } else {
       const pts = it.kind === "shard" ? 3 : 1; score += pts;
       pops.push({ x: px, y: it.y, s: "+" + pts, c: it.kind === "shard" ? "#f3d791" : "#ff9fb3", t: 0 });
-      if (faceNow !== "angry") face("joy", 450);
+      if (faceNow !== "angry" && (cur === "idle" || !artur.classList.contains("live"))) face("joy", 450);
     }
     hud();
   }
