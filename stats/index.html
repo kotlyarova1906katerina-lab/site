@@ -115,7 +115,7 @@ td .pct{color:var(--mist);font-size:12px;margin-left:6px}
   const put = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
   const fmt = n => Number(n || 0).toLocaleString("ru-RU");
   const PAGE_NAMES = { "/": "Главная", "serial/": "Сериал", "music/": "Песни ArXo", "igra/": "Игра", "raskraska/": "Раскраска",
-    "testy/": "Тесты", "slova/": "Слова из слова", "frazy/": "Чья это фраза?", "igry/": "Игры", "test/": "Тест по «Осколкам»", "knigi/": "Мои книги", "privacy/": "Политика конфиденциальности",
+    "testy/": "Тесты", "slova/": "Слова из слова", "frazy/": "Чья это фраза?", "pary/": "Найди пару", "igry/": "Игры", "test/": "Тест по «Осколкам»", "knigi/": "Мои книги", "privacy/": "Политика конфиденциальности",
     "knigi/ostrye-lezviya-lyubvi/": "Книга «Острые лезвия любви»", "knigi/zauchka-dlya-buntarya/": "Книга «Заучка для Бунтаря»",
     "knigi/zubrilka-dlya-chernogo/": "Книга «Зубрилка для Чёрного»", "knigi/zaberi-moyu-dushu/": "Книга «Забери мою душу»",
     "knigi/pisatelnica-dlya-belova/": "Книга «Писательница для Белова»", "knigi/ne-veryu-v-lyubov/": "Книга «(Не) верю. В любовь»",
@@ -199,6 +199,11 @@ td .pct{color:var(--mist);font-size:12px;margin-left:6px}
       { title: "Пройденные уровни", cols: [["level", "Прошли"], ["hint", "Брали подсказку"]], order: "num" },
       { title: "Заходы за бонусом", cols: [["bonus", "Людей"]], order: "num" } ],
       lead: ev => `Начали играть: ${fmt(sumP(ev, "slova", "start"))}` },
+    { id: "pary", title: "Найди пару", tables: [
+      { title: "Уровни", cols: [["start", "Начали"], ["finish", "Прошли"]], order: "num" } ] },
+    { id: "gems", title: "Кристаллы", tables: [
+      { title: "За что получали", cols: [["earn", "Людей"]] },
+      { title: "Подарок дня", cols: [["daily", "Людей"]], order: "num" } ] },
     { id: "frazy", title: "Чья это фраза?", tables: [
       { title: "Результаты", cols: [["finish", "Людей"]] },
       { title: "Делились результатом", cols: [["share", "Людей"]], order: "num" } ],

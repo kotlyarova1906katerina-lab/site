@@ -35,9 +35,6 @@ body{background:var(--night)}
 .sl-lvl{font:400 clamp(22px,4.5vw,30px) var(--display)}
 .sl-lvl b{font:600 .9em var(--body)}
 .sl-lvl small{display:block;font:500 12px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
-.sl-stars{display:inline-flex;align-items:center;gap:8px;font:700 22px var(--body);font-variant-numeric:tabular-nums;background:rgba(21,29,39,.75);border:1px solid rgba(233,194,122,.4);border-radius:999px;padding:6px 14px 6px 10px;backdrop-filter:blur(6px)}
-.sl-stars svg{width:26px;height:26px;color:var(--gold);filter:drop-shadow(0 0 6px rgba(233,194,122,.5))}
-.sl-stars.bump{animation:bump .6s}
 @keyframes bump{40%{transform:scale(1.18)}}
 
 /* найденные слова */
@@ -79,13 +76,8 @@ body{background:var(--night)}
 .sl-box h2{font-size:28px}
 .sl-box .big{font:700 40px var(--body);color:var(--gold)}
 .sl-box .btn{align-self:center}
-.sl-days{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
-.sl-days span{width:38px;height:44px;border-radius:10px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--mist)}
-.sl-days span b{font-size:14px;color:var(--frost)}
-.sl-days span.on{border-color:var(--gold);background:rgba(233,194,122,.15)}
-.sl-days span.on b{color:var(--gold)}
 .sl-note{font-size:13px;color:var(--mist);text-align:center;margin:0}
-@media (prefers-reduced-motion:reduce){.sl-found .w.new,.sl-entry.bad,.sl-box,.sl-stars.bump{animation:none}}
+@media (prefers-reduced-motion:reduce){.sl-found .w.new,.sl-entry.bad,.sl-box{animation:none}}
 </style>
 <script src="../assets/account.js?v=20261012g"></script>
 <link rel="manifest" href="../manifest.webmanifest">
@@ -102,7 +94,7 @@ body{background:var(--night)}
 <main class="sl">
   <div class="sl-top">
     <div class="sl-lvl" id="lvl"><small>Слова из слова</small>Уровень <b>1</b></div>
-    <button class="sl-stars" id="stars" type="button" title="Звёзды: ежедневный бонус и подсказки"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6L2.5 9.3l6.6-.8z"/></svg><span id="starN">0</span></button>
+    <button id="gems" type="button" title="Кристаллы — общие для всех игр">💎 0</button>
   </div>
 
   <div class="sl-found" id="found" aria-live="polite"></div>
@@ -114,17 +106,18 @@ body{background:var(--night)}
   <div class="sl-acts">
     <button class="btn btn-ghost" id="del" type="button">Стереть</button>
     <button class="btn btn-ok" id="ok" type="button">Готово</button>
-    <button class="btn btn-hint" id="hint" type="button"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.2 1.3-6.6L2.5 9.3l6.6-.8z"/></svg><span id="hintL">Слово · 5</span></button>
+    <button class="btn btn-hint" id="hint" type="button"><span id="hintL">Слово · 3 💎</span></button>
   </div>
-  <p class="sl-note">Слова уровней взяты из книги «Осколки первой любви». Засчитываются существительные в начальной форме: «кот», а не «коты». Заходи каждый день — за это дарим звёзды.</p>
+  <p class="sl-note">Слова уровней взяты из книги «Осколки первой любви». Засчитываются существительные в начальной форме: «кот», а не «коты». Подсказки — за кристаллы 💎: они общие для всех игр и копятся в «Найди пару».</p>
 </main>
 
 <div class="sl-modal" id="modal" hidden><div class="sl-box" id="box" role="dialog" aria-modal="true"></div></div>
 
+<script src="../assets/gems.js?v=20261018a"></script>
 <script src="words.js?v=20261017a"></script>
 <script>
 (function () {
-  const LV = window.SLOVA, KEY = "oskolki-slova", HINT = 5;
+  const LV = window.SLOVA, KEY = "oskolki-slova", HINT = 3;
   const $ = id => document.getElementById(id);
   const norm = s => s.toLowerCase().replace(/ё/g, "е");
   const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 10 || h >= 20) ? b : c; };
@@ -133,6 +126,9 @@ body{background:var(--night)}
   const load = () => { try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s.lvl === "number") return s; } catch (e) {} return { lvl: 0, found: {}, hints: {}, stars: 0, day: "", streak: 0 }; };
   let st = load();
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+  /* раньше здесь были свои звёзды — один раз переносим их в общие кристаллы */
+  if (st.stars > 0 && !st.gemsMoved) { GEMS.add(st.stars, "Звёзды из «Слов из слова»"); }
+  if (!st.gemsMoved) { st.stars = 0; st.gemsMoved = true; save(); }
 
   /* сколько слов нужно для уровня: 5 на первом, дальше больше, но не больше половины возможных */
   const goal = i => Math.max(4, Math.min(5 + Math.floor(i / 3), 15, Math.ceil(LV[i].k * .6)));
@@ -155,8 +151,7 @@ body{background:var(--night)}
     const g = goal(st.lvl), n = f.length;
     $("count").innerHTML = n < g ? `${n}/${g}<small>найди ${g} ${plural(g, "слово", "слова", "слов")}, чтобы пройти уровень</small>`
       : `${n}/${L.s.length}<small>уровень пройден — можно искать дальше</small>`;
-    $("hint").disabled = st.stars < HINT || n >= L.s.length;
-    $("starN").textContent = st.stars;
+    $("hint").disabled = GEMS.get() < HINT || n >= L.s.length;
   }
   function renderEntry(cls) {
     $("entry").className = "sl-entry" + (cls ? " " + cls : "");
@@ -202,11 +197,11 @@ body{background:var(--night)}
   $("ok").onclick = submit;
   $("hint").onclick = () => {
     const f = foundList(), w = L.s.find(x => !f.includes(x));
-    if (!w || st.stars < HINT) return;
-    st.stars -= HINT; window.track && track("slova", "hint", "Уровень " + (st.lvl + 1));
+    if (!w || !GEMS.spend(HINT)) return;
+    window.track && track("slova", "hint", "Уровень " + (st.lvl + 1));
     clear(); renderEntry(); add(w, true);
   };
-  $("hintL").textContent = "Слово · " + HINT;
+  $("hintL").textContent = "Слово · " + HINT + " 💎";
   document.addEventListener("keydown", e => {
     if (!$("modal").hidden || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key === "Enter") { e.preventDefault(); submit(); return; }
@@ -222,34 +217,14 @@ body{background:var(--night)}
   function closeModal() { $("modal").hidden = true; }
   $("modal").addEventListener("click", e => { if (e.target === $("modal")) closeModal(); });
 
-  /* ежедневный бонус за заход: 10 звёзд и ещё по 2 за каждый день подряд (до +10). Первый заход — 20 звёзд. */
-  const DAY = 864e5, today = Math.floor((Date.now() + 3 * 3600e3) / DAY);
-  const iso = d => new Date(d * DAY).toISOString().slice(0, 10);
-  const reward = s => 10 + Math.min(s - 1, 5) * 2;
-  function daily() {
-    if (st.day === iso(today)) return;
-    const first = !st.day;
-    st.streak = st.day === iso(today - 1) ? st.streak + 1 : 1;
-    const gift = first ? 20 : reward(st.streak);
-    st.stars += gift; st.day = iso(today); save();
-    window.track && track("slova", "bonus", "День подряд: " + Math.min(st.streak, 7));
-    const days = [1, 2, 3, 4, 5, 6, 7].map(d => `<span class="${d <= Math.min(st.streak, 7) ? "on" : ""}"><b>+${reward(d)}</b>${d} д.</span>`).join("");
-    modal(`<h2>${first ? "Добро пожаловать!" : "Ежедневный бонус"}</h2>
-      <div class="big">+${gift} ★</div>
-      <p class="muted" style="margin:0">${first ? "Звёзды на подсказки для начала. Заходи каждый день: чем дольше без пропусков, тем больше звёзд." : `Ты заходишь ${st.streak} ${plural(st.streak, "день", "дня", "дней")} подряд. Не пропускай — бонус растёт до +20 в день.`}</p>
-      <div class="sl-days">${days}</div>
-      <button class="btn btn-main" data-close>Играть</button>`);
-    $("stars").classList.add("bump");
-  }
-  $("stars").onclick = () => modal(`<h2>Звёзды</h2><div class="big">${st.stars} ★</div>
-    <p class="muted" style="margin:0">Звёзды дарим за заходы: каждый день +10 и ещё по +2 за каждый день подряд, до +20. Подсказка «Слово» стоит ${HINT} ★ и открывает одно ненайденное слово.</p>
-    <p class="muted" style="margin:0">Сейчас без пропусков: ${st.streak} ${plural(st.streak, "день", "дня", "дней")}.</p>
-    <button class="btn btn-main" data-close>Понятно</button>`);
+  /* кристаллы общие для всех игр: значок, ежедневный подарок */
+  GEMS.chip($("gems"), `Подсказка «Слово» стоит ${HINT} 💎.`);
+  GEMS.onChange(() => renderFound());
 
   setLevel(st.lvl);
   if (!foundList().length && st.lvl === 0) window.track && track("slova", "start", "Уровень 1");
-  daily();
   renderFound();
+  GEMS.offerDaily();
 })();
 </script>
 </body>
