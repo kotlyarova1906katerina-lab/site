@@ -1,9 +1,9 @@
 /* Карточки для «Найди пару». src — картинка (квадратная или 3:4, лицом по центру), title — подпись, когда пара найдена.
-   Новые карточки лежат в pary/img/. Где src ведёт за пределы pary/img — временная картинка с сайта, её заменит новая карточка. */
+   Все карточки лежат в pary/img/ (600×800). Новую карточку можно добавить в конец списка. */
 window.PAIR_CARDS = [
-  { id: "anya",   title: "Аня",                 src: "../assets/predict/anya-bg.webp" },
-  { id: "artur",  title: "Артур",               src: "../assets/predict/artur-bg.webp" },
-  { id: "anton",  title: "Антон",               src: "../assets/predict/anton-bg.webp" },
+  { id: "anya",   title: "Аня у колеса обозрения", src: "img/anya.webp" },
+  { id: "artur",  title: "Артур в подъезде",    src: "img/artur.webp" },
+  { id: "anton",  title: "Антон у библиотеки",  src: "img/anton.webp" },
   { id: "lika",   title: "Лика в кафе",         src: "img/lika.webp" },
   { id: "basya",  title: "Бася в листьях",      src: "img/basya.webp" },
   { id: "wheel",  title: "На колесе обозрения", src: "img/wheel.webp" },
