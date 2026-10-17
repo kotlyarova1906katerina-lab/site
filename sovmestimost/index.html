@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta property="og:image" content="https://kotlyarova1906katerina-lab.github.io/site/sovmestimost/og.jpg">
+<meta property="og:url" content="https://kotlyarova1906katerina-lab.github.io/site/sovmestimost/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Сайт автора Екатерины Котляровой">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600;700&display=swap">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<title>Тест: кто тебе подходит — Артур или Антон?</title>
+<meta name="description" content="Тест на совместимость по «Осколкам первой любви»: кто тебе подходит — ледяной Артур или солнечный Антон? 10 вопросов, одна минута, результат можно выложить в сторис.">
+<meta property="og:title" content="Кто тебе подходит: Артур или Антон?">
+<meta property="og:description" content="Тест на совместимость с героями «Осколков первой любви». 10 вопросов — и ты узнаешь, чьё сердце бьётся в такт с твоим.">
+
+<link rel="stylesheet" href="../assets/style.css?v=20261018b">
+<style>
+[hidden]{display:none!important}
+body{background:var(--night)}
+.sv-bg{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.sv-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(10px) brightness(.45);transform:scale(1.08)}
+.sv{max-width:620px;margin:0 auto;padding:22px 16px 40px;display:flex;flex-direction:column;gap:18px}
+.sv-card{background:rgba(21,29,39,.86);border:1px solid rgba(233,194,122,.35);border-radius:22px;padding:24px 20px;backdrop-filter:blur(6px);display:flex;flex-direction:column;gap:14px}
+.sv-duo{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.sv-duo img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:50% 20%;border-radius:16px;display:block}
+.sv-duo .vs{font:400 34px var(--display);color:var(--gold)}
+.sv h1{font-size:clamp(28px,6vw,40px)}
+.sv h2{font-size:clamp(22px,4.6vw,28px);text-wrap:balance}
+.sv p{margin:0;color:var(--mist)}
+.sv-bar{height:6px;border-radius:3px;background:rgba(185,211,230,.15);overflow:hidden}
+.sv-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--glass),var(--gold));transition:width .3s}
+.sv-step{font:500 12px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+.sv-opts{display:flex;flex-direction:column;gap:10px}
+.sv-opt{appearance:none;cursor:pointer;text-align:left;font:500 16px/1.4 var(--body);color:var(--frost);background:rgba(13,18,25,.6);border:1px solid var(--line);border-radius:14px;padding:14px 16px;transition:border-color .15s,background .15s,transform .1s}
+.sv-opt:hover{border-color:var(--gold)}
+.sv-opt:active{transform:scale(.99)}
+.sv-q{animation:fade .35s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.sv-res .hero{width:min(260px,70%);aspect-ratio:3/4;background:var(--ink2) center 20%/cover no-repeat;border-radius:20px;align-self:center;box-shadow:0 0 0 2px var(--gold),0 20px 50px rgba(0,0,0,.5)}
+.sv-meter{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font:600 15px var(--body)}
+.sv-meter .track{height:12px;border-radius:6px;background:linear-gradient(90deg,#e9c27a,#e9c27a) left/var(--a) 100% no-repeat,rgba(185,211,230,.25);overflow:hidden}
+.sv-res .big{font:700 48px/1 var(--body);color:var(--gold);text-align:center}
+.sv-res .btns{justify-content:center}
+.sv-note{font-size:13px;color:var(--mist);text-align:center}
+@media (prefers-reduced-motion:reduce){.sv-q{animation:none}}
+</style>
+<script src="../assets/account.js?v=20261012g"></script>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1219">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../"><small>Сайт автора</small> Екатерины Котляровой</a>
+  <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/" aria-current="page"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="../igry/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игры</span></a></nav>
+</div></header>
+
+<div class="sv-bg" aria-hidden="true"><img src="../pary/img/wheel.webp" alt=""></div>
+
+<main class="sv">
+  <section class="sv-card" id="intro">
+    <div class="sv-duo"><img src="../pary/img/artur.webp" alt="Артур"><span class="vs">или</span><img src="../pary/img/anton.webp" alt="Антон"></div>
+    <div class="eyebrow">Тест на совместимость · 10 вопросов · без спойлеров</div>
+    <h1>Кто тебе подходит: Артур или Антон?</h1>
+    <p>Близнецы с одинаковым лицом и совсем разным сердцем. Один молчит и делает, другой улыбается и говорит. Ответь честно — и узнаешь, чьё сердце бьётся в такт с твоим.</p>
+    <div class="btns"><button class="btn btn-main" id="start" type="button">Пройти тест</button></div>
+  </section>
+
+  <section class="sv-card" id="quiz" hidden>
+    <div class="sv-step" id="step">Вопрос 1 из 10</div>
+    <div class="sv-bar"><i id="bar" style="width:0"></i></div>
+    <div class="sv-q" id="q"></div>
+  </section>
+
+  <section class="sv-card sv-res" id="res" hidden></section>
+
+  <p class="sv-note"><a href="../testy/">Все тесты</a> · <a href="../igry/">Игры</a></p>
+</main>
+
+<script>
+(function () {
+  const $ = id => document.getElementById(id);
+  /* a — Артур, n — Антон. Баллы за каждый ответ. */
+  const Q = [
+    { q: "Идеальное первое свидание — это…", o: [
+      ["Колесо обозрения на закате, когда весь город под ногами", { a: 2 }],
+      ["Уютное кафе, латте и пирожное на двоих", { n: 2 }],
+      ["Ночная прогулка без плана — куда приведёт дорога", { a: 2 }],
+      ["Кино и бесконечные смешные разговоры после", { n: 2 }] ] },
+    { q: "Тебе грустно. Что должен сделать парень?", o: [
+      ["Молча сесть рядом и взять за руку", { a: 2 }],
+      ["Рассмешить так, что я забуду, почему плакала", { n: 2 }],
+      ["Узнать, кто меня обидел, — и разобраться", { a: 2 }],
+      ["Принести чай с мёдом и выслушать", { n: 1, a: 1 }] ] },
+    { q: "Какой подарок тронет тебя сильнее всего?", o: [
+      ["Его шапка, которую он снял с себя в холодный день", { a: 2 }],
+      ["Мягкая игрушка, выигранная для меня в тире", { a: 1, n: 1 }],
+      ["Записка с милыми словами в учебнике", { n: 2 }],
+      ["Сюрприз-пикник с моими любимыми сладостями", { n: 2 }] ] },
+    { q: "Вы поссорились. Каким должен быть он?", o: [
+      ["Пусть промолчит, остынет — а потом сделает всё, чтобы помириться", { a: 2 }],
+      ["Пусть сразу всё обсудит со мной, спокойно и с улыбкой", { n: 2 }],
+      ["Пусть спорит, но так, что у меня мурашки", { a: 2 }],
+      ["Пусть первым скажет «прости», даже если не виноват", { n: 2 }] ] },
+    { q: "Ревность — это…", o: [
+      ["«Она моя». Сказать при всех, и точка", { a: 2 }],
+      ["Пошутить, но потом тихо спросить, всё ли у нас хорошо", { n: 2 }],
+      ["Ни слова, но взгляд, от которого все расступаются", { a: 2 }],
+      ["Ревность не нужна, если доверяешь", { n: 1 }] ] },
+    { q: "Что для тебя важнее?", o: [
+      ["Поступки. Слова ничего не стоят", { a: 2 }],
+      ["Слова. Мне важно слышать, что я дорога", { n: 2 }],
+      ["Защита. Рядом с ним мне ничего не страшно", { a: 2 }],
+      ["Лёгкость. Рядом с ним мне всегда весело", { n: 2 }] ] },
+    { q: "Его стиль, от которого у тебя кружится голова:", o: [
+      ["Кожаная куртка, чёрное худи и шрам на скуле", { a: 2 }],
+      ["Светлый свитер, очки и тёплая улыбка", { n: 2 }],
+      ["Чёрное пальто и взгляд исподлобья", { a: 2 }],
+      ["Рубашка, книга под мышкой и кофе навынос", { n: 2 }] ] },
+    { q: "Какая ты в паре?", o: [
+      ["Та, что растопит лёд, — даже если он будет сопротивляться", { a: 2 }],
+      ["Та, с кем легко и надёжно, как с лучшим другом", { n: 2 }],
+      ["Та, что не боится спорить с самым опасным парнем школы", { a: 2 }],
+      ["Та, что приносит всем тепло и улыбки", { n: 1, a: 1 }] ] },
+    { q: "Выходные вдвоём — это…", o: [
+      ["Байк, трасса и ветер в волосах", { a: 2 }],
+      ["Библиотека, парк и разговоры обо всём", { n: 2 }],
+      ["Плед, фильм и его рука на моём плече", { a: 1, n: 1 }],
+      ["Шумная компания друзей и его шутки", { n: 2 }] ] },
+    { q: "И последнее: что заставит тебя влюбиться?", o: [
+      ["Как он спасает щенка из-под колёс и делает вид, что ему всё равно", { a: 2 }],
+      ["Как он заступается за незнакомку и улыбается, несмотря на синяки", { n: 2 }],
+      ["Его редкий смех, который слышишь только ты", { a: 2 }],
+      ["Его забота: он помнит всё, что ты любишь", { n: 2 }] ] }
+  ];
+  const R = {
+    artur: { img: "../pary/img/artur.webp", name: "Артур", title: "Тебе подходит Артур",
+      text: "Тебе не нужны красивые слова — тебе нужен тот, кто встанет между тобой и всем миром. Артур холодный для всех, но не для тебя. Он молчит, когда другие говорят, и делает, когда другие обещают. Рядом с ним опасно, но спокойнее, чем дома. Главное — не бойся его льда: ты из тех, кто умеет его растопить." },
+    anton: { img: "../pary/img/anton.webp", name: "Антон", title: "Тебе подходит Антон",
+      text: "Тебе нужен тот, с кем легко дышать. Антон — солнце любой компании: он рассмешит, когда грустно, заступится за незнакомку и найдёт правильные слова. С ним каждый день как прогулка по осеннему парку. Но присмотрись: у самых солнечных людей тоже бывают свои тени." },
+    both: { img: "../pary/img/wheel.webp", name: "оба брата", title: "Твоё сердце разрывается",
+      text: "Ты как Аня в первые дни в новой школе: одно лицо — и два совсем разных человека. Тебя манит и лёд Артура, и тепло Антона. Значит, тебе нужен тот, кто умеет и защищать, и смешить. Перечитай «Осколки» и реши, на чьей ты стороне." }
+  };
+
+  let i = 0, sc = { a: 0, n: 0 };
+  $("start").onclick = () => { window.track && track("sovm", "start", "Артур или Антон"); $("intro").hidden = true; $("quiz").hidden = false; i = 0; sc = { a: 0, n: 0 }; ask(); };
+  function ask() {
+    const it = Q[i];
+    $("step").textContent = `Вопрос ${i + 1} из ${Q.length}`;
+    $("bar").style.width = (i / Q.length * 100) + "%";
+    const q = $("q"); q.style.animation = "none"; void q.offsetWidth; q.style.animation = "";
+    q.innerHTML = `<h2>${it.q}</h2><div class="sv-opts" style="margin-top:14px">${it.o.map((o, k) => `<button class="sv-opt" type="button" data-k="${k}">${o[0]}</button>`).join("")}</div>`;
+    q.querySelectorAll("button").forEach(b => b.onclick = () => {
+      const w = it.o[+b.dataset.k][1]; sc.a += w.a || 0; sc.n += w.n || 0;
+      i++; if (i < Q.length) ask(); else result();
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function result() {
+    const pa = Math.round(100 * sc.a / Math.max(1, sc.a + sc.n)), pn = 100 - pa;
+    const key = pa >= 58 ? "artur" : pn >= 58 ? "anton" : "both", r = R[key];
+    const pct = key === "artur" ? pa : key === "anton" ? pn : Math.max(pa, pn);
+    window.track && track("sovm", "result", r.name);
+    $("quiz").hidden = true; const box = $("res"); box.hidden = false;
+    box.innerHTML = `<div class="eyebrow" style="text-align:center">Твой результат</div>
+      <h1 style="text-align:center">${r.title}</h1>
+      <div class="hero" role="img" aria-label="${r.name}" style="background-image:url(${r.img})"></div>
+      ${key === "both" ? `<div class="big">${pa}% / ${pn}%</div>` : `<div class="big">${pct}%</div><p style="text-align:center">совместимости</p>`}
+      <div class="sv-meter"><span>Артур ${pa}%</span><span class="track" style="--a:${pa}%"></span><span>${pn}% Антон</span></div>
+      <p>${r.text}</p>
+      <div class="btns"><button class="btn btn-main" id="share" type="button">Поделиться в сторис</button><button class="btn btn-ghost" id="again" type="button">Пройти ещё раз</button></div>
+      <p class="sv-note">Картинка для сторис сохранится в телефон или откроется меню «Поделиться».</p>`;
+    $("again").onclick = () => { box.hidden = true; $("intro").hidden = false; window.scrollTo({ top: 0 }); };
+    $("share").onclick = () => share(key, pa, pn, pct);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* картинка 1080×1920 для сторис */
+  const loadImg = src => new Promise(ok => { const im = new Image(); im.onload = () => ok(im); im.onerror = () => ok(null); im.src = src; });
+  async function story(key, pa, pn, pct) {
+    const r = R[key], c = document.createElement("canvas"); c.width = 1080; c.height = 1920; const x = c.getContext("2d");
+    await document.fonts.ready.catch(() => {});
+    const [bg, hero] = await Promise.all([loadImg("../pary/img/wheel.webp"), loadImg(r.img)]);
+    x.fillStyle = "#0d1219"; x.fillRect(0, 0, 1080, 1920);
+    if (bg) { x.filter = "blur(18px) brightness(.45)"; x.drawImage(bg, -120, -160, 1320, 2240); x.filter = "none"; }
+    x.textAlign = "center"; x.fillStyle = "#93a3b4"; x.font = "600 34px 'Golos Text', sans-serif";
+    x.fillText("ТЕСТ ПО «ОСКОЛКАМ ПЕРВОЙ ЛЮБВИ»", 540, 170);
+    x.fillStyle = "#f7e7b4"; x.font = "84px Prata, Georgia, serif";
+    const lines = key === "both" ? ["Моё сердце", "разрывается"] : ["Мне подходит", r.name];
+    lines.forEach((l, k) => x.fillText(l, 540, 300 + k * 100));
+    if (hero) {
+      const w = 700, h = 933, X = 190, Y = 470, rad = 48;
+      x.save(); x.beginPath(); x.roundRect ? x.roundRect(X, Y, w, h, rad) : x.rect(X, Y, w, h); x.clip();
+      const s = Math.max(w / hero.width, h / hero.height), dw = hero.width * s, dh = hero.height * s;
+      x.drawImage(hero, X + (w - dw) / 2, Y + (h - dh) * .2, dw, dh); x.restore();
+      x.strokeStyle = "#e9c27a"; x.lineWidth = 6; x.beginPath(); x.roundRect ? x.roundRect(X, Y, w, h, rad) : x.rect(X, Y, w, h); x.stroke();
+    }
+    x.fillStyle = "#e9c27a"; x.font = "700 120px 'Golos Text', sans-serif";
+    x.fillText(key === "both" ? `${pa}% / ${pn}%` : `${pct}%`, 540, 1560);
+    x.fillStyle = "#e8eef4"; x.font = "500 40px 'Golos Text', sans-serif";
+    x.fillText(`Артур ${pa}%  ·  Антон ${pn}%`, 540, 1640);
+    x.fillStyle = "#93a3b4"; x.font = "500 36px 'Golos Text', sans-serif";
+    x.fillText("А кто подходит тебе? Пройди тест:", 540, 1760);
+    x.fillStyle = "#e9c27a"; x.font = "600 38px 'Golos Text', sans-serif";
+    x.fillText("kotlyarova1906katerina-lab.github.io/site", 540, 1820);
+    return new Promise(ok => c.toBlob(ok, "image/jpeg", .9));
+  }
+  async function share(key, pa, pn, pct) {
+    const b = $("share"); b.disabled = true; b.textContent = "Готовлю картинку…";
+    window.track && track("sovm", "share", R[key].name);
+    try {
+      const blob = await story(key, pa, pn, pct);
+      const file = new File([blob], "osckolki-test.jpg", { type: "image/jpeg" });
+      const url = location.href.split("#")[0], text = key === "both" ? "Моё сердце разрывается между Артуром и Антоном. А кто подходит тебе?" : `Мне подходит ${R[key].name} — ${pct}%! А кто подходит тебе?`;
+      if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text, url });
+      else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+    } catch (e) {}
+    b.disabled = false; b.textContent = "Поделиться в сторис";
+  }
+})();
+</script>
+</body>
+</html>

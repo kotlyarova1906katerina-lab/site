@@ -18,25 +18,30 @@
 <meta name="description" content="Все серии мини-сериала «Осколки первой любви» по книге Екатерины Котляровой. Новые серии по понедельникам и четвергам.">
 <meta property="og:title" content="«Осколки первой любви» — все серии">
 
-<link rel="stylesheet" href="../assets/style.css?v=20261017a">
+<link rel="stylesheet" href="../assets/style.css?v=20261018b">
 <style>
-.ep-grid{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
-.pup{display:block;text-decoration:none;border-radius:14px;padding:4px 2px 0;transition:transform .2s,background .2s}
-.pup svg{display:block;width:100%;height:auto;overflow:visible}
-.pup:hover{transform:translateY(-3px);background:rgba(185,211,230,.06)}
-.pup[aria-current="true"]{background:rgba(224,137,106,.12)}
-.pup .tail{transform-origin:24px 54px}
-.pup[aria-current="true"] .tail{animation:wag .5s ease-in-out infinite alternate}
+.ep-grid{grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:10px}
+/* серии — Бася с номером серии на «жетоне» */
+.pup{position:relative;display:block;text-decoration:none;border-radius:50%;aspect-ratio:1;transition:transform .2s}
+.pup img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px rgba(185,211,230,.22);transition:box-shadow .2s,filter .2s}
+.pup b{position:absolute;right:-2px;bottom:-2px;min-width:30px;height:30px;padding:0 6px;border-radius:15px;display:grid;place-items:center;
+  font:700 15px/1 var(--body);font-variant-numeric:tabular-nums;color:#2a1a05;background:linear-gradient(180deg,#f3d791,#d9a64c);box-shadow:0 2px 6px rgba(0,0,0,.45)}
+.pup:hover{transform:translateY(-3px)}
+.pup:hover img{box-shadow:0 0 0 2px var(--gold)}
+.pup[aria-current="true"] img{box-shadow:0 0 0 3px var(--ember),0 0 18px rgba(224,137,106,.55)}
+.pup[aria-current="true"]{animation:wiggle 1.6s ease-in-out infinite}
 .pup.soon{cursor:default}
-.pup.soon:hover{transform:none;background:none}
-.pup{position:relative}
+.pup.soon img{filter:grayscale(1) brightness(.45)}
+.pup.soon b{background:var(--ink2);color:var(--mist)}
+.pup.soon i{position:absolute;inset:0;display:grid;place-items:center;font:600 12px var(--body);font-style:normal;color:var(--frost);letter-spacing:.04em}
+.pup.soon:hover{transform:none}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@media (prefers-reduced-motion:reduce){.pup[aria-current="true"]{animation:none}.pup:hover{transform:none}}
 .pup .qok{position:absolute;top:0;right:2px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--body);background:#5cc27a;color:#0d1219;box-shadow:0 0 0 2px var(--night)}
 .pup .qok.gold{background:var(--gold,#e9c27a)}
 .quiz-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .quiz-row .muted{font-size:14px}
 .know{font-size:14px;color:var(--mist)}.know b{color:var(--frost)}
-@keyframes wag{from{transform:rotate(-14deg)}to{transform:rotate(12deg)}}
-@media (prefers-reduced-motion:reduce){.pup[aria-current="true"] .tail{animation:none}.pup:hover{transform:none}}
 </style>
 <script src="../assets/account.js?v=20261012g"></script>
 <link rel="manifest" href="../manifest.webmanifest">
@@ -71,7 +76,6 @@
     </div>
   </div>
 </div></section>
-<section id="predict-day"><div class="wrap"><div id="predict" data-base="../"></div></div></section>
 </main>
 
 <footer><div class="wrap">© Екатерина Котлярова. Видео создано с помощью нейросетей по мотивам книги.</div></footer>
@@ -81,41 +85,21 @@
 <script src="../assets/gems.js?v=20261018a"></script>
 <script src="../data/quiz.js?v=20261017"></script>
 <script src="../assets/quiz.js?v=20261017"></script>
-<script src="../data/predictions.js?v=20261017a"></script>
-<script src="../assets/predict.js?v=20261017b"></script>
 <script>
 document.querySelectorAll("[data-link]").forEach(a => a.href = SITE[a.dataset.link]);
 const grid = document.getElementById("grid"), player = document.getElementById("player");
 const total = EPISODES.length;
-/* Бася — рыжий щенок с белыми пятнышками из книги; номер серии у неё на боку */
-function basya(n, soon){
-  const fur = soon ? "#2a3542" : "#d98a4e", dark = soon ? "#222c37" : "#b0652f", cream = soon ? "#323e4b" : "#fff1e2", ink = soon ? "#93a3b4" : "#3b2416";
-  return `<svg viewBox="0 0 124 92" role="img" aria-label="${soon ? "Серия " + n + " скоро" : "Серия " + n}">
-    <path class="tail" d="M26 54 C12 48 9 33 19 25" fill="none" stroke="${fur}" stroke-width="7" stroke-linecap="round"/>
-    <rect x="30" y="64" width="9" height="20" rx="4.5" fill="${dark}"/><rect x="72" y="64" width="9" height="20" rx="4.5" fill="${dark}"/>
-    <ellipse cx="57" cy="56" rx="35" ry="21" fill="${fur}"/>
-    <rect x="41" y="66" width="9" height="19" rx="4.5" fill="${fur}"/><rect x="82" y="64" width="9" height="21" rx="4.5" fill="${fur}"/>
-    <circle cx="33" cy="47" r="5" fill="${cream}" opacity=".9"/><circle cx="80" cy="66" r="4" fill="${cream}" opacity=".9"/>
-    <ellipse cx="55" cy="56" rx="17" ry="14" fill="${cream}"/>
-    <text x="55" y="61.5" text-anchor="middle" font-family="Golos Text, system-ui, sans-serif" font-weight="600" font-size="${n > 99 ? 13 : 16}" fill="${ink}">${n}</text>
-    <circle cx="95" cy="37" r="17" fill="${fur}"/>
-    <path d="M86 22 C77 25 76 42 84 46 C89 40 91 29 86 22 Z" fill="${dark}"/>
-    <ellipse cx="108" cy="43" rx="10" ry="7.5" fill="${cream}"/>
-    <circle cx="116" cy="40" r="3.4" fill="${soon ? "#93a3b4" : "#2a1a10"}"/>
-    <circle cx="99" cy="33" r="2.8" fill="${soon ? "#93a3b4" : "#2a1a10"}"/><circle cx="100" cy="32" r=".9" fill="#fff" opacity="${soon ? 0 : 1}"/>
-    <circle cx="96" cy="26" r="3" fill="${cream}" opacity=".85"/>
-    ${soon ? `<text x="62" y="20" text-anchor="middle" font-family="Golos Text, system-ui, sans-serif" font-size="11" fill="#93a3b4">скоро</text>` : `<path class="collar" d="M83 47 Q92 55 103 52" fill="none" stroke="#e0896a" stroke-width="4" stroke-linecap="round" opacity="0"/>`}
-  </svg>`;
-}
 const qmark = n => { const r = window.QUIZ && QUIZ.result(n); return r ? `<span class="qok${r.best >= 5 ? " gold" : ""}" title="Викторина: ${r.best} из 5">✓</span>` : ""; };
-grid.innerHTML = EPISODES.map(e => `<a class="pup" href="#${e.n}" data-n="${e.n}">${basya(e.n)}${qmark(e.n)}</a>`).join("")
-  + `<span class="pup soon">${basya(EPISODES[total - 1].n + 1, true)}</span>`;
+/* Бася — рыжий щенок из книги; номер серии у неё на жетоне */
+const basya = (n, soon) => `<img src="basya.webp" alt="" width="220" height="220" loading="lazy"><b>${n}</b>${soon ? "<i>скоро</i>" : ""}`;
+grid.innerHTML = EPISODES.map(e => `<a class="pup" href="#${e.n}" data-n="${e.n}" aria-label="Серия ${e.n}">${basya(e.n)}${qmark(e.n)}</a>`).join("")
+  + `<span class="pup soon" aria-label="Серия ${EPISODES[total - 1].n + 1} скоро">${basya(EPISODES[total - 1].n + 1, true)}</span>`;
 function show(n){
   let i = EPISODES.findIndex(x => x.n === n); if (i < 0) i = n > EPISODES[total - 1].n ? total - 1 : Math.max(0, EPISODES.findIndex(x => x.n > n)); const e = EPISODES[i];
   renderEpisode(player, e, "../");
   document.getElementById("ep-title").textContent = "Серия " + e.n;
   document.getElementById("ep-vk").href = vkLink(e.clip);
-  grid.querySelectorAll("a.pup").forEach(a => { const on = a.dataset.n == e.n; a.setAttribute("aria-current", on ? "true" : "false"); a.querySelector(".collar").setAttribute("opacity", on ? 1 : 0); });
+  grid.querySelectorAll("a.pup").forEach(a => { const on = a.dataset.n == e.n; a.setAttribute("aria-current", on ? "true" : "false"); });
   document.getElementById("prev").disabled = i === 0;
   document.getElementById("next").disabled = i === total - 1;
   document.getElementById("prev").style.visibility = i === 0 ? "hidden" : "visible";
