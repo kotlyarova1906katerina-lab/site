@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta property="og:image" content="https://kotlyarova1906katerina-lab.github.io/site/assets/share.jpg">
+<meta property="og:url" content="https://kotlyarova1906katerina-lab.github.io/site/frazy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Сайт автора Екатерины Котляровой">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600;700&display=swap">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<title>Чья это фраза? — «Осколки первой любви»</title>
+<meta name="description" content="Игра по «Осколкам первой любви»: угадай, кто это сказал — Аня, Артур, Антон или Лика. Каждый день новый раунд из десяти фраз.">
+<meta property="og:title" content="Чья это фраза? Игра по «Осколкам первой любви»">
+<meta property="og:description" content="Аня, Артур, Антон или Лика? Угадай, кто это сказал. Десять фраз, каждый день новые.">
+
+<link rel="stylesheet" href="../assets/style.css?v=20261017a">
+<style>
+[hidden]{display:none!important}
+body{background:var(--night)}
+.fz-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.fz-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(9px) brightness(.55) saturate(1.05);transform:scale(1.08)}
+.fz-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 45%,rgba(13,18,25,.55),rgba(13,18,25,.25) 80%),linear-gradient(180deg,rgba(13,18,25,.2),rgba(13,18,25,.7))}
+
+.fz{max-width:640px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;gap:18px;min-height:calc(100vh - 70px)}
+.fz-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.fz-title{font:400 clamp(22px,4.5vw,30px) var(--display)}
+.fz-title small{display:block;font:500 12px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+.fz-score{font:700 20px var(--body);font-variant-numeric:tabular-nums;background:rgba(21,29,39,.75);border:1px solid rgba(233,194,122,.4);border-radius:999px;padding:6px 14px;backdrop-filter:blur(6px)}
+.fz-dots{display:flex;gap:6px;justify-content:center}
+.fz-dots i{width:22px;height:6px;border-radius:3px;background:rgba(185,211,230,.18)}
+.fz-dots i.cur{background:var(--gold)}
+.fz-dots i.ok{background:var(--green)}
+.fz-dots i.bad{background:var(--rose)}
+
+.fz-q{position:relative;background:rgba(21,29,39,.82);border:1px solid rgba(233,194,122,.35);border-radius:22px;padding:30px 24px 26px;backdrop-filter:blur(6px);min-height:170px;display:flex;align-items:center}
+.fz-q::before{content:"«";position:absolute;left:14px;top:-6px;font:400 64px/1 var(--display);color:var(--gold);opacity:.6}
+.fz-q p{margin:0;font:400 clamp(20px,4.4vw,26px)/1.45 var(--display);text-wrap:balance}
+.fz-q.in p{animation:fadein .4s}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.fz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fz-opt{appearance:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;border-radius:16px;border:1px solid var(--line);background:rgba(21,29,39,.85);color:var(--frost);font:600 17px var(--body);text-align:left;transition:border-color .15s,background .15s,transform .1s}
+.fz-opt:hover{border-color:var(--glass)}
+.fz-opt:active{transform:scale(.98)}
+.fz-opt img{width:52px;height:52px;border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 2px var(--who)}
+.fz-opt.ok{background:color-mix(in srgb,var(--green) 28%,var(--ink));border-color:var(--green)}
+.fz-opt.bad{background:color-mix(in srgb,var(--rose) 26%,var(--ink));border-color:var(--rose)}
+.fz-opt:disabled{cursor:default}
+.fz-opt:disabled:not(.ok):not(.bad){opacity:.5}
+.fz-msg{text-align:center;min-height:24px;font-size:16px;color:var(--mist)}
+.fz-msg b{color:var(--frost)}
+.fz-next{align-self:center}
+
+.fz-end{background:rgba(21,29,39,.86);border:1px solid rgba(233,194,122,.4);border-radius:22px;padding:28px 22px;text-align:center;display:flex;flex-direction:column;gap:14px;backdrop-filter:blur(6px)}
+.fz-end .big{font:700 54px var(--body);color:var(--gold);line-height:1}
+.fz-end h2{font-size:clamp(24px,5vw,30px)}
+.fz-end .btns{justify-content:center}
+.fz-review{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;text-align:left}
+.fz-review li{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.4}
+.fz-review li img{width:30px;height:30px;border-radius:50%;flex:none}
+.fz-review li .m{flex:none;width:20px;text-align:center;font-weight:700}
+.fz-review li.ok .m{color:var(--green)}
+.fz-review li.bad .m{color:var(--rose)}
+.fz-note{font-size:13px;color:var(--mist);text-align:center;margin:0}
+@media (max-width:420px){.fz-opt{font-size:15px;gap:8px}.fz-opt img{width:42px;height:42px}}
+@media (prefers-reduced-motion:reduce){.fz-q.in p{animation:none}}
+</style>
+<script src="../assets/account.js?v=20261012g"></script>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1219">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../"><small>Сайт автора</small> Екатерины Котляровой</a>
+  <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="../raskraska/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-2 0-3 1.6-3 3.4V20h3.6C8.4 20 10 19 10 17"/><path d="m17 3 4 4"/></svg><span class="lbl">Раскраска</span></a><a href="../igry/" aria-current="page"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игры</span></a></nav>
+</div></header>
+
+<div class="fz-bg" aria-hidden="true"><picture><source media="(max-aspect-ratio: 1/1)" srcset="../slova/bg-tall.webp"><img src="../slova/bg-wide.webp" alt=""></picture></div>
+
+<main class="fz">
+  <div class="fz-top">
+    <div class="fz-title" id="title"><small>Чья это фраза?</small>Раунд дня</div>
+    <div class="fz-score" id="score" aria-live="polite">0/10</div>
+  </div>
+  <div class="fz-dots" id="dots" aria-hidden="true"></div>
+
+  <section id="play">
+    <div class="fz-q" id="q"><p id="qt"></p></div>
+    <div class="fz-msg" id="msg" aria-live="polite" style="margin:14px 0">Кто это сказал?</div>
+    <div class="fz-opts" id="opts"></div>
+    <div style="display:flex;justify-content:center;margin-top:16px"><button class="btn btn-main fz-next" id="next" type="button" hidden>Дальше</button></div>
+  </section>
+
+  <section id="end" hidden>
+    <div class="fz-end">
+      <div class="eyebrow" id="endLabel">Раунд дня</div>
+      <div class="big" id="endScore">0/10</div>
+      <h2 id="endTitle"></h2>
+      <p class="muted" id="endText" style="margin:0"></p>
+      <div class="btns"><button class="btn btn-main" id="again" type="button">Ещё раунд</button><button class="btn btn-ghost" id="share" type="button">Поделиться</button></div>
+      <details><summary style="cursor:pointer;color:var(--gold)">Посмотреть ответы</summary><ul class="fz-review" id="review" style="margin-top:12px"></ul></details>
+    </div>
+  </section>
+
+  <p class="fz-note">Фразы взяты из «Осколков первой любви». Раунд дня одинаковый для всех и меняется в полночь по Москве, а свободных раундов можно сыграть сколько угодно.</p>
+  <p class="fz-note"><a href="../igry/">Все игры</a></p>
+</main>
+
+<script src="quotes.js?v=20261017a"></script>
+<script>
+(function () {
+  const Q = window.QUOTES, KEY = "oskolki-frazy", N = 10, $ = id => document.getElementById(id);
+  const WHO = {
+    anya:  { name: "Аня",   c: "var(--rose)",   said: "сказала" },
+    artur: { name: "Артур", c: "var(--glass)",  said: "сказал" },
+    anton: { name: "Антон", c: "var(--gold)",   said: "сказал" },
+    lika:  { name: "Лика",  c: "var(--violet)", said: "сказала" }
+  };
+  const ava = k => `../assets/predict/${k}.webp`;
+  const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 10 || h >= 20) ? b : c; };
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
+  const save = s => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
+
+  /* день по Москве: раунд дня одинаковый для всех */
+  const DAY = 864e5, today = Math.floor((Date.now() + 3 * 3600e3) / DAY), iso = new Date(today * DAY).toISOString().slice(0, 10);
+  const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  /* в раунде у каждого героя хотя бы две фразы, остальное — случайно */
+  function makeRound(rand) {
+    const by = {}; Q.forEach((q, i) => (by[q[0]] = by[q[0]] || []).push(i));
+    const pick = arr => arr.splice(Math.floor(rand() * arr.length), 1)[0];
+    const pools = Object.fromEntries(Object.entries(by).map(([k, v]) => [k, v.slice()]));
+    const out = [];
+    Object.keys(WHO).forEach(k => { out.push(pick(pools[k])); out.push(pick(pools[k])); });
+    const rest = [].concat(...Object.values(pools));
+    while (out.length < N) out.push(pick(rest));
+    for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
+    return out;
+  }
+
+  let st = load(), round, at, answers, daily;
+  function start() {
+    st = load();
+    daily = st.day !== iso;                         // раунд дня ещё не сыгран
+    round = makeRound(daily ? rng(today * 7919) : Math.random);
+    at = 0; answers = [];
+    $("title").innerHTML = `<small>Чья это фраза?</small>${daily ? "Раунд дня" : "Свободная игра"}`;
+    $("play").hidden = false; $("end").hidden = true;
+    window.track && track("frazy", "start", daily ? "Раунд дня" : "Свободная игра");
+    show();
+  }
+  function dots() {
+    $("dots").innerHTML = round.map((_, i) => `<i class="${i < answers.length ? (answers[i].ok ? "ok" : "bad") : i === at ? "cur" : ""}"></i>`).join("");
+    $("score").textContent = `${answers.filter(a => a.ok).length}/${N}`;
+  }
+  function show() {
+    const [who, text] = Q[round[at]];
+    $("q").classList.remove("in"); void $("q").offsetWidth; $("q").classList.add("in");
+    $("qt").textContent = text;
+    $("msg").textContent = "Кто это сказал?";
+    $("next").hidden = true;
+    $("opts").innerHTML = Object.entries(WHO).map(([k, w]) => `<button class="fz-opt" type="button" data-k="${k}" style="--who:${w.c}"><img src="${ava(k)}" alt="" width="52" height="52">${w.name}</button>`).join("");
+    $("opts").querySelectorAll("button").forEach(b => b.onclick = () => answer(b.dataset.k));
+    dots();
+  }
+  function answer(k) {
+    const [who] = Q[round[at]], ok = k === who;
+    answers.push({ i: round[at], ok, k });
+    $("opts").querySelectorAll("button").forEach(b => { b.disabled = true; if (b.dataset.k === who) b.classList.add("ok"); else if (b.dataset.k === k) b.classList.add("bad"); });
+    $("msg").innerHTML = ok ? ["Верно!", "Точно!", "Да, это " + WHO[who].name + "!", "Угадала!"][answers.length % 4] : `Нет, это ${WHO[who].said} <b>${WHO[who].name}</b>`;
+    dots();
+    $("next").textContent = at === N - 1 ? "Результат" : "Дальше";
+    $("next").hidden = false; $("next").focus();
+  }
+  $("next").onclick = () => { at++; if (at < N) show(); else finish(); };
+
+  function finish() {
+    const score = answers.filter(a => a.ok).length;
+    st = load();
+    if (daily) { st.day = iso; st.dailyScore = score; st.streak = st.lastDay === new Date((today - 1) * DAY).toISOString().slice(0, 10) ? (st.streak || 0) + 1 : 1; st.lastDay = iso; }
+    st.best = Math.max(st.best || 0, score); st.played = (st.played || 0) + 1;
+    save(st);
+    window.track && track("frazy", "finish", (daily ? "Раунд дня" : "Свободная игра") + " · " + score + "/10");
+    const [title, text] = score === 10 ? ["Ты знаешь их лучше, чем они сами", "Ни одной ошибки! Похоже, ты читала «Осколки» не один раз."]
+      : score >= 8 ? ["Почти идеально", "Ещё чуть-чуть, и героям нечего будет от тебя скрыть."]
+      : score >= 5 ? ["Неплохо!", "Ты хорошо знаешь героев. Но кое-кто сумел тебя запутать."]
+      : ["Герои тебя запутали", "Ничего страшного: пересмотри сериал или почитай книгу и попробуй ещё раз."];
+    $("play").hidden = true; $("end").hidden = false;
+    $("endLabel").textContent = daily ? "Раунд дня пройден" : "Свободная игра";
+    $("endScore").textContent = `${score}/${N}`;
+    $("endTitle").textContent = title;
+    $("endText").textContent = text + (daily ? ` Новый раунд дня — завтра.${st.streak > 1 ? ` Ты играешь ${st.streak} ${plural(st.streak, "день", "дня", "дней")} подряд.` : ""}` : ` Лучший результат: ${st.best}/10.`);
+    $("review").innerHTML = answers.map(a => { const [who, t] = Q[a.i]; return `<li class="${a.ok ? "ok" : "bad"}"><span class="m">${a.ok ? "✓" : "✕"}</span><img src="${ava(who)}" alt="${WHO[who].name}"><span><b>${WHO[who].name}:</b> «${esc(t)}»</span></li>`; }).join("");
+    $("share").dataset.score = score;
+    dots();
+  }
+  $("again").onclick = start;
+  $("share").onclick = async () => {
+    const score = $("share").dataset.score, url = location.href.split("#")[0];
+    const text = `Я угадала ${score} из 10 фраз героев «Осколков первой любви». А ты сможешь?`;
+    window.track && track("frazy", "share", score + "/10");
+    try {
+      if (navigator.share) { await navigator.share({ text, url }); return; }
+      await navigator.clipboard.writeText(text + "\n" + url);
+      $("share").textContent = "Скопировано"; setTimeout(() => $("share").textContent = "Поделиться", 2000);
+    } catch (e) {}
+  };
+  start();
+})();
+</script>
+</body>
+</html>
