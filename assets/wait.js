@@ -3,7 +3,7 @@
 (function () {
   const SB = window.SITE && window.SITE.supabase;
   const STEP = 200;                       // осколков в первой картине; дальше 400, 600…
-  const IMG = "assets/zhdu-bg.jpg";
+  const IMG = "assets/zhdu-bg.jpg?v=20261017";
   const $ = id => document.getElementById(id);
   const stage = $("waitStage"); if (!stage) return;
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
