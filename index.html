@@ -172,7 +172,7 @@
         <div class="nx"><span>Новые серии выходят по понедельникам и четвергам в 18:00 МСК</span><strong id="next-ep">Следующая серия скоро</strong><span class="cd" id="next-cd"></span></div>
       </div>
       <p class="muted">Все серии по порядку, с первой, — на странице сериала. Смотреть можно прямо здесь, без перехода в ВК.</p>
-      <div class="btns"><a class="btn btn-main" href="serial/#1">Смотреть с первой серии</a><a class="btn btn-ghost" id="latest-vk" href="#" target="_blank" rel="noopener">Открыть в ВК</a></div>
+      <div class="btns"><a class="btn btn-main" href="serial/#1">Смотреть с первой серии</a></div>
     </div>
   </div>
 </div></section>
@@ -212,7 +212,6 @@ function showNext(){
   document.getElementById("next-cd").textContent = "через " + (d ? d + " д " : "") + h + " ч " + m + " мин";
 }
 showNext(); setInterval(showNext, 30000);
-document.getElementById("latest-vk").href = vkLink(last.clip);
 
 /* вход: осколки собираются из центра названия и разлетаются по местам, мелкие искры улетают дальше */
 (function(){
