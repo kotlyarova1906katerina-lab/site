@@ -25,16 +25,10 @@
 body{background:var(--night)}
 /* размытые Аня и Артур за игрой */
 .sl-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-.sl-bg img{position:absolute;top:50%;height:min(110vh,900px);width:auto;max-width:none;transform:translateY(-50%);filter:blur(3.5px) saturate(1.1) brightness(.78);opacity:.85}
-.sl-bg .a{left:-6%;-webkit-mask-image:linear-gradient(90deg,#000 50%,transparent 95%);mask-image:linear-gradient(90deg,#000 50%,transparent 95%)}
-.sl-bg .b{right:-6%;-webkit-mask-image:linear-gradient(270deg,#000 50%,transparent 95%);mask-image:linear-gradient(270deg,#000 50%,transparent 95%)}
-.sl-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(55% 65% at 50% 50%,rgba(13,18,25,.5),rgba(13,18,25,.12) 75%),linear-gradient(180deg,rgba(13,18,25,.1),rgba(13,18,25,.6))}
-/* на телефоне: Аня слева вверху, Артур справа внизу, каждый на всю высоту своей половины */
-@media (max-width:640px){
-  .sl-bg img{top:0;transform:none;height:62%;width:100%;object-fit:cover;opacity:.8}
-  .sl-bg .a{left:0;top:0;object-position:30% 30%;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent 100%);mask-image:linear-gradient(180deg,#000 55%,transparent 100%)}
-  .sl-bg .b{right:0;top:auto;bottom:0;object-position:60% 30%;-webkit-mask-image:linear-gradient(0deg,#000 55%,transparent 100%);mask-image:linear-gradient(0deg,#000 55%,transparent 100%)}
-}
+/* одна картинка на весь экран: широкая на компьютере, вертикальная на телефоне (slova/bg-*.webp) */
+.sl-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;filter:blur(3px) saturate(1.05) brightness(.8);transform:scale(1.04)}
+.sl-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 55% at 50% 55%,rgba(13,18,25,.55),rgba(13,18,25,.2) 80%),linear-gradient(180deg,rgba(13,18,25,.15),rgba(13,18,25,.65))}
+@media (max-aspect-ratio:1/1){.sl-bg img{top:64px;height:calc(100% - 64px);object-position:50% 20%}}
 
 .sl{max-width:760px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;gap:18px;min-height:calc(100vh - 70px)}
 .sl-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -103,7 +97,7 @@ body{background:var(--night)}
   <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="../raskraska/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-2 0-3 1.6-3 3.4V20h3.6C8.4 20 10 19 10 17"/><path d="m17 3 4 4"/></svg><span class="lbl">Раскраска</span></a><a href="../igra/" aria-current="page"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игра</span></a></nav>
 </div></header>
 
-<div class="sl-bg" aria-hidden="true"><img class="a" src="../assets/anya.jpg" alt=""><img class="b" src="../assets/artur.jpg" alt=""></div>
+<div class="sl-bg" aria-hidden="true"><picture><source media="(max-aspect-ratio: 1/1)" srcset="bg-tall.webp"><img src="bg-wide.webp" alt=""></picture></div>
 
 <main class="sl">
   <div class="sl-top">
