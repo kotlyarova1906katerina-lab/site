@@ -27,12 +27,12 @@
 .intro h1{font-size:clamp(34px,7vw,54px)}
 .intro h1 em{font-style:normal;color:var(--glass)}
 .reel{background:#06090d;border:1px solid var(--line);border-radius:14px;padding:18px 38px;position:relative;
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;align-items:start}
 .reel::before,.reel::after{content:"";position:absolute;top:12px;bottom:12px;width:12px;border-radius:2px;
   background:repeating-linear-gradient(to bottom,var(--ink2) 0 9px,transparent 9px 22px)}
 .reel::before{left:13px}.reel::after{right:13px}
 .frame{appearance:none;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:9px}
-.frame .pic{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:var(--ink)}
+.frame .pic{position:relative;aspect-ratio:var(--ar,1);border-radius:6px;overflow:hidden;background:var(--ink)}
 .frame img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
 .frame:hover img{transform:scale(1.03)}
 .frame .pic.fresh img{filter:grayscale(1) brightness(1.05) contrast(.9);opacity:.6}
@@ -89,13 +89,13 @@
 <body>
 <header class="top"><div class="wrap">
   <a class="brand" href="../"><small>Сайт автора</small> Екатерины Котляровой</a>
-  <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="./" aria-current="page"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5 19.5 9.5 11 18l-5-5z"/><path d="M6 13c-2 0-3 1.6-3 3.4V20h3.6C8.4 20 10 19 10 17"/><path d="m17 3 4 4"/></svg><span class="lbl">Раскраска</span></a><a href="../igry/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игры</span></a></nav>
+  <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="../igry/" aria-current="page"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игры</span></a></nav>
 </div></header>
 
 <main>
 <section><div class="wrap">
   <div class="intro">
-    <div class="eyebrow">Раскраска по номерам</div>
+    <div class="eyebrow"><a href="../igry/" style="color:inherit">Игры</a> · Раскраска по номерам</div>
     <h1>Раскрась героев <em>«Осколков»</em></h1>
     <p class="muted">Выбери кадр, потом цвет внизу и нажимай на области с тем же номером. Новые кадры появляются вместе с новыми сериями.</p>
   </div>
@@ -147,8 +147,28 @@
 </div>
 
 <script>
-/* Кадры раскраски. Новый кадр: положить data/<id>.json и thumbs/<id>.jpg, добавить строку сюда. */
+/* Кадры раскраски. Новый кадр: python3 tools/raskraska_prep2.py <картинка> <id>, затем добавить строку сюда (w, h — из data/<id>.json). */
 const PICS = [
+  { id: "tram-blizko", name: "Так близко", colors: 22, areas: 314, w: 1376, h: 768 },
+  { id: "tram-dvoe", name: "В осеннем трамвае", colors: 22, areas: 455, w: 848, h: 1264 },
+  { id: "anya-tram", name: "Аня в трамвае", colors: 22, areas: 415, w: 1024, h: 1024 },
+  { id: "artur-tram", name: "Артур в трамвае", colors: 22, areas: 387, w: 1024, h: 1024 },
+  { id: "anton-tram", name: "Антон в трамвае", colors: 22, areas: 467, w: 1024, h: 1024 },
+  { id: "lika-tram", name: "Лика у окна", colors: 22, areas: 386, w: 1024, h: 1024 },
+  { id: "basya-tram", name: "Бася едет в трамвае", colors: 22, areas: 405, w: 1024, h: 1024 },
+  { id: "klass", name: "Новенькая", colors: 22, areas: 347, w: 928, h: 1152 },
+  { id: "klass2", name: "Первый урок", colors: 22, areas: 334, w: 1584, h: 672 },
+  { id: "wheel", name: "На колесе обозрения", colors: 22, areas: 236, w: 896, h: 1200 },
+  { id: "anya-wheel", name: "Аня у колеса обозрения", colors: 22, areas: 363, w: 896, h: 1200 },
+  { id: "rescue", name: "Артур спас Басю", colors: 22, areas: 575, w: 896, h: 1200 },
+  { id: "basya", name: "Бася в листьях", colors: 22, areas: 572, w: 896, h: 1200 },
+  { id: "hat", name: "Аня в шапке Артура", colors: 22, areas: 295, w: 896, h: 1200 },
+  { id: "artur-stairs", name: "Артур в подъезде", colors: 22, areas: 280, w: 896, h: 1200 },
+  { id: "lika-cafe", name: "Лика в кафе", colors: 22, areas: 512, w: 896, h: 1200 },
+  { id: "anton-lib", name: "Антон у библиотеки", colors: 22, areas: 522, w: 896, h: 1200 },
+  { id: "sveta", name: "Света", colors: 22, areas: 431, w: 896, h: 1200 },
+  { id: "bear", name: "Мишка из тира", colors: 22, areas: 478, w: 896, h: 1200 },
+  { id: "cake", name: "Торт для Артура", colors: 22, areas: 428, w: 896, h: 1200 },
   { id: "potseluy", name: "Поцелуй в фотобудке",    colors: 26, areas: 285 },
   { id: "kosye",  name: "Фотобудка: косые глазки", colors: 27, areas: 348 },
   { id: "anya",   name: "Аня",                    colors: 23, areas: 231 },
@@ -188,7 +208,8 @@ function renderGallery() {
   PICS.forEach(p => {
     const done = countFilled(p.id, p.areas), pct = Math.round(100 * done / p.areas);
     const b = document.createElement("button"); b.className = "frame";
-    b.innerHTML = `<div class="pic ${done ? "" : "fresh"}"><img alt="" loading="lazy" src="thumbs/${p.id}.jpg" width="360" height="360"><div class="bar"><i style="width:${pct}%"></i></div></div>
+    const ar = p.w ? p.w + "/" + p.h : "1";
+    b.innerHTML = `<div class="pic ${done ? "" : "fresh"}" style="--ar:${ar}"><img alt="" loading="lazy" src="thumbs/${p.id}.jpg" width="360" height="${p.w ? Math.round(360 * p.h / p.w) : 360}"><div class="bar"><i style="width:${pct}%"></i></div></div>
       <div class="meta"><span class="name">${p.name}</span><span class="state">${pct === 100 ? "готово ✓" : done ? "раскрашено " + pct + "%" : p.colors + " цветов · " + p.areas + " областей"}</span></div>`;
     b.onclick = () => openPic(p);
     reel.appendChild(b);
@@ -198,7 +219,7 @@ function renderGallery() {
 /* ---------- мастерская ---------- */
 const cv = document.getElementById("cv"), ctx = cv.getContext("2d"), stage = document.getElementById("stage");
 const room = document.getElementById("room"), toastEl = document.getElementById("toast"), loadingEl = document.getElementById("loading");
-let P, D, N, ids, starts, bbox, filled, sel = -1, remain, paintCv, paintCtx, paintImg, pal;
+let P, D, NW, NH, ids, orig = null, starts, bbox, filled, sel = -1, remain, paintCv, paintCtx, paintImg, pal;
 let view = { s: 1, x: 0, y: 0 }, cw = 0, ch = 0, dpr = 1, pulse = null, ready = false;
 
 const hexRgb = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
@@ -214,25 +235,33 @@ async function openPic(p) {
   try {
     const r = await fetch(`data/${p.id}.json`); if (!r.ok) throw 0; D = await r.json();
   } catch (e) { loadingEl.textContent = "Не получилось загрузить кадр. Проверь интернет и открой его ещё раз."; return; }
-  N = D.size; pal = D.palette.map(hexRgb);
+  NW = D.w || D.size; NH = D.h || D.size; pal = D.palette.map(hexRgb); orig = null;
+  if (D.reveal) {   // готовые области показывают саму иллюстрацию — цвета точь-в-точь
+    try {
+      const oi = new Image(); oi.src = `full/${p.id}.jpg`; await oi.decode();
+      const oc = document.createElement("canvas"); oc.width = NW; oc.height = NH;
+      const ox = oc.getContext("2d"); ox.drawImage(oi, 0, 0, NW, NH); orig = ox.getImageData(0, 0, NW, NH).data;
+    } catch (e) { orig = null; }
+    if (P !== p) return;
+  }
   const im = new Image();
   im.onload = () => {
-    const c = document.createElement("canvas"); c.width = c.height = N;
+    const c = document.createElement("canvas"); c.width = NW; c.height = NH;
     const cx = c.getContext("2d"); cx.drawImage(im, 0, 0);
-    const d = cx.getImageData(0, 0, N, N).data, R = D.regions.length;
-    ids = new Int32Array(N * N); const cnt = new Int32Array(R);
+    const d = cx.getImageData(0, 0, NW, NH).data, R = D.regions.length;
+    ids = new Int32Array(NW * NH); const cnt = new Int32Array(R);
     for (let i = 0, j = 0; i < ids.length; i++, j += 4) { const v = (d[j] << 8) | d[j + 1]; ids[i] = v < R ? v : 0; cnt[ids[i]]++; }
     starts = new Int32Array(R + 1); for (let r = 0; r < R; r++) starts[r + 1] = starts[r] + cnt[r];
     bbox = new Int32Array(R * 4);
-    for (let r = 0; r < R; r++) { bbox[r * 4] = N; bbox[r * 4 + 1] = N; bbox[r * 4 + 2] = -1; bbox[r * 4 + 3] = -1; }
+    for (let r = 0; r < R; r++) { bbox[r * 4] = NW; bbox[r * 4 + 1] = NH; bbox[r * 4 + 2] = -1; bbox[r * 4 + 3] = -1; }
     for (let i = 0; i < ids.length; i++) {
-      const r = ids[i], x = i % N, y = (i / N) | 0, o = r * 4;
+      const r = ids[i], x = i % NW, y = (i / NW) | 0, o = r * 4;
       if (x < bbox[o]) bbox[o] = x; if (y < bbox[o + 1]) bbox[o + 1] = y; if (x > bbox[o + 2]) bbox[o + 2] = x; if (y > bbox[o + 3]) bbox[o + 3] = y;
     }
     filled = loadFilled(p.id, R);
     remain = new Int32Array(pal.length); D.regions.forEach((g, r) => { if (!filled[r]) remain[g[0]]++; });
-    paintCv = document.createElement("canvas"); paintCv.width = paintCv.height = N; paintCtx = paintCv.getContext("2d");
-    paintImg = paintCtx.createImageData(N, N);
+    paintCv = document.createElement("canvas"); paintCv.width = NW; paintCv.height = NH; paintCtx = paintCv.getContext("2d");
+    paintImg = paintCtx.createImageData(NW, NH);
     loadingEl.hidden = true; ready = true; sel = -1; nextColor(); buildSwatches(); resize(); fit(); repaint(); updateProg();
   };
   im.src = "data:image/png;base64," + D.labels;
@@ -241,11 +270,13 @@ async function openPic(p) {
 function repaint() {
   const d = paintImg.data, paper = [251, 251, 250], hl = [184, 230, 190], ln = [150, 160, 172], reg = D.regions;
   for (let i = 0, j = 0; i < ids.length; i++, j += 4) {
-    const r = ids[i], c = filled[r] ? pal[reg[r][0]] : (reg[r][0] === sel ? hl : paper);
+    const r = ids[i];
+    if (filled[r] && orig) { d[j] = orig[j]; d[j + 1] = orig[j + 1]; d[j + 2] = orig[j + 2]; d[j + 3] = 255; continue; }
+    const c = filled[r] ? pal[reg[r][0]] : (reg[r][0] === sel ? hl : paper);
     d[j] = c[0]; d[j + 1] = c[1]; d[j + 2] = c[2]; d[j + 3] = 255;
   }
-  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
-    const i = y * N + x, r = ids[i], rr = x < N - 1 ? ids[i + 1] : r, rd = y < N - 1 ? ids[i + N] : r;
+  for (let y = 0; y < NH; y++) for (let x = 0; x < NW; x++) {
+    const i = y * NW + x, r = ids[i], rr = x < NW - 1 ? ids[i + 1] : r, rd = y < NH - 1 ? ids[i + NW] : r;
     if ((rr !== r && (!filled[r] || !filled[rr])) || (rd !== r && (!filled[r] || !filled[rd]))) { const j = i * 4; d[j] = ln[0]; d[j + 1] = ln[1]; d[j + 2] = ln[2]; }
   }
   paintCtx.putImageData(paintImg, 0, 0); draw();
@@ -256,7 +287,7 @@ function draw() {
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
   ctx.setTransform(dpr * view.s, 0, 0, dpr * view.s, dpr * view.x, dpr * view.y);
   ctx.imageSmoothingEnabled = view.s < 1.6;
-  ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 18 / view.s; ctx.fillStyle = "#fbfbfa"; ctx.fillRect(0, 0, N, N); ctx.shadowBlur = 0;
+  ctx.shadowColor = "rgba(0,0,0,.45)"; ctx.shadowBlur = 18 / view.s; ctx.fillStyle = "#fbfbfa"; ctx.fillRect(0, 0, NW, NH); ctx.shadowBlur = 0;
   ctx.drawImage(paintCv, 0, 0);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.textAlign = "center"; ctx.textBaseline = "middle";
   const reg = D.regions;
@@ -277,10 +308,10 @@ function draw() {
 }
 
 function resize() { const r = stage.getBoundingClientRect(); cw = r.width; ch = r.height; dpr = Math.min(window.devicePixelRatio || 1, 2.5); cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); }
-function fit() { const s = Math.min(cw, ch) * 0.94 / N; view = { s, x: (cw - N * s) / 2, y: (ch - N * s) / 2 }; }
-function clampView() { const m = 60, w = N * view.s; view.x = Math.min(cw - m, Math.max(m - w, view.x)); view.y = Math.min(ch - m, Math.max(m - w, view.y)); }
+function fit() { const s = Math.min(cw / NW, ch / NH) * 0.94; view = { s, x: (cw - NW * s) / 2, y: (ch - NH * s) / 2 }; }
+function clampView() { const m = 60, w = NW * view.s, h = NH * view.s; view.x = Math.min(cw - m, Math.max(m - w, view.x)); view.y = Math.min(ch - m, Math.max(m - h, view.y)); }
 function zoomAt(f, cx, cy) {
-  if (!ready) return; const min = Math.min(cw, ch) * 0.5 / N, ns = Math.min(14, Math.max(min, view.s * f)), k = ns / view.s;
+  if (!ready) return; const min = Math.min(cw / NW, ch / NH) * 0.5, ns = Math.min(14, Math.max(min, view.s * f)), k = ns / view.s;
   view.x = cx - (cx - view.x) * k; view.y = cy - (cy - view.y) * k; view.s = ns; clampView(); draw();
 }
 
@@ -313,8 +344,8 @@ function updateProg() {
 function tapAt(sx, sy) {
   if (!ready) return;
   const lx = Math.floor((sx - view.x) / view.s), ly = Math.floor((sy - view.y) / view.s);
-  if (lx < 0 || ly < 0 || lx >= N || ly >= N) return;
-  const r = ids[ly * N + lx]; if (filled[r]) return;
+  if (lx < 0 || ly < 0 || lx >= NW || ly >= NH) return;
+  const r = ids[ly * NW + lx]; if (filled[r]) return;
   const c = D.regions[r][0];
   if (sel < 0) { toast(`Выбери цвет ${c + 1}`); return; }
   if (c !== sel) { toast(`Здесь цвет ${c + 1}`); return; }
@@ -342,13 +373,15 @@ function showFinish() {
   // в награду показываем и даём скачать оригинальную иллюстрацию в высоком качестве
   const W = 1080, pad = 54, band = 150;
   const compose = src => {
-    const c = document.createElement("canvas"); c.width = W; c.height = W + band;
-    const x = c.getContext("2d"); x.fillStyle = "#0d1219"; x.fillRect(0, 0, W, W + band);
+    const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height, iw = W - pad * 2;
+    const square = !D.reveal, ih = square ? iw : Math.round(iw * sh / sw), top = pad + ih;   // новые кадры — без обрезки
+    const c = document.createElement("canvas"); c.width = W; c.height = top + band;
+    const x = c.getContext("2d"); x.fillStyle = "#0d1219"; x.fillRect(0, 0, W, top + band);
     x.imageSmoothingEnabled = true; x.imageSmoothingQuality = "high";
-    const side = W - pad * 2, sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height, k = Math.min(sw, sh);
-    x.drawImage(src, (sw - k) / 2, (sh - k) / 2, k, k, pad, pad, side, side);
-    x.textAlign = "center"; x.fillStyle = "#e8eef4"; x.font = "52px Prata, Georgia, serif"; x.fillText("Осколки первой любви", W / 2, W + 38);
-    x.fillStyle = "#93a3b4"; x.font = "500 24px 'Golos Text', system-ui, sans-serif"; x.fillText("ЕКАТЕРИНА КОТЛЯРОВА", W / 2, W + 86);
+    if (square) { const k = Math.min(sw, sh); x.drawImage(src, (sw - k) / 2, (sh - k) / 2, k, k, pad, pad, iw, ih); }
+    else x.drawImage(src, pad, pad, iw, ih);
+    x.textAlign = "center"; x.fillStyle = "#e8eef4"; x.font = "52px Prata, Georgia, serif"; x.fillText("Осколки первой любви", W / 2, top + 38);
+    x.fillStyle = "#93a3b4"; x.font = "500 24px 'Golos Text', system-ui, sans-serif"; x.fillText("ЕКАТЕРИНА КОТЛЯРОВА", W / 2, top + 86);
     const url = c.toDataURL("image/jpeg", 0.92);
     document.getElementById("finImg").src = url;
     const dl = document.getElementById("dl"); dl.href = url; dl.download = `oskolki-${P.id}.jpg`;
@@ -371,7 +404,7 @@ cv.addEventListener("pointermove", e => {
   if (!ptrs.has(e.pointerId) || !ready) return; ptrs.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
   if (ptrs.size === 2 && pinch0) {
     const [a, b] = [...ptrs.values()], d = Math.hypot(a.x - b.x, a.y - b.y), cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2;
-    const min = Math.min(cw, ch) * 0.5 / N, ns = Math.min(14, Math.max(min, pinch0.s * d / pinch0.d)), k = ns / pinch0.s;
+    const min = Math.min(cw / NW, ch / NH) * 0.5, ns = Math.min(14, Math.max(min, pinch0.s * d / pinch0.d)), k = ns / pinch0.s;
     view.s = ns; view.x = cx - (pinch0.cx - pinch0.vx) * k; view.y = cy - (pinch0.cy - pinch0.vy) * k; clampView(); draw();
   } else if (ptrs.size === 1 && start) {
     const dx = e.offsetX - start.x, dy = e.offsetY - start.y;
