@@ -16,7 +16,8 @@
     return j;
   }
   const acctToken = () => { try { return localStorage.getItem("acct-token"); } catch (e) { return null; } };
-  const getCount = async () => +(await rpc("preorder_count"));
+  const EXTRA = +(window.SITE && window.SITE.waitExtra) || 0;   // голоса из опроса ВК
+  const getCount = async () => +(await rpc("preorder_count")) + EXTRA;
 
   /* ---------- картина из осколков ---------- */
   const cv = $("waitGlass"), cx = cv.getContext("2d");
@@ -189,7 +190,7 @@
       const r = await rpc("preorder_wait", { p_token: t });
       if (r && r.error === "auth") { say("Войди в аккаунт ещё раз — сессия устарела.", true); busy = false; return; }
       markVoted();
-      setCount(+r.count, !!r.added); say(DONE);
+      setCount(+r.count + EXTRA, !!r.added); say(DONE);
     } catch (e) { say("Не получилось сохранить отметку. Попробуй позже. (" + e.message + ")", true); }
     busy = false;
   }
