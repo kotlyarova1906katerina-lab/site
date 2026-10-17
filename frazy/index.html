@@ -86,7 +86,7 @@ body{background:var(--night)}
 <main class="fz">
   <div class="fz-top">
     <div class="fz-title" id="title"><small>Чья это фраза?</small>Раунд дня</div>
-    <div class="fz-score" id="score" aria-live="polite">0/10</div>
+    <div style="display:flex;gap:8px;align-items:center"><div class="fz-score" id="score" aria-live="polite">0/10</div><button id="gems" type="button">💎 0</button></div>
   </div>
   <div class="fz-dots" id="dots" aria-hidden="true"></div>
 
@@ -112,6 +112,7 @@ body{background:var(--night)}
   <p class="fz-note"><a href="../igry/">Все игры</a></p>
 </main>
 
+<script src="../assets/gems.js?v=20261018a"></script>
 <script src="quotes.js?v=20261018a"></script>
 <script>
 (function () {
@@ -185,7 +186,14 @@ body{background:var(--night)}
     st = load();
     if (daily) { st.day = iso; st.dailyScore = score; st.streak = st.lastDay === new Date((today - 1) * DAY).toISOString().slice(0, 10) ? (st.streak || 0) + 1 : 1; st.lastDay = iso; }
     st.best = Math.max(st.best || 0, score); st.played = (st.played || 0) + 1;
+    /* кристаллы за 9–10 верных ответов, не больше чем за три раунда в день */
+    let gift = 0;
+    if (score >= 9) {
+      if (st.giftDay !== iso) { st.giftDay = iso; st.gifts = 0; }
+      if (st.gifts < 3) { gift = score === 10 ? 5 : 3; st.gifts++; }
+    }
     save(st);
+    if (gift) GEMS.add(gift, "Чья это фраза? · " + score + "/10");
     window.track && track("frazy", "finish", (daily ? "Раунд дня" : "Свободная игра") + " · " + score + "/10");
     const [title, text] = score === 10 ? ["Ты знаешь их лучше, чем они сами", "Ни одной ошибки! Похоже, ты читала «Осколки» не один раз."]
       : score >= 8 ? ["Почти идеально", "Ещё чуть-чуть, и героям нечего будет от тебя скрыть."]
@@ -195,7 +203,7 @@ body{background:var(--night)}
     $("endLabel").textContent = daily ? "Раунд дня пройден" : "Свободная игра";
     $("endScore").textContent = `${score}/${N}`;
     $("endTitle").textContent = title;
-    $("endText").textContent = text + (daily ? ` Новый раунд дня — завтра.${st.streak > 1 ? ` Ты играешь ${st.streak} ${plural(st.streak, "день", "дня", "дней")} подряд.` : ""}` : ` Лучший результат: ${st.best}/10.`);
+    $("endText").textContent = (gift ? `+${gift} 💎 за ${score} из 10! ` : score >= 9 ? "Кристаллы сегодня уже получены за три раунда — приходи завтра. " : "За 9–10 верных ответов дарим кристаллы. ") + text + (daily ? ` Новый раунд дня — завтра.${st.streak > 1 ? ` Ты играешь ${st.streak} ${plural(st.streak, "день", "дня", "дней")} подряд.` : ""}` : ` Лучший результат: ${st.best}/10.`);
     $("review").innerHTML = answers.map(a => { const [who, t] = Q[a.i]; return `<li class="${a.ok ? "ok" : "bad"}"><span class="m">${a.ok ? "✓" : "✕"}</span><img src="${ava(who)}" alt="${WHO[who].name}"><span><b>${WHO[who].name}:</b> «${esc(t)}»</span></li>`; }).join("");
     $("share").dataset.score = score;
     dots();
@@ -211,7 +219,9 @@ body{background:var(--night)}
       $("share").textContent = "Скопировано"; setTimeout(() => $("share").textContent = "Поделиться", 2000);
     } catch (e) {}
   };
+  GEMS.chip($("gems"), "В «Чья это фраза?» за 9 из 10 — +3 💎, за 10 из 10 — +5 💎, до трёх раундов в день.");
   start();
+  GEMS.offerDaily();
 })();
 </script>
 </body>
