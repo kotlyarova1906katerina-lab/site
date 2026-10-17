@@ -258,3 +258,16 @@ footer{border-top:1px solid var(--line);padding-block:28px;color:var(--mist);fon
 .pd-coll li b{display:block;font-size:13px;color:var(--mist);font-weight:500}
 @media (max-width:760px){.pd-stage{grid-template-columns:1fr;grid-template-areas:"head" "card" "side";grid-template-rows:auto;row-gap:20px}.pd-card{max-width:380px;margin-inline:auto}.pd-face{min-height:300px}}
 @media (prefers-reduced-motion:reduce){.pd-inner{transition:none}.pd-shard{animation:none}}
+
+/* блок предсказаний на главной: Аня у колеса обозрения фоном, к краям уходит в тёмное */
+.pd-hero{position:relative;isolation:isolate;overflow:hidden}
+.pd-hero::before{content:"";position:absolute;inset:0;z-index:-2;background:url(../pary/img/anya.webp) 72% 22%/cover no-repeat;filter:saturate(1.05) brightness(.62)}
+.pd-hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(13,18,25,.15) 0%,rgba(13,18,25,.35) 45%,rgba(13,18,25,.82) 100%),linear-gradient(180deg,rgba(13,18,25,.55),rgba(13,18,25,0) 25%,rgba(13,18,25,0) 75%,rgba(13,18,25,.7))}
+.pd-hero .pd-head,.pd-hero .pd-side{text-shadow:0 1px 10px rgba(0,0,0,.7)}
+.pd-hero .pd-stats>span{background:rgba(13,18,25,.72);backdrop-filter:blur(4px)}
+@media (max-width:760px){
+  .pd-hero::before{background-position:50% 18%}
+  .pd-hero::after{background:linear-gradient(180deg,rgba(13,18,25,.55) 0%,rgba(13,18,25,.35) 35%,rgba(13,18,25,.8) 100%)}
+}
+.pd-hero .pd-front{background:radial-gradient(120% 80% at 50% 0%,rgba(233,194,122,.16),transparent 60%),rgba(16,22,30,.38);backdrop-filter:blur(2px) saturate(1.1);-webkit-backdrop-filter:blur(2px) saturate(1.1)}
+@media (max-width:760px){.pd-hero::before{background-position:50% 30%}}
