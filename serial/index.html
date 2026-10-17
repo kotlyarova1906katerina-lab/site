@@ -29,6 +29,12 @@
 .pup[aria-current="true"] .tail{animation:wag .5s ease-in-out infinite alternate}
 .pup.soon{cursor:default}
 .pup.soon:hover{transform:none;background:none}
+.pup{position:relative}
+.pup .qok{position:absolute;top:0;right:2px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--body);background:#5cc27a;color:#0d1219;box-shadow:0 0 0 2px var(--night)}
+.pup .qok.gold{background:var(--gold,#e9c27a)}
+.quiz-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.quiz-row .muted{font-size:14px}
+.know{font-size:14px;color:var(--mist)}.know b{color:var(--frost)}
 @keyframes wag{from{transform:rotate(-14deg)}to{transform:rotate(12deg)}}
 @media (prefers-reduced-motion:reduce){.pup[aria-current="true"] .tail{animation:none}.pup:hover{transform:none}}
 </style>
@@ -51,12 +57,14 @@
     <div class="player" id="player"></div>
     <div class="ep-info">
       <h3 id="ep-title">Серия 1</h3>
+      <div class="quiz-row" id="quizRow" hidden><button class="btn btn-main" id="quizBtn">Викторина по серии</button><span class="muted" id="quizState"></span></div>
       <div class="nav-eps">
         <button class="btn btn-ghost" id="prev">← Предыдущая</button>
         <button class="btn btn-main" id="next">Следующая →</button>
       </div>
       <a class="muted" id="ep-vk" href="#" target="_blank" rel="noopener">Открыть эту серию в ВК</a>
       <div class="eyebrow" style="margin-top:12px">Все серии</div>
+      <div class="know" id="know" hidden></div>
       <div class="ep-grid" id="grid"></div>
       <p class="muted">Новые серии выходят по понедельникам и четвергам.</p>
       <div class="btns"><a class="btn btn-ghost" data-link="vkChannel" href="#" target="_blank" rel="noopener">Подписаться на канал</a><a class="btn btn-ghost" href="../test/">Кто ты из героев?</a></div>
@@ -70,6 +78,9 @@
 
 <script src="../assets/site.js?v=20261015e"></script>
 <script src="../data/episodes.js?v=20261015b"></script>
+<script src="../assets/gems.js?v=20261018a"></script>
+<script src="../data/quiz.js?v=20261017"></script>
+<script src="../assets/quiz.js?v=20261017"></script>
 <script src="../data/predictions.js?v=20261017a"></script>
 <script src="../assets/predict.js?v=20261017b"></script>
 <script>
@@ -96,7 +107,8 @@ function basya(n, soon){
     ${soon ? `<text x="62" y="20" text-anchor="middle" font-family="Golos Text, system-ui, sans-serif" font-size="11" fill="#93a3b4">скоро</text>` : `<path class="collar" d="M83 47 Q92 55 103 52" fill="none" stroke="#e0896a" stroke-width="4" stroke-linecap="round" opacity="0"/>`}
   </svg>`;
 }
-grid.innerHTML = EPISODES.map(e => `<a class="pup" href="#${e.n}" data-n="${e.n}">${basya(e.n)}</a>`).join("")
+const qmark = n => { const r = window.QUIZ && QUIZ.result(n); return r ? `<span class="qok${r.best >= 5 ? " gold" : ""}" title="Викторина: ${r.best} из 5">✓</span>` : ""; };
+grid.innerHTML = EPISODES.map(e => `<a class="pup" href="#${e.n}" data-n="${e.n}">${basya(e.n)}${qmark(e.n)}</a>`).join("")
   + `<span class="pup soon">${basya(EPISODES[total - 1].n + 1, true)}</span>`;
 function show(n){
   let i = EPISODES.findIndex(x => x.n === n); if (i < 0) i = n > EPISODES[total - 1].n ? total - 1 : Math.max(0, EPISODES.findIndex(x => x.n > n)); const e = EPISODES[i];
@@ -109,12 +121,29 @@ function show(n){
   document.getElementById("prev").style.visibility = i === 0 ? "hidden" : "visible";
   document.getElementById("next").style.visibility = i === total - 1 ? "hidden" : "visible";
   document.title = "Серия " + e.n + " — «Осколки первой любви»";
+  quizUi(e.n);
+}
+/* викторина по серии */
+function quizUi(n){
+  const Q = window.QUIZ, row = document.getElementById("quizRow");
+  if (!Q || !Q.has(n)) { row.hidden = true; return; }
+  row.hidden = false; const r = Q.result(n);
+  document.getElementById("quizBtn").textContent = r ? "Пройти викторину ещё раз" : "Викторина по серии";
+  document.getElementById("quizBtn").onclick = () => Q.open(n);
+  document.getElementById("quizState").textContent = r ? `Лучший результат: ${r.best} из 5` : "5 вопросов · до 5 💎";
+  const k = document.getElementById("know"), pct = Q.knowPct();
+  k.hidden = !Q.list().some(x => Q.result(x)); k.innerHTML = `Ты знаешь сериал на <b>${pct}%</b> · ✓ — викторина пройдена`;
+}
+if (window.QUIZ) {
+  QUIZ.onChange(n => { const a = grid.querySelector(`a.pup[data-n="${n}"]`); if (a) { const o = a.querySelector(".qok"); if (o) o.remove(); a.insertAdjacentHTML("beforeend", qmark(n)); } quizUi(cur()); });
+  QUIZ.onNext = k => { location.hash = k; setTimeout(() => QUIZ.open(k), 350); };
 }
 const cur = () => parseInt(location.hash.slice(1)) || 1;
 window.addEventListener("hashchange", () => { show(cur()); player.scrollIntoView({behavior:"smooth", block:"start"}); });
 document.getElementById("prev").onclick = () => { const i = EPISODES.findIndex(x => x.n === cur()); if (i > 0) location.hash = EPISODES[i - 1].n; };
 document.getElementById("next").onclick = () => { const i = EPISODES.findIndex(x => x.n === cur()); if (i < total - 1) location.hash = EPISODES[i + 1].n; };
 show(cur());
+{ const q = +new URLSearchParams(location.search).get("quiz"); if (q && window.QUIZ && QUIZ.has(q)) { if (cur() !== q) location.hash = q; setTimeout(() => QUIZ.open(q), 400); } }
 </script>
 </body>
 </html>
