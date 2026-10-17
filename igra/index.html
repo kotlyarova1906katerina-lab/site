@@ -26,12 +26,16 @@
 
 /* ---------- меню игры ---------- */
 .g-hero{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);min-height:440px;display:flex;align-items:flex-end;isolation:isolate}
-.g-hero .bgimg{position:absolute;inset:0;background:url(img/bg_class.webp) center/cover;filter:brightness(.55) saturate(1.1);z-index:-2}
-.g-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,18,25,0) 30%,rgba(13,18,25,.92) 78%);z-index:-1}
-.g-hero .duo{position:absolute;inset:0 0 0 auto;width:min(560px,100%);z-index:-1;pointer-events:none}
-.g-hero .duo img{position:absolute;bottom:0;height:auto}
-.g-hero .duo .a{right:34%;width:52%;bottom:-6%}
-.g-hero .duo .b{right:-4%;width:56%}
+/* заставка — цельная картинка: ребята в классе (широкая для компьютера, повыше для телефона) */
+.g-hero .bgimg{position:absolute;inset:0 0 0 18%;z-index:-2}
+.g-hero .bgimg img{width:100%;height:100%;object-fit:cover;object-position:75% 35%;display:block}
+.g-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,18,25,1) 0%,rgba(13,18,25,.9) 22%,rgba(13,18,25,.35) 42%,rgba(13,18,25,0) 56%),linear-gradient(180deg,rgba(13,18,25,0) 60%,rgba(13,18,25,.55) 100%);z-index:-1}
+@media (max-width:640px){
+  .g-hero{min-height:660px}
+  .g-hero .bgimg{inset:0}
+  .g-hero .bgimg img{object-position:45% 0%}
+  .g-hero::after{background:linear-gradient(180deg,rgba(13,18,25,0) 38%,rgba(13,18,25,.85) 58%,rgba(13,18,25,.96) 100%)}
+}
 .g-hero .txt{padding:26px;display:flex;flex-direction:column;gap:14px;max-width:560px}
 .g-hero h1{font-size:clamp(34px,7vw,56px);background:linear-gradient(100deg,#f7e7b4,#e3b65f 30%,#fff3cf 50%,#c8923e 72%,#f3d791);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .g-hero p{margin:0;color:#c9d4de;max-width:46ch}
@@ -204,8 +208,7 @@
 <main id="menu">
 <section><div class="wrap">
   <div class="g-hero">
-    <div class="bgimg"></div>
-    <div class="duo"><img class="a" id="duoA" src="img/anya.webp" alt=""><img class="b" id="duoB" src="img/artur.webp" alt=""></div>
+    <div class="bgimg"><picture><source media="(max-width: 640px)" srcset="img/hero-tall.webp"><img src="img/hero-wide.webp" alt="Аня в первый день в новом классе, на неё смотрят Артур, Антон и Лика"></picture></div>
     <button class="gem-chip" data-gems-go aria-label="Кристаллы">💎 <span data-gems>0</span></button>
     <div class="txt">
       <div class="eyebrow">Игра с выборами</div>
@@ -412,7 +415,6 @@ function renderWardrobe() {
   };
 }
 function refreshSprites() {
-  $('duoA').src = sprSrc('anya'); $('duoB').src = sprSrc('artur');
   Object.entries(sprites).forEach(([id, el]) => { const s = sprSrc(id, faces[id]); if (s && !el.src.endsWith(s)) el.src = s; });
 }
 
