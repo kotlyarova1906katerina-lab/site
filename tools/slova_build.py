@@ -4,9 +4,11 @@
 засчитываются существительные из книг автора на сайте (knigi/*/chapters.js) и «Осколков»
 и просто употребительные существительные русского языка (частоты wordfreq), чтобы не злить игрока отказом на «кино».
 Нужны pymorphy3 и wordfreq:  pip install pymorphy3 pymorphy3-dicts-ru wordfreq
-Запуск:  python3 tools/slova_build.py
+Запуск:  python3 tools/slova_build.py [текст_книги.txt ...]
+Полный текст «Осколков» в репозиторий не кладём: его передают путём к .txt или .docx.
+Без него слова уровней берутся из текстов игры (igra/story*.js).
 """
-import base64, collections, glob, json, os, re
+import base64, collections, glob, html, json, os, re, sys, zipfile
 import pymorphy3
 from wordfreq import top_n_list, zipf_frequency
 
@@ -41,6 +43,7 @@ SKIP = {"Name", "Surn", "Patr", "Geox", "Orgn", "Abbr", "Trad", "Erro", "Dist", 
 BAN = set("""сука сучка блядь хер жопа дерьмо говно срач член зад задница пизда мудак урод дебил идиот тупица дура дурак
 шлюха стерва телка соска тварь гад гадина сволочь скотина козел черт ад бес труп смерть убийца гроб могила наркотик пиво водка
 лох жид негр псих бомж секс урод хрен срать рвота сопля понос глист вошь клоп кокаин сосок
+ублюдок девственница возбуждение уродство дурочка дурь фифа ана
 карел лорак телок астон камаз нолан никсон лиама старое костра марши ном зам дим""".split())
 
 def nouns(text):
@@ -65,7 +68,14 @@ def is_lemma_noun(w):
     if SKIP & tg(ps[0]) or any(q.score >= 0.25 and q.tag.POS != "NOUN" for q in ps): return False
     return any(q.normal_form.replace("ё", "е") == w and "nomn" in tg(q) and ("sing" in tg(q) or "Pltm" in tg(q)) and not SKIP & tg(q) for q in ps)
 
-oskolki = "\n".join(open(f, encoding="utf-8").read() for f in sorted(glob.glob(os.path.join(ROOT, "igra/story*.js"))))
+def read_text(f):
+    if f.endswith(".docx"):
+        x = zipfile.ZipFile(f).read("word/document.xml").decode("utf-8")
+        return "\n".join(html.unescape("".join(re.findall(r"<w:t[^>]*>(.*?)</w:t>", p, re.S))) for p in re.findall(r"<w:p[ >].*?</w:p>", x, re.S))
+    return open(f, encoding="utf-8").read()
+
+game = sorted(glob.glob(os.path.join(ROOT, "igra/story*.js")))
+oskolki = "\n".join(read_text(f) for f in (sys.argv[1:] or game))
 books = "\n".join(book_text(f) for f in sorted(glob.glob(os.path.join(ROOT, "knigi/*/chapters.js"))))
 osk, allc = nouns(oskolki), nouns(books)
 allc.update(osk)
@@ -79,8 +89,12 @@ def fits(small, big):
     b = collections.Counter(big)
     return all(b[c] >= n for c, n in collections.Counter(small).items())
 
+# эти годятся как найденные слова, но не как слово уровня
+NOT_LEVEL = set("постель беременность анестезия реанимация сотрясение ругательство".split())
+
 levels = []
 for w in osk:
+    if w in NOT_LEVEL: continue
     if not 7 <= len(w) <= 12 or freq(w) < 2.5 or not is_lemma_noun(w): continue
     subs = [s for s in dic if s != w and fits(s, w)]
     known = [s for s in subs if freq(s) >= 3.0]

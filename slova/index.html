@@ -25,11 +25,16 @@
 body{background:var(--night)}
 /* размытые Аня и Артур за игрой */
 .sl-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-.sl-bg img{position:absolute;top:50%;height:min(110vh,900px);width:auto;max-width:none;transform:translateY(-50%);filter:blur(7px) saturate(1.05) brightness(.6);opacity:.75}
-.sl-bg .a{left:-8%;-webkit-mask-image:linear-gradient(90deg,#000 45%,transparent 92%);mask-image:linear-gradient(90deg,#000 45%,transparent 92%)}
-.sl-bg .b{right:-8%;-webkit-mask-image:linear-gradient(270deg,#000 45%,transparent 92%);mask-image:linear-gradient(270deg,#000 45%,transparent 92%)}
-.sl-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 70% at 50% 45%,rgba(13,18,25,.55),rgba(13,18,25,.25) 70%),linear-gradient(180deg,rgba(13,18,25,.2),rgba(13,18,25,.75))}
-@media (max-width:640px){.sl-bg img{height:70vh;opacity:.6}.sl-bg .a{left:-38%}.sl-bg .b{right:-38%}}
+.sl-bg img{position:absolute;top:50%;height:min(110vh,900px);width:auto;max-width:none;transform:translateY(-50%);filter:blur(3.5px) saturate(1.1) brightness(.78);opacity:.85}
+.sl-bg .a{left:-6%;-webkit-mask-image:linear-gradient(90deg,#000 50%,transparent 95%);mask-image:linear-gradient(90deg,#000 50%,transparent 95%)}
+.sl-bg .b{right:-6%;-webkit-mask-image:linear-gradient(270deg,#000 50%,transparent 95%);mask-image:linear-gradient(270deg,#000 50%,transparent 95%)}
+.sl-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(55% 65% at 50% 50%,rgba(13,18,25,.5),rgba(13,18,25,.12) 75%),linear-gradient(180deg,rgba(13,18,25,.1),rgba(13,18,25,.6))}
+/* на телефоне: Аня слева вверху, Артур справа внизу, каждый на всю высоту своей половины */
+@media (max-width:640px){
+  .sl-bg img{top:0;transform:none;height:62%;width:100%;object-fit:cover;opacity:.8}
+  .sl-bg .a{left:0;top:0;object-position:30% 30%;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent 100%);mask-image:linear-gradient(180deg,#000 55%,transparent 100%)}
+  .sl-bg .b{right:0;top:auto;bottom:0;object-position:60% 30%;-webkit-mask-image:linear-gradient(0deg,#000 55%,transparent 100%);mask-image:linear-gradient(0deg,#000 55%,transparent 100%)}
+}
 
 .sl{max-width:760px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;gap:18px;min-height:calc(100vh - 70px)}
 .sl-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -122,7 +127,7 @@ body{background:var(--night)}
 
 <div class="sl-modal" id="modal" hidden><div class="sl-box" id="box" role="dialog" aria-modal="true"></div></div>
 
-<script src="words.js?v=20261015s"></script>
+<script src="words.js?v=20261017a"></script>
 <script>
 (function () {
   const LV = window.SLOVA, KEY = "oskolki-slova", HINT = 5;
