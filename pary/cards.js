@@ -1,5 +1,5 @@
 /* Карточки для «Найди пару». src — картинка (квадратная или 3:4, лицом по центру), title — подпись, когда пара найдена.
-   Пока новых карточек нет, стоят временные картинки с сайта. Новые класть в pary/img/ и менять src. */
+   Новые карточки лежат в pary/img/. Где src ведёт за пределы pary/img — временная картинка с сайта, её заменит новая карточка. */
 window.PAIR_CARDS = [
   { id: "anya",   title: "Аня",                 src: "../assets/predict/anya-bg.webp" },
   { id: "artur",  title: "Артур",               src: "../assets/predict/artur-bg.webp" },
@@ -7,12 +7,12 @@ window.PAIR_CARDS = [
   { id: "lika",   title: "Лика",                src: "../assets/predict/lika-bg.webp" },
   { id: "basya",  title: "Бася",                src: "../assets/predict/basya-bg.webp" },
   { id: "tram",   title: "Осенний трамвай",     src: "../slova/bg-wide.webp" },
-  { id: "rail",   title: "У поручня",           src: "../slova/bg-tall.webp" },
+  { id: "tea",    title: "Чай с мёдом, лимоном и имбирём", src: "img/tea.webp" },
   { id: "class",  title: "Новенькая в классе",  src: "../igra/img/hero-tall.webp" },
-  { id: "desks",  title: "Первый урок",         src: "../igra/img/hero-wide.webp" },
-  { id: "anya2",  title: "Тихая Аня",           src: "../assets/anya.jpg" },
-  { id: "artur2", title: "Ледяной Артур",       src: "../assets/artur.jpg" },
-  { id: "serial", title: "Осколки первой любви", src: "../covers/serial.jpg" }
+  { id: "cake",   title: "Торт для Артура",     src: "img/cake.webp" },
+  { id: "hat",    title: "Аня в шапке Артура",  src: "img/hat.webp" },
+  { id: "bear",   title: "Мишка из тира",       src: "img/bear.webp" },
+  { id: "sveta",  title: "Света",               src: "img/sveta.webp" }
 ];
 
 /* уровни: сколько пар, сколько колонок и за сколько секунд нужно успеть на три звезды */
