@@ -53,7 +53,7 @@
             <span class="pd-q">?</span>
             <span class="pd-tap">Нажми, чтобы открыть</span>
           </span>
-          <span class="pd-face pd-back" style="--who:${who.c};--pic:url('${base}assets/predict/${keyOf(who)}-bg.webp')">
+          <span class="pd-face pd-back" style="--who:${who.c};--pic:url('${new URL(base + "assets/predict/" + keyOf(who) + "-bg.webp", location.href).href}')">
             <span class="pd-who"><span class="pd-ava">${ava(who)}</span><span><b>${who.name}</b><small>предсказывает</small></span></span>
             <span class="pd-text">${esc(p.t)}</span>
             <span class="pd-num">Осколок № ${idx + 1}</span>
