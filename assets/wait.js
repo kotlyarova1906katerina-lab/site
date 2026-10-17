@@ -156,7 +156,7 @@
   const word = n => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? "человек ждёт" : m >= 2 && m <= 4 && (h < 12 || h > 14) ? "человека ждут" : "человек ждут"; };
   function renderJar(isNew) {
     const tier = goal / STEP, f = count / goal;
-    const n = count === 0 ? 0 : Math.max(Math.min(count, 3), Math.round(f * SLOTS.length));
+    const n = Math.min(count, SLOTS.length);   // одно сердечко — один человек, пока банка не полна
     $("waitJar").style.setProperty("--jarw", Math.min(280, 170 + (tier - 1) * 24) + "px");
     $("waitJarSvg").innerHTML = jarSvg(n, isNew);
     $("waitCount").textContent = count.toLocaleString("ru-RU");
