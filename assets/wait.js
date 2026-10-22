@@ -130,13 +130,15 @@
 
   /* ---------- банка с сердечками ---------- */
   const HEART = "M0 3.2C-1.6-.6-6-.6-6 3c0 2.6 3.2 4.8 6 7.4C2.8 7.8 6 5.6 6 3c0-3.6-4.4-3.6-6 .2z";
-  const SLOTS = (() => {
-    const s = [], r = rng(42);
-    for (let row = 0; row < 8; row++) {
-      const y = 214 - row * 17, half = y > 204 ? 42 : y > 192 ? 50 : 56;   // у дна банка скруглена — там ряд уже
-      const xs = []; for (let x = 100 - half; x <= 100 + half; x += 18.5) xs.push(x + (row % 2 ? 9 : 0));
-      xs.filter(x => x <= 100 + half).sort((a, b) => Math.abs(a - 100) - Math.abs(b - 100)).forEach(x =>
-        s.push({ x: x + (r() - .5) * 3, y: y + (r() - .5) * 3, rot: (r() - .5) * 50, c: ["#f08aa9", "#e0896a", "#d9534f", "#f6b7cb", "#ec7aa0"][Math.floor(r() * 5)], s: 1.45 + r() * .3 }));
+  const SLOTS = (() => {   // 100 мест: ряды снизу вверх, внутри формы банки
+    const s = [], r = rng(42), cols = ["#f08aa9", "#e0896a", "#d9534f", "#f6b7cb", "#ec7aa0"];
+    const half = y => y > 206 ? 58 - (y - 206) * 0.95 : y > 96 ? 58 : 40 + (y - 62) * 0.53;   // полуширина банки на высоте y
+    for (let row = 0, y = 221; y > 64 && s.length < 100; row++, y -= 11.6) {
+      const h = half(y) - 6, xs = [];
+      for (let x = 100 - h + (row % 2 ? 6.5 : 0); x <= 100 + h; x += 13) xs.push(x);
+      xs.sort((a, b) => Math.abs(a - 100) - Math.abs(b - 100)).forEach(x => {
+        if (s.length < 100) s.push({ x: x + (r() - .5) * 2.5, y: y + (r() - .5) * 2.5, rot: (r() - .5) * 50, c: cols[Math.floor(r() * 5)], s: 1.0 + r() * .18 });
+      });
     }
     return s;
   })();
@@ -158,7 +160,7 @@
   function renderJar(isNew) {
     const tier = goal / STEP, f = count / goal;
     const n = Math.min(count, SLOTS.length);   // одно сердечко — один человек, пока банка не полна
-    $("waitJar").style.setProperty("--jarw", Math.min(280, 170 + (tier - 1) * 24) + "px");
+    $("waitJar").style.setProperty("--jarw", Math.min(300, 210 + (tier - 1) * 24) + "px");
     $("waitJarSvg").innerHTML = jarSvg(n, isNew);
     $("waitCount").textContent = count.toLocaleString("ru-RU");
     $("waitCountSub").textContent = word(count);
