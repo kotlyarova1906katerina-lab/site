@@ -9,7 +9,7 @@ window.SITE = {
   litnet: "https://litnet.com/ru/ekaterina-kotlyarova-u3917137",
   preorder: "", /* ссылка на предзаказ — вставить, когда откроется */
   /* База для счётчика «Жду книгу» (Supabase, проект oskolki). Ключ publishable — открытый, так и задумано. */
-  waitExtra: 44, /* «Жду книгу»: голоса из опроса ВК — прибавляются к отметкам на сайте */
+  waitExtra: 49, /* «Жду книгу»: голоса из опроса ВК — прибавляются к отметкам на сайте */
   supabase: { url: "https://svnhmstqcoshhmbscepq.supabase.co", key: "sb_publishable_q7KJgapG_K-yLw3EBZS4mg_QG_D59a-" }
 };
 window.vkEmbed = clip => {
