@@ -211,7 +211,8 @@
   img = new Image(); img.onload = () => { makeBlur(); draw(); }; img.src = IMG;
   resize(); renderJar(false);
   if (!SB) { say("Счётчик скоро заработает."); return; }
-  getCount().then(n => setCount(n, false)).catch(() => say("Счётчик скоро заработает."));
+  if (EXTRA) setCount(EXTRA, false);   // голоса ВК видны сразу, даже если база не ответила
+  getCount().then(n => setCount(n, false)).catch(e => { console.warn("preorder_count:", e && e.message); });
   const t0 = acctToken();
   if (t0) {
     let pending = false; try { pending = sessionStorage.getItem("wait-pending") === "1"; } catch (e) {}
