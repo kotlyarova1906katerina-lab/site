@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="../assets/style.css?v=20261018c">
 <style>
 .test-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px;align-items:center;background:var(--ink);border:1px solid var(--line);border-radius:22px;padding:22px;text-decoration:none;transition:border-color .15s}
+.test-card .cover img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:16px}
 .test-card:hover{border-color:var(--glass)}
 .faces{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .faces img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;object-position:50% 30%;clip-path:polygon(8% 0,100% 6%,92% 100%,0 94%);background:var(--ink2)}
@@ -71,12 +72,7 @@
     </div>
   </a>
   <a class="test-card" href="../serial/?quiz=2#2" style="margin-top:16px">
-    <div class="faces">
-      <img src="../raskraska/thumbs/anya-tram.jpg" alt="Аня" width="360" height="360">
-      <img src="../raskraska/thumbs/artur-tram.jpg" alt="Артур" width="360" height="360">
-      <img src="../raskraska/thumbs/anton-tram.jpg" alt="Антон" width="360" height="360">
-      <img src="../raskraska/thumbs/lika-tram.jpg" alt="Лика" width="360" height="360">
-    </div>
+    <picture class="cover"><source srcset="img/viktorina.webp" type="image/webp"><img src="img/viktorina.jpg" alt="Аня и Артур со щенком на лугу" width="800" height="1000" loading="lazy"></picture>
     <div class="info">
       <div class="eyebrow">По 5 вопросов к каждой серии · до 5 💎 за серию</div>
       <h3>Викторина по сериалу</h3>
