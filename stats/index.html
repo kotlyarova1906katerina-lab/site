@@ -115,7 +115,7 @@ td .pct{color:var(--mist);font-size:12px;margin-left:6px}
   const put = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
   const fmt = n => Number(n || 0).toLocaleString("ru-RU");
   const PAGE_NAMES = { "/": "Главная", "serial/": "Сериал", "music/": "Песни ArXo", "igra/": "Игра", "raskraska/": "Раскраска",
-    "testy/": "Тесты", "slova/": "Слова из слова", "frazy/": "Чья это фраза?", "pary/": "Найди пару", "lovi/": "Поймай сердечки", "igry/": "Игры", "test/": "Тест по «Осколкам»", "sovmestimost/": "Тест: Артур или Антон", "knigi/": "Мои книги", "privacy/": "Политика конфиденциальности",
+    "testy/": "Тесты", "slova/": "Слова из слова", "frazy/": "Чья это фраза?", "pary/": "Найди пару", "lovi/": "Поймай сердечки", "sliyanie/": "Тёплая осень", "igry/": "Игры", "test/": "Тест по «Осколкам»", "sovmestimost/": "Тест: Артур или Антон", "knigi/": "Мои книги", "privacy/": "Политика конфиденциальности",
     "knigi/ostrye-lezviya-lyubvi/": "Книга «Острые лезвия любви»", "knigi/zauchka-dlya-buntarya/": "Книга «Заучка для Бунтаря»",
     "knigi/zubrilka-dlya-chernogo/": "Книга «Зубрилка для Чёрного»", "knigi/zaberi-moyu-dushu/": "Книга «Забери мою душу»",
     "knigi/pisatelnica-dlya-belova/": "Книга «Писательница для Белова»", "knigi/ne-veryu-v-lyubov/": "Книга «(Не) верю. В любовь»",
@@ -203,6 +203,11 @@ td .pct{color:var(--mist);font-size:12px;margin-left:6px}
       { title: "Пройденные уровни", cols: [["level", "Прошли"], ["hint", "Брали подсказку"]], order: "num" },
       { title: "Заходы за бонусом", cols: [["bonus", "Людей"]], order: "num" } ],
       lead: ev => `Начали играть: ${fmt(sumP(ev, "slova", "start"))}` },
+    { id: "merge", title: "Тёплая осень", tables: [
+      { title: "Открытые главы", cols: [["chapter", "Людей"]], order: "num" },
+      { title: "Выполнено заказов", cols: [["order", "Людей"]], order: "num" },
+      { title: "Энергия за кристаллы", cols: [["refill", "Раз"]] } ],
+      lead: ev => `Начали играть: ${fmt(sumP(ev, "merge", "start"))}` },
     { id: "lovi", title: "Поймай сердечки", tables: [
       { title: "Очки за игру", cols: [["finish", "Людей"]], order: "num" } ],
       lead: ev => `Начинали игру: ${fmt(sumP(ev, "lovi", "start"))}` },

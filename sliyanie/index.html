@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta property="og:image" content="https://kotlyarova1906katerina-lab.github.io/site/assets/share.jpg">
+<meta property="og:url" content="https://kotlyarova1906katerina-lab.github.io/site/sliyanie/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Сайт автора Екатерины Котляровой">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600;700&display=swap">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<title>Тёплая осень — игра-слияние по «Осколкам первой любви»</title>
+<meta name="description" content="Игра-слияние по «Осколкам первой любви»: соединяй одинаковые вещи, собирай чай, какао, бантики, шапку и куртку Артура, выполняй заказы героев и открывай главы истории.">
+<meta property="og:title" content="Тёплая осень — игра-слияние по «Осколкам первой любви»">
+
+<link rel="stylesheet" href="../assets/style.css?v=20261025">
+<style>
+[hidden]{display:none!important}
+body{background:var(--night)}
+.mg-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.mg-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(12px) brightness(.42);transform:scale(1.1)}
+.mg{max-width:560px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:12px}
+.mg-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mg-title{font:400 clamp(22px,4.5vw,30px) var(--display)}
+.mg-title small{display:block;font:500 12px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--mist)}
+
+/* верхняя панель: энергия, звёзды, глава */
+.mg-hud{display:grid;grid-template-columns:auto auto 1fr;gap:8px;align-items:stretch;font:600 15px var(--body);font-variant-numeric:tabular-nums}
+.mg-hud>*{background:rgba(21,29,39,.8);border:1px solid var(--line);border-radius:12px;padding:7px 11px;backdrop-filter:blur(4px);display:flex;align-items:center;gap:6px;color:var(--frost)}
+.mg-hud button{appearance:none;font:inherit;cursor:pointer;text-align:left}
+.mg-hud small{font:500 11px var(--body);color:var(--mist)}
+.mg-en b{color:#f3d791}
+.mg-ch{flex-direction:column;align-items:stretch!important;gap:4px!important;min-width:0}
+.mg-ch .row{display:flex;justify-content:space-between;gap:6px;font-size:13px;white-space:nowrap;overflow:hidden}
+.mg-ch .row span{overflow:hidden;text-overflow:ellipsis}
+.mg-bar{height:6px;border-radius:3px;background:rgba(185,211,230,.14);overflow:hidden}
+.mg-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#d9a64c,#f3d791);border-radius:3px;transition:width .5s}
+
+/* заказы героев */
+.mg-orders{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mg-ord{position:relative;background:rgba(21,29,39,.86);border:1px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px;backdrop-filter:blur(4px);min-width:0}
+.mg-ord.ready{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset,0 0 16px rgba(233,194,122,.25)}
+.mg-ord .who{display:flex;align-items:center;gap:6px;font:600 13px var(--body);min-width:0}
+.mg-ord .who img{width:28px;height:28px;border-radius:50%;object-fit:cover;object-position:50% 20%;flex:none}
+.mg-ord .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mg-ord .need{display:flex;gap:4px;justify-content:center}
+.mg-ord .need i{position:relative;width:min(44px,42%);aspect-ratio:1;border-radius:10px;background:rgba(185,211,230,.08);display:grid;place-items:center}
+.mg-ord .need svg{width:88%;height:88%}
+.mg-ord .need i.ok::after{content:"✓";position:absolute;right:-3px;bottom:-3px;width:16px;height:16px;border-radius:50%;background:#5cc27a;color:#0d1219;font:700 11px/16px var(--body);text-align:center}
+.mg-ord .rew{font:600 12px var(--body);color:var(--mist);text-align:center}
+.mg-ord button{appearance:none;border:0;border-radius:9px;padding:6px 4px;font:600 13px var(--body);cursor:pointer;background:rgba(185,211,230,.1);color:var(--mist)}
+.mg-ord.ready button{background:linear-gradient(180deg,#f3d791,#d9a64c);color:#2a1a05}
+.mg-ord.done{animation:ordout .5s forwards}
+@keyframes ordout{to{opacity:0;transform:scale(.85)}}
+
+/* поле */
+.mg-board{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:6px;border-radius:18px;background:rgba(13,18,25,.62);border:1px solid var(--line);touch-action:none;user-select:none;-webkit-user-select:none}
+.mg-cell{position:relative;aspect-ratio:1;border-radius:10px;background:rgba(185,211,230,.07);display:grid;place-items:center}
+.mg-cell svg{width:90%;height:90%;pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.mg-cell.it,.mg-cell.gen{cursor:grab}
+.mg-cell.gen{background:radial-gradient(circle at 50% 40%,rgba(233,194,122,.28),rgba(233,194,122,.06));box-shadow:0 0 0 1.5px rgba(233,194,122,.55) inset}
+.mg-cell.gen::after{content:"⚡";position:absolute;right:1px;top:-2px;font-size:12px}
+.mg-cell .lv{position:absolute;right:2px;bottom:1px;font:700 10px var(--body);color:var(--mist);opacity:.85;pointer-events:none}
+.mg-cell.max .lv{color:var(--gold)}
+.mg-cell.sel{box-shadow:0 0 0 2px var(--gold) inset}
+.mg-cell.hint{box-shadow:0 0 0 2px rgba(92,194,122,.8) inset;background:rgba(92,194,122,.14)}
+.mg-cell.over{background:rgba(233,194,122,.22)}
+.mg-cell.lift svg{opacity:.25}
+.mg-cell.pop svg{animation:pop .35s}
+.mg-cell.new svg{animation:spawn .3s}
+@keyframes pop{40%{transform:scale(1.3)}}
+@keyframes spawn{from{transform:scale(.3);opacity:.2}}
+.mg-ghost{position:fixed;z-index:60;width:64px;height:64px;margin:-32px 0 0 -32px;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
+.mg-ghost svg{width:100%;height:100%}
+
+/* строка под полем */
+.mg-info{display:flex;align-items:center;gap:10px;min-height:54px;background:rgba(21,29,39,.8);border:1px solid var(--line);border-radius:14px;padding:8px 10px;backdrop-filter:blur(4px)}
+.mg-info .ic{width:38px;height:38px;flex:none}
+.mg-info .tx{flex:1;min-width:0;font-size:14px;line-height:1.35;color:var(--mist)}
+.mg-info .tx b{color:var(--frost);font-weight:600}
+.mg-info button{appearance:none;border:1px solid var(--line);background:none;color:var(--mist);border-radius:10px;padding:7px 10px;font:600 13px var(--body);cursor:pointer;flex:none}
+.mg-info button.warn{border-color:var(--ember);color:var(--ember)}
+.mg-tools{display:flex;gap:8px;flex-wrap:wrap}
+.mg-tools button{flex:1;appearance:none;border:1px solid var(--line);background:rgba(21,29,39,.8);color:var(--frost);border-radius:12px;padding:10px;font:600 14px var(--body);cursor:pointer;backdrop-filter:blur(4px)}
+.mg-tools button:hover,.mg-hud button:hover{border-color:var(--gold)}
+.mg-toast{position:fixed;left:50%;width:max-content;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:65;background:rgba(21,29,39,.95);border:1px solid var(--gold);color:var(--frost);border-radius:999px;padding:9px 16px;font:600 14px var(--body);max-width:calc(100% - 32px);text-align:center;opacity:0;transition:opacity .25s;pointer-events:none}
+.mg-toast.on{opacity:1}
+
+/* окна: главы, коллекция, энергия */
+.mg-ov{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:16px;background:rgba(5,8,12,.75);backdrop-filter:blur(4px);overflow:auto}
+.mg-box{width:min(480px,100%);max-height:calc(100vh - 32px);overflow:auto;background:linear-gradient(165deg,#1f2733,#151d27);border:1px solid rgba(233,194,122,.45);border-radius:22px;padding:22px 18px;display:flex;flex-direction:column;gap:12px;text-align:center}
+.mg-box h2{margin:0;font:400 26px var(--display)}
+.mg-box p{margin:0;color:var(--mist)}
+.mg-box .x{align-self:flex-end;appearance:none;border:0;background:none;color:var(--mist);font-size:24px;line-height:1;cursor:pointer;margin:-8px -4px -14px 0}
+.mg-scene{border-radius:16px;overflow:hidden;aspect-ratio:3/4;max-height:52vh;margin:0 auto;width:auto;max-width:100%}
+.mg-scene img{width:100%;height:100%;object-fit:cover;display:block}
+.mg-quote{font:400 17px/1.45 var(--display);color:var(--frost);text-align:left;border-left:2px solid var(--gold);padding-left:12px}
+.mg-quote small{display:block;margin-top:6px;font:500 13px var(--body);color:var(--mist)}
+.mg-chapters{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mg-chapters button{appearance:none;border:1px solid var(--line);border-radius:12px;overflow:hidden;padding:0;background:#151d27;cursor:pointer;aspect-ratio:3/4;position:relative;color:var(--frost)}
+.mg-chapters img{width:100%;height:100%;object-fit:cover;display:block}
+.mg-chapters span{position:absolute;left:0;right:0;bottom:0;padding:16px 6px 6px;font:600 11px var(--body);background:linear-gradient(180deg,transparent,rgba(13,18,25,.92))}
+.mg-chapters button.lock{cursor:default}
+.mg-chapters button.lock img{filter:blur(6px) grayscale(1) brightness(.4)}
+.mg-chapters button.lock span{color:var(--mist)}
+.mg-coll{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:left}
+.mg-coll h3{grid-column:1/-1;margin:6px 0 0;font:600 14px var(--body);color:var(--frost)}
+.mg-coll i{aspect-ratio:1;border-radius:10px;background:rgba(185,211,230,.07);display:grid;place-items:center}
+.mg-coll i svg{width:86%;height:86%}
+.mg-coll i.no svg{filter:brightness(0);opacity:.35}
+.mg-note{font-size:13px;color:var(--mist);text-align:center}
+.mg-note a{color:var(--gold)}
+@media (max-width:420px){.mg-hud{font-size:14px}.mg-hud>*{padding:6px 8px}.mg-ord{padding:6px}.mg-ord .who img{width:24px;height:24px}}
+@media (prefers-reduced-motion:reduce){.mg-cell.pop svg,.mg-cell.new svg,.mg-ord.done{animation:none}}
+</style>
+<script src="../assets/account.js?v=20261012g"></script>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1219">
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../"><small>Сайт автора</small> Екатерины Котляровой</a>
+  <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="../igry/" aria-current="page"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игры</span></a></nav>
+</div></header>
+<div class="mg-bg"><img src="../pary/img/tea.webp" alt=""></div>
+
+<main class="mg">
+  <div class="mg-top">
+    <h1 class="mg-title"><small>Игра-слияние</small>Тёплая осень</h1>
+    <span id="gems"></span>
+  </div>
+  <div class="mg-hud">
+    <button class="mg-en" id="enBtn" type="button" title="Энергия"><span>⚡</span><b id="en">60</b><small id="enT"></small></button>
+    <div title="Звёзды истории"><span>⭐</span><b id="stars">0</b></div>
+    <button class="mg-ch" id="chBtn" type="button"><span class="row"><span id="chName">Глава 1</span><small id="chLeft"></small></span><span class="mg-bar"><i id="chBar"></i></span></button>
+  </div>
+  <div class="mg-orders" id="orders"></div>
+  <div class="mg-board" id="board" aria-label="Поле игры"></div>
+  <div class="mg-info" id="info"></div>
+  <div class="mg-tools">
+    <button type="button" id="chapters">📖 Главы</button>
+    <button type="button" id="coll">🧺 Коллекция</button>
+  </div>
+  <p class="mg-note">Перетаскивай вещь на такую же — они сольются в вещь посильнее. Буфет и шкаф дают новые вещи за ⚡. Кристаллы общие для всех игр. <a href="../igry/">Все игры</a></p>
+</main>
+<div class="mg-toast" id="toast"></div>
+
+<footer><div class="wrap">© Екатерина Котлярова. · <a href="../privacy/">Политика конфиденциальности</a></div></footer>
+<script src="../assets/site.js?v=20261015e"></script>
+<script src="../assets/gems.js?v=20261018a"></script>
+<script src="../pary/cards.js?v=20261018d"></script>
+<script src="items.js?v=20261025"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const { CHAINS, GENS, MAX } = MERGE;
+  const COLS = 7, ROWS = 9, N = COLS * ROWS;
+  const EN_MAX = 60, EN_SEC = 60, REFILL = 5;                 // энергия: 60, +1 в минуту, полная за 5 💎
+  const STAR = [0, 1, 2, 4, 8, 15];                            // звёзды за вещь по уровню
+  const KEY = "oskolki-merge";
+  const PEOPLE = {
+    anya:  { name: "Аня",   likes: ["bow", "hat", "tea", "cocoa"] },
+    artur: { name: "Артур", likes: ["jacket", "tea", "cocoa", "dog"] },
+    anton: { name: "Антон", likes: ["cocoa", "dog", "hat", "tea"] },
+    lika:  { name: "Лика",  likes: ["bow", "cocoa", "jacket"] },
+    basya: { name: "Бася",  likes: ["dog", "dog", "hat"] }
+  };
+  /* главы: сколько всего звёзд нужно и какая карточка-сцена открывается (из «Найди пару») */
+  const NEED = [6, 16, 30, 48, 70, 96, 126, 160, 198, 240, 286, 336];
+  const CARD = id => PAIR_CARDS.find(c => c.id === id);
+  const ORDER_OF_SCENES = ["tea", "anya", "artur", "basya", "hat", "anton", "lika", "sveta", "rescue", "bear", "cake", "wheel"];
+  const CHAPTERS = ORDER_OF_SCENES.map(CARD).filter(Boolean).slice(0, NEED.length);
+  /* к каждой главе — фраза о любви и поддержке из первой части книги, в том же порядке, что и сцены */
+  const QUOTES_UP = [
+    ["Артур", "Тихо. Тихо, Анют! Всё хорошо. Слышишь? Я рядом. Ты в безопасности."],
+    ["Антон", "Когда у вас будут дети, вы обязательно должны им рассказать, что влюбились друг в друга лишь благодаря дядюшке Антону. Мама Аня случайно перепутала принцев, но так оказалось лучше для всех."],
+    ["Антон", "Не знаю, что ты сделала с ним, какую магию использовала, но он изменился. Он сегодня шутил, Аня. Понимаешь? Артур! Шутил! Смеялся утром по-настоящему."],
+    ["Аня", "Всё точно будет хорошо, Артур. К тому же у тебя теперь появился новый друг. Он будет греть тебе душу."],
+    ["Аня — маме", "Не нужно винить себя. Всё, что было, осталось там. Ушло с ним. Но не избегай меня, мама, прошу тебя!"],
+    ["Антон", "Артур мой брат. Я хочу, чтобы он был счастлив, даже если я этого и не показываю."],
+    ["Антон", "Иногда двух недель достаточно, чтобы полюбить, даже нескольких минут."],
+    ["Света", "Это несправедливо. Поступок твоего отца тебя не касается. И никто не имеет права распускать руки и вершить самосуд."],
+    ["Артур", "Когда вижу, что родному человеку больно, иду и убираю то, что причиняет эту боль. Это единственное, что я умею."],
+    ["Аня", "Не злись на Антона. Он, возможно, не видит проблемы. Даже если твоя мама так ведёт себя с тобой, Антон в этом не виноват: мы не можем отвечать за поступки других и их эмоции. Так у тебя будет хоть один близкий человек."],
+    ["Аня и Артур", "— Спасибо.<br>— За что?<br>— За всё: за тебя, за заботу."],
+    ["Аня и Артур", "— Загадай желание.<br>— Уже загадала.<br>— Что?<br>— Если скажу, оно не исполнится.<br>— Я исполню. Говори!<br>— Чтобы ты всегда был моим."]
+  ];
+  const quoteFor = i => { const q = QUOTES_UP[i % QUOTES_UP.length]; return { who: q[0], text: q[1] }; };
+
+  const rnd = n => Math.floor(Math.random() * n), pick = a => a[rnd(a.length)];
+  const item = (c, l) => CHAINS[c].items[l - 1];
+  const svg = s => `<svg viewBox="0 0 100 100" aria-hidden="true">${s}</svg>`;
+
+  /* ---------- сохранение ---------- */
+  function fresh() {
+    const b = Array(N).fill(null);
+    b[3 * COLS + 2] = { g: "kitchen" }; b[3 * COLS + 4] = { g: "wardrobe" };
+    [[2, 2, "tea"], [2, 4, "bow"], [4, 2, "tea"], [4, 4, "bow"], [4, 3, "cocoa"], [2, 3, "hat"]].forEach(([r, c, ch]) => b[r * COLS + c] = { c: ch, l: 1 });
+    return { b, en: EN_MAX, et: Date.now(), stars: 0, ch: 0, orders: [], seen: {}, done: 0 };
+  }
+  let S; try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  const first = !S || !Array.isArray(S.b) || S.b.length !== N;
+  if (first) S = fresh();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  S.b.forEach(x => { if (x && x.c) S.seen[x.c + x.l] = 1; });
+
+  /* ---------- энергия ---------- */
+  function tickEnergy() {
+    if (S.en >= EN_MAX) { S.et = Date.now(); return; }
+    const gained = Math.floor((Date.now() - S.et) / (EN_SEC * 1000));
+    if (gained > 0) { S.en = Math.min(EN_MAX, S.en + gained); S.et += gained * EN_SEC * 1000; if (S.en >= EN_MAX) S.et = Date.now(); save(); }
+  }
+  function drawEnergy() {
+    tickEnergy(); $("en").textContent = S.en;
+    if (S.en >= EN_MAX) $("enT").textContent = "";
+    else { const s = EN_SEC - Math.floor((Date.now() - S.et) / 1000) % EN_SEC; $("enT").textContent = `+1 через ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; }
+  }
+
+  /* ---------- главы и звёзды ---------- */
+  function drawChapter() {
+    $("stars").textContent = S.stars;
+    const i = S.ch;
+    if (i >= CHAPTERS.length) { $("chName").textContent = "Все главы открыты"; $("chLeft").textContent = ""; $("chBar").style.width = "100%"; return; }
+    const from = i ? NEED[i - 1] : 0, to = NEED[i];
+    $("chName").textContent = `Глава ${i + 1}`;
+    $("chLeft").textContent = `ещё ⭐ ${Math.max(0, to - S.stars)}`;
+    $("chBar").style.width = Math.min(100, (S.stars - from) / (to - from) * 100) + "%";
+  }
+  function checkChapter() {
+    while (S.ch < CHAPTERS.length && S.stars >= NEED[S.ch]) {
+      const i = S.ch++; save();
+      GEMS.add(3, "Тёплая осень · глава " + (i + 1));
+      window.track && track("merge", "chapter", "Глава " + (i + 1));
+      showScene(i, true);
+    }
+    drawChapter();
+  }
+
+  /* ---------- заказы ---------- */
+  function maxLevel() { return Math.min(MAX, 3 + Math.floor(S.ch / 2)); }
+  function newOrder() {
+    const busy = S.orders.map(o => o.who);
+    const who = pick(Object.keys(PEOPLE).filter(w => !busy.includes(w)));
+    const two = S.ch >= 1 && Math.random() < .45, top = maxLevel(), needs = [];
+    for (let k = 0; k < (two ? 2 : 1); k++) {
+      const c = pick(PEOPLE[who].likes);
+      const lo = Math.max(2, top - 2), l = lo + rnd(top - lo + 1);
+      needs.push({ c, l: two ? Math.max(2, l - 1) : l });
+    }
+    const stars = needs.reduce((s, n) => s + STAR[n.l], 0);
+    const gems = needs.some(n => n.l >= MAX) ? 2 : needs.some(n => n.l >= 4) ? 1 : 0;
+    return { who, needs, stars, gems };
+  }
+  while (S.orders.length < 3) S.orders.push(newOrder());
+  /* для заказа ищем на поле нужные вещи (разные клетки) */
+  function findFor(o) {
+    const used = new Set(), cells = [];
+    for (const n of o.needs) {
+      const i = S.b.findIndex((x, j) => !used.has(j) && x && x.c === n.c && x.l === n.l);
+      if (i < 0) return null; used.add(i); cells.push(i);
+    }
+    return cells;
+  }
+  function drawOrders() {
+    $("orders").innerHTML = S.orders.map((o, k) => {
+      const ok = findFor(o), have = new Set();
+      const icons = o.needs.map(n => {
+        const i = S.b.findIndex((x, j) => !have.has(j) && x && x.c === n.c && x.l === n.l); if (i >= 0) have.add(i);
+        return `<i class="${i >= 0 ? "ok" : ""}" title="${item(n.c, n.l).name}">${svg(item(n.c, n.l).svg)}</i>`;
+      }).join("");
+      return `<div class="mg-ord${ok ? " ready" : ""}" data-k="${k}">
+        <div class="who"><img src="../assets/predict/${o.who}.webp" alt=""><span>${PEOPLE[o.who].name}</span></div>
+        <div class="need">${icons}</div>
+        <div class="rew">⭐ ${o.stars}${o.gems ? ` · 💎 ${o.gems}` : ""}</div>
+        <button type="button" ${ok ? "" : "disabled"}>${ok ? "Отдать" : "Нужно собрать"}</button></div>`;
+    }).join("");
+  }
+  $("orders").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b || b.disabled) return;
+    const card = b.closest(".mg-ord"), k = +card.dataset.k, o = S.orders[k], cells = findFor(o); if (!cells) return;
+    cells.forEach(i => S.b[i] = null);
+    S.stars += o.stars; S.done = (S.done || 0) + 1;
+    if (o.gems) GEMS.add(o.gems, "Тёплая осень · заказ");
+    S.orders[k] = newOrder(); save();
+    window.track && track("merge", "order", "Заказ " + (S.done <= 10 ? S.done : S.done <= 50 ? "11–50" : "50+"));
+    toast(`${PEOPLE[o.who].name}: спасибо! +⭐ ${o.stars}${o.gems ? ` · +💎 ${o.gems}` : ""}`);
+    sel = -1; card.classList.add("done");
+    setTimeout(() => { drawAll(); checkChapter(); }, 380);
+  });
+
+  /* ---------- поле ---------- */
+  const board = $("board");
+  board.innerHTML = Array.from({ length: N }, (_, i) => `<div class="mg-cell" data-i="${i}"></div>`).join("");
+  const cellEl = i => board.children[i];
+  function drawCell(i, fx) {
+    const x = S.b[i], el = cellEl(i);
+    el.className = "mg-cell" + (x ? (x.g ? " gen" : " it") : "") + (x && x.l === MAX ? " max" : "") + (i === sel ? " sel" : "") + (fx ? " " + fx : "");
+    el.innerHTML = !x ? "" : x.g ? svg(GENS[x.g].svg) : svg(item(x.c, x.l).svg) + `<span class="lv">${x.l === MAX ? "★" : x.l}</span>`;
+    el.setAttribute("aria-label", !x ? "Пусто" : x.g ? GENS[x.g].name : item(x.c, x.l).name + ", уровень " + x.l);
+  }
+  let sel = -1, warnDel = false;
+  function drawInfo() {
+    const x = S.b[sel];
+    if (sel < 0 || !x) { $("info").innerHTML = `<div class="tx">Нажми на вещь, чтобы узнать, во что она превратится. <b>Буфет</b> и <b>шкаф</b> выдают новые вещи.</div>`; return; }
+    if (x.g) {
+      const names = Object.keys(CHAINS).filter(c => CHAINS[c].gen === x.g).map(c => CHAINS[c].title.toLowerCase().replace("артура", "Артура"));
+      $("info").innerHTML = `<span class="ic">${svg(GENS[x.g].svg)}</span><div class="tx"><b>${GENS[x.g].name}</b> · нажми ещё раз — получишь ${names.join(", ")}. Стоит 1 ⚡</div>`;
+      return;
+    }
+    const it = item(x.c, x.l), next = x.l < MAX ? item(x.c, x.l + 1) : null;
+    $("info").innerHTML = `<span class="ic">${svg(it.svg)}</span><div class="tx"><b>${it.name}</b> · ур. ${x.l} из ${MAX}<br>${next ? `Две такие → ${S.seen[x.c + (x.l + 1)] ? next.name.toLowerCase() : "???"}` : "Самая лучшая вещь в цепочке"}</div><button type="button" id="del" class="${warnDel ? "warn" : ""}">${warnDel ? "Точно убрать?" : "Убрать"}</button>`;
+    $("del").onclick = () => {
+      if (!warnDel) { warnDel = true; drawInfo(); return; }
+      S.b[sel] = null; save(); const i = sel; sel = -1; warnDel = false; drawCell(i); drawInfo(); drawOrders();
+    };
+  }
+  function select(i) { const old = sel; sel = i; warnDel = false; if (old >= 0) drawCell(old); if (i >= 0) drawCell(i); drawInfo(); }
+  function nearestEmpty(from) {
+    const r0 = Math.floor(from / COLS), c0 = from % COLS; let best = -1, bd = 1e9;
+    S.b.forEach((x, i) => { if (x) return; const d = Math.abs(Math.floor(i / COLS) - r0) + Math.abs(i % COLS - c0) + Math.random() * .3; if (d < bd) { bd = d; best = i; } });
+    return best;
+  }
+  function useGen(i) {
+    tickEnergy();
+    if (S.en < 1) { energyBox(); return; }
+    const to = nearestEmpty(i);
+    if (to < 0) { toast("Поле заполнено. Соедини или убери что-нибудь"); return; }
+    const g = S.b[i].g, chains = Object.keys(CHAINS).filter(c => CHAINS[c].gen === g);
+    if (S.en >= EN_MAX) S.et = Date.now();
+    S.en--; S.b[to] = { c: pick(chains), l: Math.random() < .08 ? 2 : 1 }; S.seen[S.b[to].c + S.b[to].l] = 1; save();
+    drawCell(to, "new"); drawEnergy(); drawOrders();
+  }
+  /* перенос вещи с клетки a на клетку b */
+  function drop(a, b) {
+    if (a === b) return;
+    const x = S.b[a], y = S.b[b];
+    if (y && !y.g && x.c && x.c === y.c && x.l === y.l && x.l < MAX) {
+      S.b[b] = { c: x.c, l: x.l + 1 }; S.b[a] = null;
+      const isNew = !S.seen[x.c + (x.l + 1)]; S.seen[x.c + (x.l + 1)] = 1;
+      if (isNew) toast("Новая вещь: " + item(x.c, x.l + 1).name);
+      if (isNew && x.l + 1 === MAX) GEMS.add(1, "Тёплая осень · " + item(x.c, MAX).name);
+      sel = b;
+      if (!S.started) { S.started = 1; window.track && track("merge", "start", "Первое слияние"); }
+      save(); drawCell(a); drawCell(b, "pop");
+    } else {
+      S.b[b] = x; S.b[a] = y; sel = b; save(); drawCell(a); drawCell(b);
+    }
+    drawInfo(); drawOrders();
+  }
+
+  /* перетаскивание пальцем или мышкой; простое нажатие — выбрать (или включить буфет/шкаф) */
+  let drag = null, ghost = null;
+  const cellAt = (x, y) => { const el = document.elementFromPoint(x, y); const c = el && el.closest(".mg-cell"); return c && board.contains(c) ? +c.dataset.i : -1; };
+  board.addEventListener("pointerdown", e => {
+    const c = e.target.closest(".mg-cell"); if (!c) return;
+    const i = +c.dataset.i; if (!S.b[i]) { select(-1); return; }
+    drag = { i, x: e.clientX, y: e.clientY, moved: false, over: -1 };
+    board.setPointerCapture(e.pointerId);
+  });
+  board.addEventListener("pointermove", e => {
+    if (!drag) return;
+    if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 8) {
+      drag.moved = true;
+      ghost = document.createElement("div"); ghost.className = "mg-ghost"; ghost.innerHTML = cellEl(drag.i).querySelector("svg").outerHTML; document.body.appendChild(ghost);
+      cellEl(drag.i).classList.add("lift");
+      const x = S.b[drag.i];
+      if (x.c) S.b.forEach((y, j) => { if (j !== drag.i && y && y.c === x.c && y.l === x.l && x.l < MAX) cellEl(j).classList.add("hint"); });
+    }
+    if (drag.moved) {
+      ghost.style.left = e.clientX + "px"; ghost.style.top = e.clientY + "px";
+      const o = cellAt(e.clientX, e.clientY);
+      if (o !== drag.over) { if (drag.over >= 0) cellEl(drag.over).classList.remove("over"); if (o >= 0) cellEl(o).classList.add("over"); drag.over = o; }
+    }
+  });
+  function endDrag(e, cancel) {
+    if (!drag) return;
+    const d = drag; drag = null;
+    if (ghost) { ghost.remove(); ghost = null; }
+    board.querySelectorAll(".hint,.over,.lift").forEach(el => el.classList.remove("hint", "over", "lift"));
+    if (cancel) return;
+    if (!d.moved) { if (S.b[d.i].g && sel === d.i) useGen(d.i); else if (S.b[d.i].g) { select(d.i); useGen(d.i); } else select(d.i); return; }
+    const to = cellAt(e.clientX, e.clientY);
+    if (to >= 0) drop(d.i, to); else drawCell(d.i);
+  }
+  board.addEventListener("pointerup", e => endDrag(e));
+  board.addEventListener("pointercancel", e => endDrag(e, true));
+
+  /* ---------- окна ---------- */
+  function overlay(html) {
+    const ov = document.createElement("div"); ov.className = "mg-ov";
+    ov.innerHTML = `<div class="mg-box" role="dialog" aria-modal="true"><button class="x" type="button" aria-label="Закрыть">×</button>${html}</div>`;
+    ov.addEventListener("click", e => { if (e.target === ov || e.target.closest(".x") || e.target.closest("[data-close]")) ov.remove(); });
+    document.body.appendChild(ov); return ov;
+  }
+  function showScene(i, isNew) {
+    const c = CHAPTERS[i], q = quoteFor(i);
+    overlay(`<h2>${isNew ? "Открыта глава " + (i + 1) : "Глава " + (i + 1)}</h2>
+      <div class="mg-scene"><img src="../pary/${c.src}" alt="${c.title}"></div>
+      <p><b style="color:var(--frost)">${c.title}</b>${isNew ? " · +3 💎" : ""}</p>
+      <div class="mg-quote">${q.text.startsWith("—") ? q.text : "«" + q.text + "»"}<small>${q.who} · «Осколки первой любви»</small></div>
+      <button class="btn btn-main" type="button" data-close>${isNew ? "Играть дальше" : "Закрыть"}</button>`);
+  }
+  $("chapters").onclick = $("chBtn").onclick = () => {
+    const ov = overlay(`<h2>Главы</h2><p>Выполняй заказы героев и собирай ⭐ — за звёзды открываются сцены из «Осколков».</p>
+      <div class="mg-chapters">${CHAPTERS.map((c, i) => `<button type="button" class="${i < S.ch ? "" : "lock"}" data-i="${i}"><img src="../pary/${c.src}" alt="" loading="lazy"><span>${i < S.ch ? c.title : `🔒 ⭐ ${NEED[i]}`}</span></button>`).join("")}</div>`);
+    ov.querySelector(".mg-chapters").onclick = e => { const b = e.target.closest("button"); if (!b || b.classList.contains("lock")) return; ov.remove(); showScene(+b.dataset.i); };
+  };
+  $("coll").onclick = () => {
+    const total = Object.values(CHAINS).reduce((s, c) => s + c.items.length, 0), got = Object.keys(S.seen).length;
+    overlay(`<h2>Коллекция</h2><p>Найдено ${got} из ${total}. За каждую вещь пятого уровня, собранную впервые, +1 💎.</p>
+      <div class="mg-coll">${Object.entries(CHAINS).map(([k, c]) => `<h3>${c.title}</h3>` + c.items.map((it, l) => `<i class="${S.seen[k + (l + 1)] ? "" : "no"}" title="${S.seen[k + (l + 1)] ? it.name : "???"}">${svg(it.svg)}</i>`).join("")).join("")}</div>`);
+  };
+  function energyBox() {
+    tickEnergy();
+    const ov = overlay(`<h2>Энергия ⚡</h2><p>Буфет и шкаф тратят 1 ⚡ за вещь. Энергия копится сама: +1 в минуту, до ${EN_MAX}.</p>
+      <p style="color:var(--frost);font:600 20px var(--body)">Сейчас ⚡ ${S.en} из ${EN_MAX}</p>
+      <button class="btn btn-main" type="button" id="refill" ${S.en >= EN_MAX ? "disabled" : ""}>Заполнить за ${REFILL} 💎</button>
+      <p id="refMsg"></p>`);
+    ov.querySelector("#refill").onclick = () => {
+      if (!GEMS.spend(REFILL)) { ov.querySelector("#refMsg").textContent = `Не хватает кристаллов: нужно ${REFILL} 💎, у тебя ${GEMS.get()}. Их дают в «Найди пару», «Чья это фраза?» и за подарок дня.`; return; }
+      S.en = EN_MAX; S.et = Date.now(); save(); drawEnergy(); ov.remove(); toast("Энергия заполнена");
+      window.track && track("merge", "refill", "Энергия за кристаллы");
+    };
+  }
+  $("enBtn").onclick = energyBox;
+  let tt; function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => el.classList.remove("on"), 2200); }
+
+  function drawAll() { for (let i = 0; i < N; i++) drawCell(i); drawInfo(); drawOrders(); drawEnergy(); drawChapter(); }
+  drawAll(); save();
+  setInterval(drawEnergy, 1000);
+  GEMS.chip($("gems"), `В «Тёплой осени» кристаллы дают за заказы с вещами 4–5 уровня, за новые вещи 5 уровня и за каждую открытую главу. За ${REFILL} 💎 можно заполнить энергию.`);
+  if (first) toast("Перетащи чайный листик на такой же листик");
+  GEMS.offerDaily();
+})();
+</script>
+</body>
+</html>
