@@ -153,7 +153,6 @@ body{background:var(--night)}
 <footer><div class="wrap">© Екатерина Котлярова. · <a href="../privacy/">Политика конфиденциальности</a></div></footer>
 <script src="../assets/site.js?v=20261015e"></script>
 <script src="../assets/gems.js?v=20261018a"></script>
-<script src="../frazy/quotes.js?v=20261018a"></script>
 <script src="../pary/cards.js?v=20261018d"></script>
 <script src="items.js?v=20261025"></script>
 <script>
@@ -176,8 +175,22 @@ body{background:var(--night)}
   const CARD = id => PAIR_CARDS.find(c => c.id === id);
   const ORDER_OF_SCENES = ["tea", "anya", "artur", "basya", "hat", "anton", "wheel", "lika", "rescue", "bear", "cake", "sveta"];
   const CHAPTERS = ORDER_OF_SCENES.map(CARD).filter(Boolean).slice(0, NEED.length);
-  const WHO = { anya: "Аня", artur: "Артур", anton: "Антон", lika: "Лика" };
-  const quoteFor = i => { const q = QUOTES[(i * 7 + 3) % QUOTES.length]; return { who: WHO[q[0]] || "", text: q[1] }; };
+  /* к каждой главе — тёплая фраза из книги, в том же порядке, что и сцены */
+  const QUOTES_UP = [
+    ["Антон", "Помню, кофе за тобой. Но сегодня — за мной. А пирожное у меня в кармане."],
+    ["Аня", "Я была физиком, потому что так хотел папа. А я хочу попробовать то, что люблю я."],
+    ["Артур", "Увидел её во дворе дома. Влюбился. Решил, что затягивать не стоит."],
+    ["Аня", "Всё точно будет хорошо, Артур. К тому же, у тебя теперь появился новый друг. Он будет греть тебе душу."],
+    ["Аня", "Спасибо, что заступился. И за шапку. Но дальше я сама."],
+    ["Антон", "Да садись, мне не жалко. Когда в душе двоих расцветает любовь, нужно помогать."],
+    ["Антон", "Иногда двух недель достаточно, чтобы полюбить. Даже нескольких минут."],
+    ["Аня", "Не ревнуй к Антону. Он хороший. И он любит тебя."],
+    ["Аня", "Спасибо тебе огромное, что вступился. Второй раз уже меня спасаешь."],
+    ["Аня", "Слушай… Может, вместе позанимаемся после уроков? Я хорошо знаю физику."],
+    ["Антон", "Не буду. Но с одним условием: пирожное тоже за тобой."],
+    ["Аня", "Да. Антон очень переживает за тебя. И сказал, что ты никогда так ни на кого не смотрел, как на меня."]
+  ];
+  const quoteFor = i => { const q = QUOTES_UP[i % QUOTES_UP.length]; return { who: q[0], text: q[1] }; };
 
   const rnd = n => Math.floor(Math.random() * n), pick = a => a[rnd(a.length)];
   const item = (c, l) => CHAINS[c].items[l - 1];
