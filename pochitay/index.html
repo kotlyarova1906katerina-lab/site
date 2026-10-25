@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=Golos+Text:wght@400;500;600;700&display=swap">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icon-180.png">
+<title>Почитай под это — «Осколки первой любви»</title>
+<meta name="description" content="Уютная страница для чтения: осенний трамвай, дождь за окном, звук города или камина и строки из «Осколков первой любви» Екатерины Котляровой.">
+<meta property="og:title" content="Почитай под это — «Осколки первой любви»">
+<meta property="og:description" content="Включи дождь, город или камин и читай строки из книги — по одной, медленно, как в осеннем трамвае.">
+<meta property="og:image" content="https://kotlyarova1906katerina-lab.github.io/site/slova/bg-wide.webp">
+<meta property="og:url" content="https://kotlyarova1906katerina-lab.github.io/site/pochitay/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Сайт автора Екатерины Котляровой">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../assets/style.css?v=20261025">
+<style>
+body{background:var(--night);overflow-x:hidden}
+.pc-bg{position:fixed;inset:0;z-index:-2;overflow:hidden}
+.pc-bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(2px) brightness(.7) saturate(.95);animation:drift 60s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1.08) translate(0,0)}to{transform:scale(1.16) translate(-1.5%,-1%)}}
+.pc-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(70% 60% at 50% 55%,rgba(13,18,25,.15),rgba(13,18,25,.7)),linear-gradient(180deg,rgba(13,18,25,.35),rgba(13,18,25,.1) 40%,rgba(13,18,25,.75))}
+#sky{position:fixed;inset:0;z-index:-1;width:100%;height:100%;pointer-events:none}
+.pc{min-height:calc(100svh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:32px 16px 40px;text-align:center}
+.pc-head .eyebrow{color:#e9c27a}
+.pc-head h1{font-size:clamp(28px,5vw,42px);margin-top:6px;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.card{width:min(680px,100%);background:rgba(13,18,25,.52);border:1px solid rgba(233,194,122,.22);border-radius:24px;padding:clamp(24px,5vw,44px);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.q{margin:0;min-height:7.5em;display:flex;flex-direction:column;align-items:center;justify-content:center;font:400 clamp(20px,3.4vw,28px)/1.5 var(--display);color:#fbf4e8;text-wrap:pretty;transition:opacity 1.4s ease,filter 1.4s ease,transform 1.4s ease}
+.q.out{opacity:0;filter:blur(6px);transform:translateY(6px)}
+.q span{display:block}
+.src{margin-top:16px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mist)}
+.ctl{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px}
+.ib{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(21,29,39,.6);color:var(--frost);display:grid;place-items:center;cursor:pointer;transition:border-color .15s,background .15s}
+.ib:hover{border-color:var(--gold,#e9c27a)}
+.ib svg{width:18px;height:18px}
+.bar{width:min(220px,60%);margin:14px auto 0;height:3px;border-radius:2px;background:rgba(185,211,230,.15);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:#e9c27a}
+.snd{width:min(680px,100%)}
+.snd .eyebrow{margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(13,18,25,.55);color:var(--frost);font:500 15px var(--body);cursor:pointer;backdrop-filter:blur(6px);transition:all .2s}
+.chip svg{width:18px;height:18px}
+.chip[aria-pressed="true"]{background:rgba(233,194,122,.18);border-color:rgba(233,194,122,.7);color:#f6dfae;box-shadow:0 0 18px rgba(233,194,122,.18)}
+.vol{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:14px;color:var(--mist);font-size:14px}
+.vol input{width:180px;accent-color:#e9c27a}
+.hint{font-size:13px;color:var(--mist);margin:10px 0 0}
+.more{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.more .btn{padding:12px 18px;font-size:15px;backdrop-filter:blur(6px)}
+.btn-ghost{background:rgba(13,18,25,.55)}
+@media (prefers-reduced-motion:reduce){.pc-bg img{animation:none}.q{transition:opacity .6s}}
+</style>
+<script src="../assets/account.js?v=20261012g"></script>
+<link rel="manifest" href="../manifest.webmanifest">
+<meta name="theme-color" content="#0d1219">
+</head>
+<body>
+<div class="pc-bg"><picture><source media="(max-aspect-ratio:1/1)" srcset="../slova/bg-tall.webp"><img src="../slova/bg-wide.webp" alt=""></picture></div>
+<canvas id="sky" aria-hidden="true"></canvas>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../"><small>Сайт автора</small> Екатерины Котляровой</a>
+  <nav class="nav"><a href="../"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/></svg><span class="lbl">Главная</span></a><a href="../knigi/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.5 4.5 4 4.8v13.5c3.5-.3 6 .2 8 1.7 2-1.5 4.5-2 8-1.7V4.8c-3.5-.3-6 .2-8 1.7z"/><path d="M12 6.5V20"/></svg><span class="lbl">Книги</span></a><a href="../serial/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg><span class="lbl">Сериал</span></a><a href="../music/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="6.5" rx="1.6"/><rect x="16.5" y="14" width="4.5" height="6.5" rx="1.6"/></svg><span class="lbl">Песни</span></a><a href="../testy/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="m3.5 6.5 1.3 1.3L7 5.5M3.5 12l1.3 1.3L7 11M3.5 17.5l1.3 1.3L7 16.5"/></svg><span class="lbl">Тесты</span></a><a href="../igry/"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.5" cy="11.5" r="1" fill="currentColor"/><circle cx="17.8" cy="13.8" r="1" fill="currentColor"/></svg><span class="lbl">Игры</span></a></nav>
+</div></header>
+
+<main class="pc">
+  <div class="pc-head"><div class="eyebrow">Осенний трамвай · строки из книги</div><h1>Почитай под это</h1></div>
+
+  <div class="card">
+    <blockquote class="q" id="q" aria-live="polite"></blockquote>
+    <div class="src">«Осколки первой любви»</div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="ctl">
+      <button class="ib" id="prev" aria-label="Предыдущая строка"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <button class="ib" id="pause" aria-label="Пауза"><svg viewBox="0 0 24 24" fill="currentColor" id="pauseIco"><rect x="6.5" y="5" width="4" height="14" rx="1"/><rect x="13.5" y="5" width="4" height="14" rx="1"/></svg></button>
+      <button class="ib" id="next" aria-label="Следующая строка"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+
+  <div class="snd">
+    <div class="eyebrow">Звук за окном</div>
+    <div class="chips">
+      <button class="chip" data-s="rain" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 16a4 4 0 0 1-.6-8A5.5 5.5 0 0 1 17 7.5a3.5 3.5 0 0 1 .5 7"/><path d="M9 18l-1 2.5M13 17l-1 2.5M17 17l-1 2.5"/></svg>Дождь</button>
+      <button class="chip" data-s="city" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 20h18M5 20V9l5-3v14M10 20V4h6v16M16 20v-9h4v9"/><path d="M12.5 7.5h1M12.5 11h1M12.5 14.5h1"/></svg>Ночной город</button>
+      <button class="chip" data-s="wind" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9h11a3 3 0 1 0-3-3M3 13h15a3 3 0 1 1-3 3M3 17h7"/></svg>Осенний ветер</button>
+      <button class="chip" data-s="fire" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 21c-4 0-6.5-2.6-6.5-6 0-4 3.5-5.5 3.5-10 2.5 1.5 4 3.5 4.5 6 1-1 1.5-2 1.5-3.5 2 1.8 3.5 4.3 3.5 7.5 0 3.4-2.5 6-6.5 6z"/></svg>Камин</button>
+    </div>
+    <label class="vol">Громкость <input type="range" id="vol" min="0" max="100" value="70"></label>
+    <p class="hint">Звуки можно смешивать: дождь с камином, город с ветром. Лучше в наушниках.</p>
+  </div>
+
+  <div class="more">
+    <a class="btn btn-ghost" href="../#zhdu">Жду книгу ♥</a>
+    <a class="btn btn-ghost" href="../serial/">Смотреть сериал</a>
+    <a class="btn btn-ghost" href="../frazy/">Чья это фраза?</a>
+  </div>
+</main>
+
+<script src="zvuki.js?v=20261025"></script>
+<script>
+/* Строки из первой части «Осколков первой любви» (без спойлеров финала) */
+const LINES = [
+  ["— Будешь играть роль моей девушки.", "— Что?", "— Ты. Будешь. Играть. Роль. Моей. Девушки."],
+  "Артур Холодов берёт от жизни всё, не спрашивая разрешения.",
+  "Я переехала в другой город, пытаясь сбежать от прошлого. Я хотела быть незаметной, но привлекла его внимание в первый же день.",
+  "Только лужи, отражающие жёлтый свет далёкого фонаря, да мусор, гоняемый ночным ветерком.",
+  "Я чувствую, как размеренно и спокойно стучит его сердце.",
+  "В животе становится тепло, будто я горячего чая глотнула.",
+  "Почему-то вопреки всему — вопреки сложившейся ситуации, вопреки тону молодого человека — в груди становится невыносимо тепло и сладко.",
+  "Я вжимаюсь в спинку кресла, прижимаюсь лбом к холодному стеклу, пытаюсь привести свои мысли и чувства в порядок.",
+  "А сердце стучит настолько оглушительно громко, что на его стук должны примчаться соседи.",
+  "Когда в душе двоих расцветает любовь, нужно помогать.",
+  "Артур убирает руку с моего плеча, а мне тут же становится холодно.",
+  "Вместо того, чтобы отстраниться, Холодов сплетает наши мизинцы.",
+  "И мне от того, что он улыбается, становится так тепло.",
+  "Он поднимает руку и заправляет прядь волос, которую треплет ветер, мне за ухо.",
+  "Я вдруг осознаю, что он хочет дарить кому-то любовь, но делает это так грубо, чтобы об этом мало кто догадался.",
+  "Из этой игры я не смогу выйти не с разбитым сердцем.",
+  "Холодов большими пальцами смахивает мои слёзы. Стирает с новой, доселе неизвестной нежностью, от которой спирает дыхание.",
+  "Разные. Совершенно разные, хоть и внешне они как две капли воды.",
+  "Его пальцы сплетаются с моими, крепко и уверенно, Холодов ведёт меня к колесу обозрения.",
+  "Когда кабинка плавно отрывается от земли, сердце замирает.",
+  "Когда мы были на колесе, там, наверху, физическое положение тела совпадало с душевным. Я парила. И телом. И душой.",
+  "Небо заволокло серыми тучами, пахнет дождём. Мы идём молча. Но он всё равно берёт меня за руку.",
+  "Последующие недели летят, как один долгий, наполненный теплом и суетой день.",
+  "Будто слова сами по себе — маленькие осколки, и стоит их выговорить, как они застревают в горле, режут изнутри.",
+  "Но ещё не подозреваю, что всего через месяц моё сердце превратится в пепел."
+];
+const SHOW = 16000, q = document.getElementById("q"), bar = document.getElementById("bar");
+let order = LINES.map((_, i) => i), pos = 0, paused = false, elapsed = 0, prevNow = performance.now();
+for (let i = order.length - 1; i > 1; i--) { const j = 1 + Math.floor(Math.random() * i); [order[i], order[j]] = [order[j], order[i]]; } // первая — всегда аннотация
+const html = l => (Array.isArray(l) ? l : [l]).map(s => `<span>${s}</span>`).join("");
+function put(i, instant) {
+  pos = (i + order.length) % order.length;
+  const set = () => { q.innerHTML = html(LINES[order[pos]]); q.classList.remove("out"); };
+  if (instant) set(); else { q.classList.add("out"); setTimeout(set, 1400); }
+  elapsed = 0;
+}
+function frame(now) {
+  if (!paused) elapsed += now - prevNow;
+  prevNow = now;
+  const p = Math.min(1, elapsed / SHOW);
+  bar.style.width = (p * 100) + "%";
+  if (p >= 1) put(pos + 1);
+  requestAnimationFrame(frame);
+}
+put(0, true); requestAnimationFrame(frame);
+document.getElementById("next").onclick = () => put(pos + 1);
+document.getElementById("prev").onclick = () => put(pos - 1);
+const pauseBtn = document.getElementById("pause"), ico = document.getElementById("pauseIco");
+pauseBtn.onclick = () => {
+  paused = !paused;
+  pauseBtn.setAttribute("aria-label", paused ? "Дальше" : "Пауза");
+  ico.innerHTML = paused ? '<path d="M8 5v14l11-7z"/>' : '<rect x="6.5" y="5" width="4" height="14" rx="1"/><rect x="13.5" y="5" width="4" height="14" rx="1"/>';
+};
+
+/* звук */
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const vol = document.getElementById("vol");
+vol.value = store.get("pochitay_vol") || 70;
+ZVUKI.volume(vol.value / 100);
+vol.oninput = () => { ZVUKI.volume(vol.value / 100); store.set("pochitay_vol", vol.value); };
+document.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+  const on = ZVUKI.toggle(b.dataset.s);
+  b.setAttribute("aria-pressed", on);
+  if (b.dataset.s === "rain") rain = on;
+  if (on) window.track && track("pochitay", "sound", b.textContent.trim());
+});
+
+/* небо: золотые блики-осколки, а при дожде — косые капли */
+const cv = document.getElementById("sky"), cx = cv.getContext("2d"), still = matchMedia("(prefers-reduced-motion:reduce)").matches;
+let rain = false, W = 0, H = 0, motes = [], drops = [];
+function size() { const d = Math.min(2, devicePixelRatio || 1); W = cv.width = innerWidth * d; H = cv.height = innerHeight * d; }
+size(); addEventListener("resize", size);
+for (let i = 0; i < 34; i++) motes.push({ x: Math.random(), y: Math.random(), r: .6 + Math.random() * 1.8, s: .00004 + Math.random() * .00012, ph: Math.random() * 6.3, rot: Math.random() * 6.3 });
+for (let i = 0; i < 140; i++) drops.push({ x: Math.random(), y: Math.random(), l: .02 + Math.random() * .04, v: .9 + Math.random() * .8, a: .08 + Math.random() * .16 });
+let last = performance.now(), rainAmt = 0;
+function sky(now) {
+  const dt = Math.min(50, now - last); last = now;
+  cx.clearRect(0, 0, W, H);
+  const k = Math.min(W, H) / 400;
+  motes.forEach(m => {
+    m.y -= m.s * dt; m.x += Math.sin(now / 4000 + m.ph) * .00003 * dt; m.rot += .0004 * dt;
+    if (m.y < -.05) { m.y = 1.05; m.x = Math.random(); }
+    const tw = .35 + .65 * Math.abs(Math.sin(now / 1300 + m.ph)), s = m.r * k * 2.2;
+    cx.save(); cx.translate(m.x * W, m.y * H); cx.rotate(m.rot); cx.globalAlpha = tw * .8;
+    cx.fillStyle = "rgba(246,214,150,.9)"; cx.shadowColor = "rgba(246,214,150,.9)"; cx.shadowBlur = 8 * k;
+    cx.beginPath(); cx.moveTo(0, -s); cx.lineTo(s * .45, s * .3); cx.lineTo(-s * .35, s * .6); cx.closePath(); cx.fill(); cx.restore();
+  });
+  rainAmt += ((rain ? 1 : 0) - rainAmt) * Math.min(1, dt / 900);
+  if (rainAmt > .01) {
+    cx.strokeStyle = "rgba(205,225,240,1)"; cx.lineWidth = Math.max(1, k * .5);
+    drops.forEach(d => {
+      d.y += d.v * dt / 900; d.x -= d.v * dt / 9000;
+      if (d.y > 1.05) { d.y = -.08; d.x = Math.random() * 1.1; }
+      cx.globalAlpha = d.a * rainAmt;
+      cx.beginPath(); cx.moveTo(d.x * W, d.y * H); cx.lineTo((d.x - d.l * .12) * W, (d.y + d.l) * H); cx.stroke();
+    });
+    cx.globalAlpha = 1;
+  }
+  if (!still) requestAnimationFrame(sky);
+}
+requestAnimationFrame(sky);
+</script>
+</body>
+</html>
