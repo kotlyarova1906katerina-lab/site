@@ -37,6 +37,9 @@ a.game:hover{border-color:var(--gold);transform:translateY(-2px)}
 .game .go{margin-top:auto;padding-top:8px;color:var(--gold);font-weight:600}
 .game.soon{opacity:.75}
 .game.soon .pic img{filter:blur(3px) brightness(.6)}
+.game .mtiles{position:absolute;left:14px;right:14px;top:42%;transform:translateY(-50%);z-index:1;display:flex;justify-content:center;gap:6px}
+.game .mtiles i{width:min(58px,17%);aspect-ratio:1;border-radius:12px;background:rgba(13,18,25,.72);border:1px solid rgba(233,194,122,.45);display:grid;place-items:center}
+.game .mtiles svg{width:86%;height:86%}
 .game .badge{position:absolute;top:12px;right:12px;z-index:2;background:rgba(13,18,25,.8)}
 </style>
 <script src="../assets/account.js?v=20261012g"></script>
@@ -54,6 +57,15 @@ a.game:hover{border-color:var(--gold);transform:translateY(-2px)}
   <div class="sec-head"><div class="eyebrow">По книге и сериалу «Осколки первой любви»</div><h2>Игры</h2>
     <p class="muted" style="margin:0">Играй прямо на сайте, с телефона или компьютера. Кристаллы 💎 общие для всех игр: подарок каждый день, награды за быстрые уровни и верные ответы. Прогресс сохраняется, а если войти в аккаунт, он не потеряется и на другом устройстве.</p></div>
   <div class="games">
+    <a class="game" href="../sliyanie/">
+      <div class="pic"><img src="../pary/img/tea.webp" alt="" loading="lazy"><div class="mtiles" id="mergeTiles"></div><div class="quote">Тёплая осень</div></div>
+      <div class="body">
+        <span class="badge">Новое</span>
+        <h2>Тёплая осень</h2>
+        <p>Игра-слияние: соединяй одинаковые вещи, собирай чай, какао, бантики, шапку и куртку Артура, выполняй заказы героев и открывай главы с цитатами из книги.</p>
+        <span class="go">Играть →</span>
+      </div>
+    </a>
     <a class="game" href="../slova/">
       <div class="pic"><img src="../slova/bg-wide.webp" alt="Аня и Артур в осеннем трамвае" loading="lazy"><div class="tiles"><b>С</b><b>Л</b><b>О</b><b>В</b><b>А</b></div></div>
       <div class="body">
@@ -119,6 +131,11 @@ a.game:hover{border-color:var(--gold);transform:translateY(-2px)}
   </div>
 </div></section>
 </main>
+<script src="../sliyanie/items.js?v=20261025"></script>
+<script>
+{ const C = MERGE.CHAINS, el = document.getElementById("mergeTiles");
+  el.innerHTML = [C.tea.items[2], C.bow.items[2], C.dog.items[4], C.hat.items[3], C.jacket.items[4]].map(it => `<i><svg viewBox="0 0 100 100" aria-hidden="true">${it.svg}</svg></i>`).join(""); }
+</script>
 
 <footer><div class="wrap">© Екатерина Котлярова. · <a href="../privacy/">Политика конфиденциальности</a></div></footer>
 </body>
