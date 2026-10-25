@@ -117,7 +117,7 @@ body{background:var(--night)}
   $("best").textContent = "рекорд " + st.best;
 
   /* размер поля: почти весь экран под шапкой, но не шире 560 */
-  let W = 0, H = 0, dpr = 1;
+  let W = 0, H = 0, dpr = 1, AW = 0, AH = 0, drawn = "";
   function size() {
     const top = field.getBoundingClientRect().top + window.scrollY;
     const h = Math.max(420, Math.min(window.innerHeight - top - 46, 860));
@@ -127,6 +127,11 @@ body{background:var(--night)}
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     // в роликах Артур виден до пояса и выше ростом — делаем его чуть уже, чтобы он занимал ту же высоту поля
     artur.style.width = (artur.classList.contains("live") ? Math.min(W * .4, H * .26) : Math.min(W * .46, H * .42)) + "px";
+    // размеры Артура считаем здесь, а не в каждом кадре: чтение размеров после сдвига заставляет браузер пересчитывать страницу
+    AW = artur.clientWidth;
+    if (artur.classList.contains("live")) { const A = ANIMS[cur] || ANIMS.idle, d = Math.min(2, devicePixelRatio || 1); AH = Math.round(AW * A.h / A.w); acv.width = Math.round(AW * d); acv.height = Math.round(AH * d); acv.style.height = AH + "px"; drawn = ""; }
+    else AH = artur.clientHeight;
+    sprites();
   }
   window.addEventListener("resize", size);
 
@@ -144,10 +149,11 @@ body{background:var(--night)}
   function drawAnim(t) {
     const a = ANIMS[cur]; acc += Math.min(.1, (t - prevT) / 1000 || 0); prevT = t;
     while (acc >= 1 / FPS) { acc -= 1 / FPS; fr++; if (fr >= a.n) { fr = 0; if (cur !== "idle") { cur = "idle"; } } }
-    const A = ANIMS[cur], w = artur.clientWidth, h = Math.round(w * A.h / A.w), d = Math.min(2, devicePixelRatio || 1);
-    if (acv.width !== Math.round(w * d) || acv.height !== Math.round(h * d)) { acv.width = Math.round(w * d); acv.height = Math.round(h * d); acv.style.height = h + "px"; }
-    actx.clearRect(0, 0, acv.width, acv.height);
-    actx.drawImage(A.img, (fr % COLS) * A.w, Math.floor(fr / COLS) * A.h, A.w, A.h, 0, 0, acv.width, acv.height);
+    const A = ANIMS[cur], key = cur + fr;
+    if (key !== drawn) {                                       // кадр ленты меняется 10 раз в секунду — рисуем только тогда
+      drawn = key; actx.clearRect(0, 0, acv.width, acv.height);
+      actx.drawImage(A.img, (fr % COLS) * A.w, Math.floor(fr / COLS) * A.h, A.w, A.h, 0, 0, acv.width, acv.height);
+    }
     requestAnimationFrame(drawAnim);
   }
 
@@ -176,13 +182,30 @@ body{background:var(--night)}
     items.push({ kind, x: .07 + Math.random() * .86, y: -R() * 2, v: (H * (.22 + lvl * .38)) * (kind === "shard" ? 1.25 : 1) * (.85 + Math.random() * .3), spin: Math.random() * 6, rot: (Math.random() - .5) * 2 });
     spawnIn = (.9 - lvl * .55) * (.7 + Math.random() * .6);
   }
-  function heart(cx, cy, r) {
+  /* сердечко, осколок и Лика со свечением рисуются один раз в картинки, а в игре только копируются — так быстрее на телефоне */
+  const SPR = {};
+  function sprites() {
+    const r = R(), pad = r * 1.2, sz = Math.ceil((r + pad) * 2 * dpr);
+    const mk = (fn) => { const c = document.createElement("canvas"); c.width = c.height = sz; const g = c.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); fn(g, r + pad, r); return c; };
+    SPR.half = (r + pad);
+    SPR.heart = mk((g, c, r) => heart(g, c, c, r));
+    SPR.shard = mk((g, c, r) => shard(g, c, c, r, 0));
+    SPR.lika = mk((g, c, r) => lika(g, c, c, r));
+    SPR.likaOk = likaImg.complete && likaImg.naturalWidth > 0;
+  }
+  likaImg.onload = () => { if (W) sprites(); };
+  function put(img, cx, cy, rot) {
+    const h = SPR.half;
+    if (!rot) { ctx.drawImage(img, cx - h, cy - h, h * 2, h * 2); return; }
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot); ctx.drawImage(img, -h, -h, h * 2, h * 2); ctx.restore();
+  }
+  function heart(ctx, cx, cy, r) {
     ctx.save(); ctx.translate(cx, cy); ctx.scale(r / 16, r / 16);
     ctx.beginPath(); ctx.moveTo(0, 12); ctx.bezierCurveTo(-4, 9, -16, 2, -16, -6); ctx.bezierCurveTo(-16, -14, -6, -18, 0, -10); ctx.bezierCurveTo(6, -18, 16, -14, 16, -6); ctx.bezierCurveTo(16, 2, 4, 9, 0, 12);
     const g = ctx.createLinearGradient(0, -16, 0, 12); g.addColorStop(0, "#ff8fa8"); g.addColorStop(1, "#e0405e");
     ctx.fillStyle = g; ctx.shadowColor = "rgba(255,120,150,.7)"; ctx.shadowBlur = 14; ctx.fill(); ctx.restore();
   }
-  function shard(cx, cy, r, rot) {
+  function shard(ctx, cx, cy, r, rot) {
     ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(r / 20, r / 20);
     ctx.beginPath(); ctx.moveTo(-2, -22); ctx.lineTo(18, -6); ctx.lineTo(10, 22); ctx.lineTo(-16, 14); ctx.lineTo(-19, -8); ctx.closePath();
     const g = ctx.createLinearGradient(-20, -22, 18, 22); g.addColorStop(0, "#fff3cf"); g.addColorStop(.5, "#e3b65f"); g.addColorStop(1, "#c8923e");
@@ -190,7 +213,7 @@ body{background:var(--night)}
     ctx.shadowBlur = 0; ctx.strokeStyle = "rgba(255,250,230,.8)"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-2, -22); ctx.lineTo(-3, 2); ctx.lineTo(10, 22); ctx.moveTo(-3, 2); ctx.lineTo(18, -6); ctx.stroke();
     ctx.restore();
   }
-  function lika(cx, cy, r) {
+  function lika(ctx, cx, cy, r) {
     ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r * 1.15, 0, Math.PI * 2); ctx.closePath();
     ctx.shadowColor = "rgba(224,64,94,.9)"; ctx.shadowBlur = 14; ctx.fillStyle = "#e05a6a"; ctx.fill(); ctx.shadowBlur = 0;
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
@@ -203,11 +226,10 @@ body{background:var(--night)}
     const dt = Math.min(.05, (now - last) / 1000 || 0); last = now;
     const time = (now - t0) / 1000;
     x += (target - x) * Math.min(1, dt * 12);
-    const ax = x * W, aw = artur.clientWidth;
+    const ax = x * W, aw = AW;
     artur.style.transform = `translateX(${ax - aw / 2}px)`;
-    // зона ловли — плечи и грудь Артура
-    const ah = artur.classList.contains("live") ? acv.clientHeight : artur.clientHeight;
-    const catchY = H - ah * .74, catchW = aw * .5;
+    // зона ловли — от макушки до пояса Артура: всё, что коснулось его, считается пойманным
+    const top = H - AH * .86, bottom = H - AH * .3, halfW = aw * .3;
 
     spawnIn -= dt; if (spawnIn <= 0) spawn(time);
     winkIn -= dt; if (winkIn <= 0 && !faceNow && cur === "idle") { face("wink", 650); winkIn = 7 + Math.random() * 6; }
@@ -215,11 +237,13 @@ body{background:var(--night)}
     ctx.clearRect(0, 0, W, H);
     const r = R();
     items = items.filter(it => {
-      it.y += it.v * dt; it.spin += dt * it.rot;
+      const y0 = it.y; it.y += it.v * dt; it.spin += dt * it.rot;
       const px = it.x * W;
-      if (it.y > catchY - r && it.y < catchY + r * 1.6 && Math.abs(px - ax) < catchW / 2 + r * .6) { hit(it, px); return false; }
+      // проверяем весь путь за кадр, а не одну точку: быстрый осколок не «проскочит» сквозь Артура
+      if (it.y + r * .7 > top && y0 - r * .7 < bottom && Math.abs(px - ax) < halfW + r * .7) { hit(it, px); return false; }
       if (it.y > H + r * 2) return false;
-      if (it.kind === "heart") heart(px, it.y, r); else if (it.kind === "shard") shard(px, it.y, r, it.spin); else lika(px, it.y, r);
+      if (it.kind === "lika" && !SPR.likaOk && likaImg.naturalWidth) sprites();
+      put(it.kind === "heart" ? SPR.heart : it.kind === "shard" ? SPR.shard : SPR.lika, px, it.y, it.kind === "shard" ? it.spin : 0);
       return true;
     });
     pops = pops.filter(p => {
