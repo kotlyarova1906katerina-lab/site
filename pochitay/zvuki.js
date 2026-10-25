@@ -50,6 +50,54 @@
     chain(s, bp, g, p, layer.gain); s.start(t, Math.random() * .5, dur + .02);
   }
 
+  /* голосовой звук: осциллятор с кривой частоты и огибающей громкости
+     f и env — массивы [время от начала, значение]; к первой точке прыжок, дальше плавно */
+  function tone(dest, t, { type = "sine", f, env, filter }) {
+    const o = ctx.createOscillator(), g = ctx.createGain(); o.type = type;
+    f.forEach(([dt, v], i) => i ? o.frequency.exponentialRampToValueAtTime(v, t + dt) : o.frequency.setValueAtTime(v, t + dt));
+    g.gain.setValueAtTime(0, t);
+    env.forEach(([dt, v]) => g.gain.linearRampToValueAtTime(v, t + dt));
+    const end = Math.max(f[f.length - 1][0], env[env.length - 1][0]);
+    filter ? chain(o, ...filter, g, dest) : chain(o, g, dest);
+    o.start(t); o.stop(t + end + .05);
+  }
+  /* событие раз в min..max секунд */
+  function every(l, key, t0, dt, min, max, fn) {
+    l.next = l.next || {};
+    if (!l.next[key]) l.next[key] = t0 + Math.random() * min;
+    while (l.next[key] < t0 + dt) { fn(l.next[key]); l.next[key] += min + Math.random() * (max - min); }
+  }
+  const pan = (dest, v) => { const p = ctx.createStereoPanner(); p.pan.value = v; p.connect(dest); return p; };
+
+  /* птичьи голоса: у каждой «птицы» свой вид, высота и место в кроне */
+  const R = Math.random;
+  function birdPhrase(dest, t, b) {
+    const k = b.pitch, out = pan(dest, b.pan), v = b.vol;
+    if (b.kind === "tweet") {            // воробьиное чирик-чирик
+      const n = 2 + (R() * 4 | 0);
+      for (let i = 0; i < n; i++) { const s = t + i * (.13 + R() * .05), f0 = (3200 + R() * 900) * k;
+        tone(out, s, { f: [[0, f0], [.03, f0 * 1.35], [.07, f0 * .8]], env: [[.008, v], [.05, v * .6], [.075, 0]] }); }
+    } else if (b.kind === "tit") {       // синица: «ци-фи, ци-фи»
+      const n = 2 + (R() * 3 | 0);
+      for (let i = 0; i < n; i++) { const s = t + i * .42;
+        tone(out, s, { f: [[0, 5200 * k], [.12, 5000 * k]], env: [[.02, v], [.1, v], [.13, 0]] });
+        tone(out, s + .2, { f: [[0, 3900 * k], [.15, 3750 * k]], env: [[.02, v * .9], [.12, v * .9], [.16, 0]] }); }
+    } else if (b.kind === "trill") {     // трель зяблика с росчерком в конце
+      const n = 8 + (R() * 10 | 0), step = .055 + R() * .02;
+      for (let i = 0; i < n; i++) { const s = t + i * step, f0 = (4200 - i * 90) * k;
+        tone(out, s, { f: [[0, f0], [step * .7, f0 * .75]], env: [[.005, v], [step * .6, 0]] }); }
+      const e = t + n * step + .04;
+      tone(out, e, { f: [[0, 2600 * k], [.08, 4800 * k], [.2, 2200 * k]], env: [[.02, v], [.16, v * .7], [.22, 0]] });
+    } else {                             // плавный свист, как у иволги/дрозда
+      const f0 = (1800 + R() * 900) * k, n = 2 + (R() * 3 | 0);
+      let s = t;
+      for (let i = 0; i < n; i++) { const d = .14 + R() * .2, f1 = f0 * (0.8 + R() * .7);
+        tone(out, s, { f: [[0, f0 * (0.9 + R() * .3)], [d * .5, f1 * 1.15], [d, f1]], env: [[.03, v], [d - .04, v * .8], [d, 0]] });
+        s += d + .05 + R() * .08; }
+    }
+  }
+  const flock = n => Array.from({ length: n }, (_, i) => ({ kind: ["tweet", "tit", "trill", "whistle"][i % 4], pitch: .85 + R() * .3, pan: R() * 1.6 - .8, vol: .06 + R() * .06 }));
+
   const W = {};
   function build() {
     W.white = noise("white"); W.pink = noise("pink"); W.brown = noise("brown"); W.short = noise("white", 1);
@@ -130,6 +178,48 @@
       const rate = 6 + leaves.g * 110;
       for (let t = t0; t < t0 + dt; t += -Math.log(Math.random()) / rate)
         blip(leaves, t, { f: 2500 + Math.random() * 6000, q: 1.5 + Math.random() * 3, peak: .06 + Math.random() * (.12 + leaves.g * .3), dur: .008 + Math.random() * .03, pan: Math.random() * 1.8 - .9 });
+    };
+
+    /* Птицы в листве: несколько птиц перекликаются в кроне, листья тихо шелестят */
+    const birds = L.birds = { gain: amp(0), flock: flock(5) };
+    const bl = amp(.05); chain(loop(W.pink, 1.2), filt("bandpass", 3500, .5), bl, birds.gain);
+    { const o = ctx.createOscillator(); o.frequency.value = .08; const d = amp(.035); o.connect(d).connect(bl.gain); o.start(); }
+    birds.tick = (t0, dt) => birds.flock.forEach((b, i) => every(birds, "b" + i, t0, dt, 2.5, 9, t => birdPhrase(birds.gain, t, b)));
+
+    /* Деревня у бабушки: ветерок, птицы, куры, кукушка, петух, корова, собака вдалеке */
+    const village = L.village = { gain: amp(0), flock: flock(3).map(b => ({ ...b, vol: b.vol * .7 })) };
+    chain(loop(W.pink, .8), filt("lowpass", 900), amp(.11), village.gain);
+    const ir = ctx.createBuffer(2, ctx.sampleRate * 2.2, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] = (R() * 2 - 1) * Math.pow(1 - i / d.length, 3); }
+    const verb = ctx.createConvolver(); verb.buffer = ir;
+    const far = amp(1.3); chain(far, filt("lowpass", 2600), verb, amp(.6), village.gain); far.connect(village.gain);
+    village.tick = (t0, dt) => {
+      village.flock.forEach((b, i) => every(village, "b" + i, t0, dt, 4, 14, t => birdPhrase(village.gain, t, b)));
+      every(village, "hens", t0, dt, 4, 11, t => {          // куры: ко-ко-ко
+        const out = pan(far, R() - .5), n = 2 + (R() * 5 | 0), base = 330 + R() * 120;
+        for (let i = 0; i < n; i++) { const s = t + i * (.16 + R() * .12), f0 = base * (i === n - 1 && R() < .5 ? 1.5 : 1);
+          tone(out, s, { type: "sawtooth", f: [[0, f0 * 1.2], [.07, f0 * .85]], env: [[.01, .07], [.06, .03], [.09, 0]], filter: [filt("bandpass", 900, 1.5)] }); }
+      });
+      every(village, "cuckoo", t0, dt, 18, 40, t => {       // кукушка: ку-ку
+        const out = pan(far, R() * 1.2 - .6), n = 3 + (R() * 5 | 0);
+        for (let i = 0; i < n; i++) { const s = t + i * .85;
+          tone(out, s, { f: [[0, 700], [.18, 680]], env: [[.04, .09], [.15, .08], [.2, 0]] });
+          tone(out, s + .3, { f: [[0, 570], [.3, 550]], env: [[.04, .09], [.24, .07], [.32, 0]] }); }
+      });
+      every(village, "rooster", t0, dt, 30, 65, t => {      // петух: ку-ка-ре-ку-у
+        const out = pan(far, R() * 1.4 - .7), v = .1;
+        const syl = [[0, .13, 430, 460], [.18, .13, 500, 520], [.36, .2, 560, 600], [.62, 1.1, 640, 470]];
+        syl.forEach(([o, d, a, b]) => tone(out, t + o, { type: "sawtooth", f: [[0, a], [d * .3, b * 1.05], [d, b]], env: [[.03, v], [d * .8, v * .8], [d, 0]], filter: [filt("bandpass", 1100, 2), filt("lowpass", 2800)] }));
+      });
+      every(village, "cow", t0, dt, 35, 80, t => {          // корова: му-у
+        const out = pan(far, R() - .5), lp = filt("lowpass", 300, 2);
+        lp.frequency.setValueAtTime(300, t); lp.frequency.linearRampToValueAtTime(900, t + .7); lp.frequency.linearRampToValueAtTime(380, t + 2);
+        tone(out, t, { type: "sawtooth", f: [[0, 105], [.5, 140], [1.4, 125], [2, 92]], env: [[.25, .16], [1.6, .14], [2, 0]], filter: [lp] });
+      });
+      every(village, "dog", t0, dt, 40, 90, t => {          // собака лает вдалеке
+        const out = pan(far, R() * 1.6 - .8), n = 2 + (R() * 3 | 0);
+        for (let i = 0; i < n; i++) tone(out, t + i * (.35 + R() * .2), { type: "sawtooth", f: [[0, 520], [.05, 600], [.14, 360]], env: [[.01, .05], [.1, .03], [.15, 0]], filter: [filt("bandpass", 1000, 1.2), filt("lowpass", 1800)] });
+      });
     };
 
     master = amp(vol);
