@@ -67,7 +67,7 @@ body{background:var(--night);overflow-x:hidden}
 </div></header>
 
 <main class="pc">
-  <div class="pc-head"><div class="eyebrow">Звуки и строки из книги</div><h1>Плейлист для чтения</h1></div>
+  <div class="pc-head"><div class="eyebrow">Звуки, музыка и строки из книги</div><h1>Плейлист для чтения</h1></div>
 
   <div class="card">
     <blockquote class="q" id="q" aria-live="polite"></blockquote>
@@ -92,8 +92,13 @@ body{background:var(--night);overflow-x:hidden}
       <button class="chip" data-s="village" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 11l7-6 7 6M5 9.5V20h10V9.5"/><path d="M8.5 20v-5h3v5M17 20h4v-6l-2-2-2 2"/></svg>Деревня у бабушки</button>
       <button class="chip" data-s="fire" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 21c-4 0-6.5-2.6-6.5-6 0-4 3.5-5.5 3.5-10 2.5 1.5 4 3.5 4.5 6 1-1 1.5-2 1.5-3.5 2 1.8 3.5 4.3 3.5 7.5 0 3.4-2.5 6-6.5 6z"/></svg>Камин</button>
     </div>
+    <div class="eyebrow" style="margin-top:22px">Музыка</div>
+    <div class="chips">
+      <button class="chip" data-s="study" data-music aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>Для учёбы</button>
+      <button class="chip" data-s="calm" data-music aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M4 20c2-1 4-1.5 8-1.5s6 .5 8 1.5M7 15l5-2 5 2M12 7.5V13M7 15c-1 1-1.5 2-1.5 3.5M17 15c1 1 1.5 2 1.5 3.5"/></svg>Для медитации</button>
+    </div>
     <label class="vol">Громкость <input type="range" id="vol" min="0" max="100" value="70"></label>
-    <p class="hint">Звуки можно смешивать: дождь с камином, волны с ветром, листву с городом, птиц с деревней. Лучше в наушниках.</p>
+    <p class="hint">Звуки можно смешивать: дождь с камином, волны с ветром, листву с городом, птиц с деревней. Музыку — со звуком за окном. Лучше в наушниках.</p>
   </div>
 
   <div class="more">
@@ -103,7 +108,7 @@ body{background:var(--night);overflow-x:hidden}
   </div>
 </main>
 
-<script src="zvuki.js?v=20261025c"></script>
+<script src="zvuki.js?v=20261025d"></script>
 <script>
 /* Строки из первой части «Осколков первой любви» (без спойлеров финала) */
 const LINES = [
@@ -168,6 +173,8 @@ vol.value = store.get("pochitay_vol") || 70;
 ZVUKI.volume(vol.value / 100);
 vol.oninput = () => { ZVUKI.volume(vol.value / 100); store.set("pochitay_vol", vol.value); };
 document.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+  if (b.hasAttribute("data-music") && !ZVUKI.isOn(b.dataset.s))     // музыка играет одна: другая выключается
+    document.querySelectorAll(".chip[data-music]").forEach(o => { if (o !== b && ZVUKI.isOn(o.dataset.s)) { ZVUKI.toggle(o.dataset.s, false); o.setAttribute("aria-pressed", false); } });
   const on = ZVUKI.toggle(b.dataset.s);
   b.setAttribute("aria-pressed", on);
   if (b.dataset.s === "rain") rain = on;

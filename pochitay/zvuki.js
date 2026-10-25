@@ -222,6 +222,66 @@
       });
     };
 
+    /* ── Музыка: сочиняется на ходу, каждый раз немного по-новому ── */
+    const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+    const hallIR = ctx.createBuffer(2, ctx.sampleRate * 3.2, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const d = hallIR.getChannelData(ch); for (let i = 0; i < d.length; i++) d[i] = (R() * 2 - 1) * Math.pow(1 - i / d.length, 2.5); }
+    const hall = ctx.createConvolver(); hall.buffer = hallIR;
+
+    /* мягкое электропианино: основной тон, лёгкий второй обертон, быстро тающий «удар» */
+    function keyNote(dest, t, m, vel, dur) {
+      const f = hz(m), g = ctx.createGain(), lp = filt("lowpass", 1800 + vel * 1500);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vel * .16, t + .012); g.gain.exponentialRampToValueAtTime(.0008, t + dur);
+      [[1, 1, "sine"], [1.0035, .35, "sine"], [2, .12, "sine"], [3, .04, "triangle"]].forEach(([k, a, type]) => {
+        const o = ctx.createOscillator(), og = amp(a); o.type = type; o.frequency.value = f * k;
+        if (k >= 2) { og.gain.setValueAtTime(a, t); og.gain.exponentialRampToValueAtTime(.0005, t + dur * .35); }
+        chain(o, og, g); o.start(t); o.stop(t + dur + .05);
+      });
+      chain(g, lp, dest);
+    }
+
+    /* Музыка для учёбы: спокойные джазовые аккорды, ~66 ударов в минуту */
+    const study = L.study = { gain: amp(0), bar: 0, at: 0 };
+    const sOut = amp(1.3); sOut.connect(study.gain); const sSend = amp(.35); sOut.connect(sSend); chain(sSend, hall, study.gain);
+    const PROG = [ // [бас, аккорд] — Fmaj7, Em7, Dm9, Cmaj7 / Am9, Dm7, G7sus, Cmaj9
+      [41, [57, 60, 64, 69]], [40, [55, 59, 62, 67]], [38, [57, 60, 64, 65]], [36, [55, 59, 64, 67]],
+      [45, [55, 59, 60, 64]], [38, [57, 60, 65, 69]], [43, [57, 60, 65, 67]], [36, [55, 59, 62, 64]]];
+    const PENTA = [72, 74, 76, 79, 81, 84];
+    study.tick = (t0, dt) => {
+      const beat = 60 / 66;
+      if (!study.at) study.at = t0 + .2;
+      while (study.at < t0 + dt) {
+        const t = study.at, [bass, ch] = PROG[study.bar % PROG.length], hum = () => (R() - .5) * .03;
+        keyNote(sOut, t, bass, .55, beat * 4.2);
+        ch.forEach((m, i) => keyNote(sOut, t + i * .045 + hum(), m, .38 + R() * .1, beat * 3.6));   // мягко «перебрать» аккорд
+        for (let e = 2; e < 8; e++) if (R() < .32) keyNote(sOut, t + e * beat / 2 + hum(), ch[R() * ch.length | 0] + 12, .25 + R() * .15, beat * 2);
+        if (R() < .6) { let s = t + beat * (1 + (R() * 2 | 0)), m = PENTA[R() * PENTA.length | 0];          // короткая мелодия сверху
+          for (let k = 0; k < 1 + (R() * 3 | 0); k++) { keyNote(sOut, s + hum(), m, .3 + R() * .15, beat * 2.5); s += beat * (R() < .5 ? 1 : .5); m = PENTA[Math.max(0, Math.min(PENTA.length - 1, PENTA.indexOf(m) + (R() < .5 ? -1 : 1)))]; } }
+        study.bar++; study.at += beat * 4;
+      }
+    };
+
+    /* Медитация: тихий гул ре + квинта, поющие чаши и редкие колокольчики */
+    const calm = L.calm = { gain: amp(0) };
+    const cOut = amp(1); cOut.connect(calm.gain); const cSend = amp(.5); cOut.connect(cSend); chain(cSend, hall, calm.gain);
+    const pad = amp(.0); chain(pad, filt("lowpass", 700), calm.gain);
+    [[38, .16], [45, .1], [50, .07], [57, .03]].forEach(([m, a], i) => [0, 1.6].forEach(det => {   // пары чуть расстроенных тонов «дышат»
+      const o = ctx.createOscillator(), g = amp(a); o.frequency.value = hz(m) + det * (i + 1) * .25; chain(o, g, pad); o.start(); }));
+    { const o = ctx.createOscillator(), d = amp(.15); o.frequency.value = .045; o.connect(d).connect(pad.gain); o.start(); pad.gain.value = .25; }
+    const D_PENTA = [62, 64, 66, 69, 71, 74, 76, 78, 81];
+    function bowl(t, m, v) {
+      const f = hz(m);
+      [[1, 1, 9], [1.004, .6, 9], [2.71, .35, 5], [5.15, .12, 3]].forEach(([k, a, d]) => {
+        const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = f * k;
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v * a, t + .015); g.gain.exponentialRampToValueAtTime(.0003, t + d);
+        chain(o, g, pan(cOut, R() * .8 - .4)); o.start(t); o.stop(t + d + .1);
+      });
+    }
+    calm.tick = (t0, dt) => {
+      every(calm, "bowl", t0, dt, 7, 14, t => bowl(t, D_PENTA[R() * 4 | 0] - 12, .12));
+      every(calm, "chime", t0, dt, 3, 9, t => { const n = 1 + (R() * 3 | 0); for (let i = 0; i < n; i++) keyNote(cOut, t + i * (.6 + R() * .5), D_PENTA[3 + (R() * 6 | 0)], .18 + R() * .1, 4); });
+    };
+
     master = amp(vol);
     const comp = ctx.createDynamicsCompressor();
     Object.values(L).forEach(l => l.gain.connect(master));
